@@ -1,4 +1,5 @@
-h5py
-numpy
-matplotlib
-corrfitter
+corrfitter==8.2
+h5py==3.10.0
+numpy==1.26.1
+scipy==1.13.1
+matplotlib==3.5.2
