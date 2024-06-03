@@ -4,9 +4,7 @@
 lightspeed = 299792;
 MeVm3tocm2g=4.57821356*10^(-6);
 
-(**PATHTOCODE ="/home/XXX"**)
-PATHTOCODE ="/home/dengler_yannick/Documents/Code_I2"
-(**numsteps = 200;**)
+PATHTOCODE ="/home/XXX"
 numsteps = 200;
 vmin =18090;
 vmax = lightspeed*0.99;
@@ -75,10 +73,10 @@ Sp4data =  Import[PATHTOCODE<>"/output/Sp(4)_data.dat","Table"];
 aSp4units=Sp4data[[All,3]]/massSp4units;(*MeV^-1*)
 reSp4units=Sp4data[[All,4]]/massSp4units;(*MeV^-1*)
 aofmpfpichiPT[mpifpi2_]:=mpifpi2/32
-achilow = aofmpfpichiPT[Min[Sp4data[[All,6]]]^2]/massSp4units
-achihigh = aofmpfpichiPT[Max[Sp4data[[All,6]]]^2]/massSp4units
-(**achilow = aofmpfpichiPT[4.6^2]/massSp4units
-achihigh = aofmpfpichiPT[6.0^2]/massSp4units**)
+(**achilow = aofmpfpichiPT[Min[Sp4data[[All,6]]]^2]/massSp4units
+achihigh = aofmpfpichiPT[Max[Sp4data[[All,6]]]^2]/massSp4units**)
+achilow = aofmpfpichiPT[4.6^2]/massSp4units
+achihigh = aofmpfpichiPT[6.0^2]/massSp4units
 vfunc[vmin_,vmax_,steps_,i_]:= vmin*(vmax/vmin)^((i-1)/(steps-1))//N;
 Clear[Exporttable]
 Exporttable = List[];
@@ -89,6 +87,4 @@ For[i=1,i<Length[aSp4units]+1,i++,(a=Table[IntedfuncMJvmean[aSp4units[[i]],reSp4
 AppendTo[Exporttable,a])];
 Export[PATHTOCODE<>"/output/sigma_v_data.dat",Transpose[Exporttable]];
 Quit[]
-
-
 

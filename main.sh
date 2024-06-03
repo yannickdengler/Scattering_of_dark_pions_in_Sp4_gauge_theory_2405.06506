@@ -19,7 +19,7 @@ python3 scattering/scattering.py
 python3 scattering/plotting.py
 python3 scattering/plot_a_re_m.py
 
-math -script scattering/sigma_v_I2_paper.m
+math -script scattering/sigma_v_I2.m
 
 python3 scattering/plot_sigma.py
 
