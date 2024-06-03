@@ -11,7 +11,7 @@ mass_Sp4 = 100                                               # For rescaling of 
 mass_chiPT = 100                                               # For rescaling of our DM mass
 
 sigma_v_data = np.transpose(np.genfromtxt("output/sigma_v_data.dat"))
-DM_halo_data_error = np.transpose(np.genfromtxt("output/sigma_v_data_errors.dat"))
+DM_halo_data_error = np.transpose(np.genfromtxt("input/sigma_v_data_errors.dat"))
 
 varr = sigma_v_data[0]
 chiPT_data = sigma_v_data[1:3]

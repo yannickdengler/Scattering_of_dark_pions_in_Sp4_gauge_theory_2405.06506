@@ -6,8 +6,8 @@ plt.rcParams["font.size"] = 14
 color_arr = ["blue", "green", "red", "purple", "orange", "olive", "skyblue", "lime", "black", "grey", "fuchsia", "peru", "firebrick","blue", "green", "red", "purple", "orange", "olive", "skyblue", "lime", "black", "grey", "fuchsia", "peru", "firebrick","blue", "green", "red", "purple", "orange", "olive", "skyblue", "lime", "black", "grey", "fuchsia", "peru", "firebrick",]
 
 
-a_data_linsig = np.transpose(np.genfromtxt("output/a_data_linsig_90.dat"))
-re_data_linsig = np.transpose(np.genfromtxt("output/re_data_linsig_90.dat"))
+a_data_linsig = np.transpose(np.genfromtxt("input/a_data_linsig_90.dat"))
+re_data_linsig = np.transpose(np.genfromtxt("input/re_data_linsig_90.dat"))
 
 hbarc_GeV = 0.1973
 Sp4_data = np.transpose(np.genfromtxt("output/Sp(4)_data.dat"))

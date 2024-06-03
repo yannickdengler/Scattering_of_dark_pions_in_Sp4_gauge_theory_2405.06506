@@ -1,0 +1,10 @@
+*.pdf
+*.txt
+*.hdf5
+rsync/*
+output/*
+input/*
+!input/pipi_fitintervals.csv
+!input/a_data_linsig_90.dat
+!input/re_data_linsig_90.dat
+!input/sigma_v_data_errors.dat

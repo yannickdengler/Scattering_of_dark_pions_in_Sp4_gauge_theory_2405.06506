@@ -1,6 +1,15 @@
 (* ::Package:: *)
 
 (* ::Input::Initialization:: *)
+lightspeed = 299792;
+MeVm3tocm2g=4.57821356*10^(-6);
+
+PATHTOCODE ="/home/XXX"
+numsteps = 200;
+vmin =20000;
+vmax = lightspeed*0.9;
+massSp4units=100;(*MeV*)
+
 MJdistgamma[gamma_, theta_]:= (E^(-(gamma/theta)) gamma^2*Sqrt[1-1/gamma^2])/(theta BesselK[2,1/theta])
 vmeanthetaexact[theta_]:=2 (theta (1+theta)(E^(-1/theta)) )/BesselK[2,1/theta]
 vmeanthetaexp[theta_]:=Sqrt[theta]*Sqrt[8/Pi]-Sqrt[theta]^3*7/Sqrt[8*Pi]+Sqrt[theta]^5*105/(32*Sqrt[2*Pi])-Sqrt[theta]^7*525/(256*Sqrt[2*Pi])-Sqrt[theta]^9*9765/(8192*Sqrt[2*Pi])
@@ -60,20 +69,13 @@ StripWrapperBoxes->True]\)
 intfuncMJ[a_,re_,mass_,gamma_,theta_]:=vofgamma[gamma]*MJdistgamma[gamma,theta]*sigmav[a,re,vofgamma[gamma],mass]
 IntedfuncMJtheta[a_,re_,mass_,theta_]:=NIntegrate[intfuncMJ[a,re,mass,gamma,theta],{gamma,1,5},MinRecursion->10,MaxRecursion->14,AccuracyGoal->5]
 IntedfuncMJvmean[a_,re_,mass_,vmean_]:=IntedfuncMJtheta[a,re,mass,thetavmean[vmean]]
-PATHTOCODE ="/home/dengler_yannick/Documents/Code_I2_Paper_test"
 Sp4data =  Import[PATHTOCODE<>"/output/Sp(4)_data.dat","Table"];
-massSp4units=100;(*MeV*)
 aSp4units=-1/(Sp4data[[All,3]]*massSp4units);(*MeV^-1*)
 reSp4units=(Sp4data[[All,4]]*2)/massSp4units;
-lightspeed = 299792;
-MeVm3tocm2g=4.57821356*10^(-6);
 aofmpfpichiPT[mpifpi2_]:=mpifpi2/32
 achilow = aofmpfpichiPT[4.59^2]/massSp4units//N;
 achihigh = aofmpfpichiPT[5.98^2]/massSp4units//N;
 vfunc[vmin_,vmax_,steps_,i_]:= vmin*(vmax/vmin)^((i-1)/(steps-1))//N;
-numsteps = 200;
-vmin =20000;
-vmax = lightspeed*0.9;
 Clear[Exporttable]
 Exporttable = List[];
 AppendTo[Exporttable,Table[vfunc[vmin,lightspeed,numsteps,i],{i,1,numsteps}]];
