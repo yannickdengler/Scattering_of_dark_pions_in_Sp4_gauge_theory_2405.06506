@@ -14,4 +14,13 @@ julia energy_levels/write_fpi_correlator.jl
 python3 energy_levels/fitting.py
 julia energy_levels/energy_levels_table.jl
 
+python3 scattering/scattering.py
+
+python3 scattering/plotting.py
+python3 scattering/plot_a_re_m.py
+
+math -script scattering/sigma_v_I2_paper.m
+
+python3 scattering/plot_sigma.py
+
 rm $loglistI2 $loglist

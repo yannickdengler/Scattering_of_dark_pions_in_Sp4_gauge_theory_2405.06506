@@ -15,17 +15,17 @@ Sp4_masses = Sp4_data[4]
 Sp4_a = []
 Sp4_re = []
 for i in range(len(Sp4_masses)):
-    Sp4_a.append(-hbarc_GeV*Sp4_masses[i]/(Sp4_data[2][i]))
-    Sp4_re.append(2*hbarc_GeV*Sp4_masses[i]*Sp4_data[3][i])
+    Sp4_a.append(Sp4_data[2][i])
+    Sp4_re.append(Sp4_data[3][i])
 
 
 def plot_a():
-    mass_plot = np.logspace(-3,2,500)
+    mass_plot = np.logspace(0,2,500)
     a_Sp4_plot = []
     for i in range(len(Sp4_a)):
         a_Sp4_plot.append([])
         for j in range(len(mass_plot)):
-            a_Sp4_plot[i].append(Sp4_a[i]/mass_plot[j])
+            a_Sp4_plot[i].append(hbarc_GeV*Sp4_a[i]/mass_plot[j])
 
     plt.fill_between(a_data_linsig[1],11.1103,a_data_linsig[0], label='"Kondo et al."', alpha = 0.7, color = "purple", ls = "None")
     plt.fill_between(mass_plot,np.min(a_Sp4_plot,axis=0),np.max(a_Sp4_plot,axis=0), color = "orange", alpha = 0.7, label = "This work", ls = "None")
@@ -39,19 +39,16 @@ def plot_a():
     plt.legend(loc="center right")
     plt.grid()
     plt.savefig("plots/a_vs_mass.pdf",bbox_inches = "tight")
+    plt.show()
     plt.clf()
-    # plt.show()
 
 def plot_re():
     mass_plot = np.logspace(0,2,500)
     re_Sp4_plot = []
-    for i in range(len(Sp4_a)):
+    for i in range(len(Sp4_re)):
         re_Sp4_plot.append([])
         for j in range(len(mass_plot)):
-            re_Sp4_plot[i].append(Sp4_re[i]/mass_plot[j])
-
-    print(len(re_Sp4_plot))
-    print(len(re_Sp4_plot[0]))
+            re_Sp4_plot[i].append(hbarc_GeV*Sp4_re[i]/mass_plot[j])
 
     plt.fill_between(re_data_linsig[1],0,re_data_linsig[0], color="purple", label='"Kondo et al."', alpha = 0.7, ls = "None")
     plt.fill_between(mass_plot,np.min(re_Sp4_plot,axis=0),np.max(re_Sp4_plot,axis=0), color = "orange", alpha = 0.7, label = "This work", ls = "None")
@@ -64,8 +61,8 @@ def plot_re():
     plt.legend(loc="upper left")
     plt.grid()
     plt.savefig("plots/re_vs_mass.pdf",bbox_inches = "tight")
+    plt.show()
     plt.clf()
-    # plt.show()
 
 plot_a()
 plot_re()

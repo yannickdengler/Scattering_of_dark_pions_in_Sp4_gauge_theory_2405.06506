@@ -18,7 +18,8 @@ import h5py
 from mpl_toolkits.axes_grid1.inset_locator import inset_axes
 from mpl_toolkits.axes_grid1.inset_locator import mark_inset
 
-nth = 100                                           # the how manyth point should be taken for plotting the lines?
+# nth = 100                                           # the how manyth point should be taken for plotting the lines?
+nth = 10                                           # the how manyth point should be taken for plotting the lines?
 num_perc = math.erf(1/np.sqrt(2))
 font = {'size'   : 16}
 matplotlib.rc('font', **font)
@@ -136,7 +137,6 @@ def plot_m_inf_with_luscher(file, show = True, save = True):
     A_R = error_of_array(res_sample["A_R"])
     N_L = res["N_Ls"]
     N_L_inv = [1./L for L in N_L]
-    print(N_L_inv)
     beta = res["beta"]
     m12 = res["m_1"]
 
@@ -297,13 +297,18 @@ def plot_a_0_vs_m_f_pi(show=False, save = True):
     m_arr = [[-0.87,-0.9,-0.91,-0.92],[-0.835,-0.85],[-0.78,-0.794]]
     a0_mpi_total_arr = []
     mpifpi_total_arr = []
+    out = []
     for i in range(len(beta_arr)):
         for j in range(len(beta_arr[i])):
             a0mpi_arr = []
+            rempi_arr = []
+            mpi_arr = []
             mpifpi_arr = []
             res,  res_sample = result.read_from_hdf("scattering_b%1.3f_m%1.3f"%(beta_arr[i][j],m_arr[i][j]))
             for k in range(len(res_sample["a2"])):
                 a0mpi_arr.append(float(-1/res_sample["a2"][k][0]))
+                rempi_arr.append(float(2*res_sample["b2"][k][0]))
+                mpi_arr.append(float(res_sample["m_pi_inf"][k][0]))
                 a0_mpi_total_arr.append(float(-1/res_sample["a2"][k][0]))
                 for l in range(len(fpi_full)):
                     if beta_arr[i][j] == fpi_full[l][0]:
@@ -311,14 +316,21 @@ def plot_a_0_vs_m_f_pi(show=False, save = True):
                             mpifpi_tmp = res_sample["m_pi_inf"][k][0]/np.random.normal(loc=fpi_full[l][2], scale=fpi_full[l][3])
                             mpifpi_arr.append(mpifpi_tmp)
                             mpifpi_total_arr.append(mpifpi_tmp)
-            print(a0mpi_arr)
-            print(mpifpi_arr)
-            print(len(a0mpi_arr))
-            print(len(mpifpi_arr))
-            print(fpi_full)
             a0mpi_err = error_of_1Darray(a0mpi_arr)
+            rempi_err = error_of_1Darray(rempi_arr)
+            mpi_err = error_of_1Darray(mpi_arr)
             mpifpi_err = error_of_1Darray(mpifpi_arr)
+            out.append([])
+            out[len(out)-1].append(beta_arr[i][j])
+            out[len(out)-1].append(m_arr[i][j])
+            out[len(out)-1].append(a0mpi_err[0])
+            out[len(out)-1].append(rempi_err[0])
+            out[len(out)-1].append(mpi_err[0])
+            out[len(out)-1].append(mpifpi_err[0])
             plt.errorbar(x=[mpifpi_err[0],],xerr=[[mpifpi_err[1],],[mpifpi_err[2],]],y=[a0mpi_err[0],],yerr=[[a0mpi_err[1],],[a0mpi_err[2],]], marker = marker_beta(beta_arr[i][j]), ls = "", capsize=5, markersize=10, color = color_beta(beta_arr[i][j]))
+    with open("output/Sp(4)_data.dat", "w") as f:
+        for i in range(len(out)):
+            f.write("%e\t%e\t%e\t%e\t%e\t%e\n"%(out[i][0],out[i][1],out[i][2],out[i][3],out[i][4],out[i][5]))
     plt.scatter((-10, -9), y = (0,0), marker = marker_beta(6.9), color = color_beta(6.9), label ="$\\beta=6.90$", s = 60)
     plt.scatter((-10, -9), y = (0,0), marker = marker_beta(7.05), color = color_beta(7.05), label ="$\\beta=7.05$", s = 60)
     plt.scatter((-10, -9), y = (0,0), marker = marker_beta(7.2), color = color_beta(7.2), label ="$\\beta=7.20$", s = 60)    
@@ -347,8 +359,7 @@ def write_fpi_file():
     betas = {}
     m0s = {}
     fpi_err = {}
-    with h5py.File("input/decay_const.hdf5", "r") as file:
-        file.visit(print)
+    with h5py.File("output/fitresults.hdf5", "r") as file:
         for key_tmp in file.keys():
             for key in file[key_tmp]["pi"].keys():
                 if key[len(key)-13:] == "Delta_fpi_ren":
@@ -375,9 +386,9 @@ if __name__ == "__main__":
     beta_arr = [6.9,6.9,6.9,6.9,7.05,7.05,7.2,7.2]
     m_arr = [-0.87,-0.9,-0.91,-0.92,-0.835,-0.85,-0.78,-0.794] 
 
+    write_fpi_file()
+    plot_a_0_vs_m_f_pi(show=False,save=True)
     for i in range(len(beta_arr)):
         write_result_file("scattering_b%1.3f_m%1.3f"%(beta_arr[i],m_arr[i]))
         plot_m_inf_with_luscher("scattering_b%1.3f_m%1.3f"%(beta_arr[i],m_arr[i]), show=False,save=True)
         plot_ERT_plus_sigma("scattering_b%1.3f_m%1.3f"%(beta_arr[i],m_arr[i]), show=False,save=True)
-    write_fpi_file()
-    plot_a_0_vs_m_f_pi(show=False,save=True)

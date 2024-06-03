@@ -14,8 +14,21 @@ sigma_v_data = np.transpose(np.genfromtxt("output/sigma_v_data.dat"))
 DM_halo_data_error = np.transpose(np.genfromtxt("input/sigma_v_data_errors.dat"))
 
 varr = sigma_v_data[0]
-chiPT_data = sigma_v_data[1:3]
-Sp4_data = sigma_v_data[3:]
+chiPT_data_in = sigma_v_data[1:3]
+Sp4_data_in = sigma_v_data[3:]
+
+for i in range(len(Sp4_data_in)):
+    plt.plot(varr, Sp4_data_in[i])
+
+varr = np.insert(varr,0,10)
+
+chiPT_data = []
+Sp4_data = []
+
+for i in range(len(chiPT_data_in)):
+    chiPT_data.append(np.insert(chiPT_data_in[i],0,10**(np.log10(varr[0])-np.log10(varr[1])+np.log10(chiPT_data_in[i][0]))))
+for i in range(len(Sp4_data_in)):
+    Sp4_data.append(np.insert(Sp4_data_in[i],0,10**(np.log10(varr[0])-np.log10(varr[1])+np.log10(Sp4_data_in[i][0]))))
 
 varr[0] = 10
 
@@ -48,6 +61,8 @@ order = [1,2,0,3]
 
 legend = plt.legend([handles[idx] for idx in order],[labels[idx] for idx in order],loc='lower right')
 legend.get_frame().set_alpha(None)
+# plt.legend()
+
 plt.tight_layout()
 plt.grid()
 plt.savefig("plots/sigma_v_MJ.pdf",bbox_inches = "tight")

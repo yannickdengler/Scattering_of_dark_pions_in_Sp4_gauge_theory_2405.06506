@@ -201,7 +201,7 @@ def read_from_hdf(filename):
                 res_tmp[key[7:]] = hfile[key][()]
     return res, res_tmp
 
-def result_sampled(beta,m0,N_L,E_pi,E_pi_err,E_pipi,E_pipi_err, num_gaussian=5000):
+def result_sampled(beta,m0,N_L,E_pi,E_pi_err,E_pipi,E_pipi_err, num_gaussian=500):
     res = calculations(N_Ls,E_pi,E_pipi)
     res_sample = {}
     for key in res.keys():
@@ -229,7 +229,6 @@ if __name__ == "__main__":
     E_pipis = []
     E_pipi_errs = []
 
-    out = []
 
     with h5py.File("output/fitresults.hdf5") as file:
         for key in file.keys():
@@ -272,13 +271,3 @@ if __name__ == "__main__":
             fn_tmp = "scattering_b%1.3f_m%1.3f"%(float(res["beta"]),float(res["m_1"]))
             save_to_hdf(res, res_sam, fn_tmp)
             res, res_sam = read_from_hdf(fn_tmp)
-            print(res, res_sam)
-            out.append([])
-            out[len(out)-1].append(beta)
-            out[len(out)-1].append(m0)
-            out[len(out)-1].append(res["a2"])
-            out[len(out)-1].append(res["b2"])
-            out[len(out)-1].append(res["m_pi_inf"])
-    with open("output/Sp(4)_data.dat", "w") as f:
-        for i in range(len(out)):
-            f.write("%e\t%e\t%e\t%e\t%e\n"%(out[i][0],out[i][1],out[i][2],out[i][3],out[i][4]))
