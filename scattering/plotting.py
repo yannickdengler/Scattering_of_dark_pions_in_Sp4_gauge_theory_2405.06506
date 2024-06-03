@@ -18,8 +18,7 @@ import h5py
 from mpl_toolkits.axes_grid1.inset_locator import inset_axes
 from mpl_toolkits.axes_grid1.inset_locator import mark_inset
 
-# nth = 100                                           # the how manyth point should be taken for plotting the lines?
-nth = 10                                           # the how manyth point should be taken for plotting the lines?
+nth = 100                                           # the how manyth point should be taken for plotting the lines?
 num_perc = math.erf(1/np.sqrt(2))
 font = {'size'   : 16}
 matplotlib.rc('font', **font)

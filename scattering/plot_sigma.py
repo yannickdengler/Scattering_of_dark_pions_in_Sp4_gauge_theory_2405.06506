@@ -61,7 +61,6 @@ order = [1,2,0,3]
 
 legend = plt.legend([handles[idx] for idx in order],[labels[idx] for idx in order],loc='lower right')
 legend.get_frame().set_alpha(None)
-# plt.legend()
 
 plt.tight_layout()
 plt.grid()

@@ -201,7 +201,7 @@ def read_from_hdf(filename):
                 res_tmp[key[7:]] = hfile[key][()]
     return res, res_tmp
 
-def result_sampled(beta,m0,N_L,E_pi,E_pi_err,E_pipi,E_pipi_err, num_gaussian=500):
+def result_sampled(beta,m0,N_L,E_pi,E_pi_err,E_pipi,E_pipi_err, num_gaussian=2000):
     res = calculations(N_Ls,E_pi,E_pipi)
     res_sample = {}
     for key in res.keys():
