@@ -5,7 +5,7 @@ rsync/*
 output/*
 input/*
 !input/pipi_fitintervals.csv
-!input/a_data_linsig_90.dat
-!input/re_data_linsig_90.dat
-!input/sigma_v_data_errors.dat
+!input/a_data_linsig_90.csv
+!input/re_data_linsig_90.csv
+!input/sigma_v_data_errors.csv
 scattering/__pycache__/

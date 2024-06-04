@@ -10,8 +10,8 @@ color_arr = ["blue", "green", "red", "purple", "orange", "olive", "skyblue", "li
 mass_Sp4 = 100                                               # For rescaling of our DM mass
 mass_chiPT = 100                                               # For rescaling of our DM mass
 
-sigma_v_data = np.transpose(np.genfromtxt("output/sigma_v_data.dat"))
-DM_halo_data_error = np.transpose(np.genfromtxt("input/sigma_v_data_errors.dat"))
+sigma_v_data = np.transpose(np.genfromtxt("output/sigma_v_data.csv"))
+DM_halo_data_error = np.transpose(np.genfromtxt("input/sigma_v_data_errors.csv"))
 
 varr = sigma_v_data[0]
 chiPT_data_in = sigma_v_data[1:3]
