@@ -186,7 +186,7 @@ def get_filelist_list(filename, num_lines = 12):
     return filelist_list
 
 def save_to_hdf(res,res_sample, filename):
-    with h5py.File("output/"+filename+".hdf5","w") as hfile:
+    with h5py.File("output/hdf5/"+filename+".hdf5","w") as hfile:
         for key, val in res.items():
             hfile.create_dataset("orig_"+key, data = val)
         for key, val in res_sample.items():
@@ -194,7 +194,7 @@ def save_to_hdf(res,res_sample, filename):
         
 def read_from_hdf(filename):
     res, res_tmp = [{},{}]
-    with h5py.File("output/"+filename+".hdf5","r") as hfile:
+    with h5py.File("output/hdf5/"+filename+".hdf5","r") as hfile:
         for key in hfile.keys():
             if key[:4] == "orig":
                 res[key[5:]] = hfile[key][()]
@@ -231,7 +231,7 @@ if __name__ == "__main__":
     E_pipi_errs = []
 
 
-    with h5py.File("output/fitresults.hdf5") as file:
+    with h5py.File("output/hdf5/fitresults.hdf5") as file:
         for key in file.keys():
             beta = float(file[key+"/pi/beta"][()])
             m_1 = float(file[key+"/pi/m_1"][()])

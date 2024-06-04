@@ -69,6 +69,24 @@ def E_of_k(k):
 def k_of_Linv(L_inv, q2):
     return 2*np.pi*L_inv*np.sqrt(q2)
 
+def write_result_file(file):
+    res,  res_sample = result.read_from_hdf(file)
+    beta = res["beta"]
+    m12 = res["m_1"]
+    m_pi_inf = np.transpose(res_sample["m_pi_inf"])
+    a2 = np.transpose(res_sample["a2"])
+    b2 = np.transpose(res_sample["b2"])
+    a0 = []
+    re0 = []
+    for i in range(len(a2[0])):
+        a0.append(-1/a2[0][i])
+        re0.append(2*b2[0][i])
+    m_pi_inf_err = error_of_1Darray(m_pi_inf[0])
+    a0_err = error_of_1Darray(a0)
+    re0_err = error_of_1Darray(re0)
+    with open("output/tables/m_pi_a_r.csv","a") as f:
+        f.write("%f;%f;%f;%f;%f;%f;%f;%f;%f;%f;%f\n"%(beta,m12,m_pi_inf_err[0],m_pi_inf_err[1],m_pi_inf_err[2],a0_err[0],a0_err[1],a0_err[2],re0_err[0],re0_err[1],re0_err[2]))
+
 def plot_curved_errorbars(ax,xarr,yarr,length=0.2,color="green",label="",ratio=1, offset = 2):    # avarage over offset
     '''
     Ratio consists of scale of the axis times the ratio of the figsize. ratio = dx/dy*ax.bbox.height/ax.bbox.width (for axis)
@@ -191,7 +209,7 @@ def plot_m_inf_with_luscher(file, show = True, save = True):
     ax1.grid()
     ax2.legend([l1, l2],["$\pi$", "$\pi\pi$"], loc = "upper left")
     if save:
-        plt.savefig("plots/EpiEpipi_%1.3f_m%1.3f.pdf"%(res["beta"],res["m_1"]), bbox_inches="tight")
+        plt.savefig("output/plots/EpiEpipi_%1.3f_m%1.3f.pdf"%(res["beta"],res["m_1"]), bbox_inches="tight")
     if show:
         plt.show()
 
@@ -268,7 +286,7 @@ def plot_ERT_plus_sigma(file, show=False, save = True, rek_lim = True, vesc_lim 
     ax2.set_xlabel("$s/m_\pi^{\infty\,2}}$")
     ax2.set_ylabel("$\sigma m_\pi^{\infty\,2}$")
     if save:
-        plt.savefig("plots/comb_s_b%1.3f_m%1.3f.pdf"%(res["beta"],res["m_1"]), bbox_inches="tight")
+        plt.savefig("output/plots/comb_s_b%1.3f_m%1.3f.pdf"%(res["beta"],res["m_1"]), bbox_inches="tight")
     if show:
         plt.show()
     plt.clf()
@@ -277,7 +295,7 @@ def plot_a_0_vs_m_f_pi(show=False, save = True):
     plt.figure(figsize=(8,4.8))
     def chipt(x):
         return x/32
-    fpi_full = np.genfromtxt("output/fpi_data.csv",delimiter=",")
+    fpi_full = np.genfromtxt("output/tables/fpi_data.csv",delimiter=",")
     xarr = np.linspace(0,10)
     yarr = [chipt(x**2) for x in xarr]
     plt.plot(xarr, yarr, ls = "dashed", color = "green", label = "LO EFT")
@@ -316,7 +334,7 @@ def plot_a_0_vs_m_f_pi(show=False, save = True):
             out[len(out)-1].append(mpi_err[0])
             out[len(out)-1].append(mpifpi_err[0])
             plt.errorbar(x=[mpifpi_err[0],],xerr=[[mpifpi_err[1],],[mpifpi_err[2],]],y=[a0mpi_err[0],],yerr=[[a0mpi_err[1],],[a0mpi_err[2],]], marker = marker_beta(beta_arr[i][j]), ls = "", capsize=5, markersize=10, color = color_beta(beta_arr[i][j]))
-    with open("output/Sp(4)_data.csv", "w") as f:
+    with open("output/tables/Sp(4)_data.csv", "w") as f:
         for i in range(len(out)):
             f.write("%e,%e,%e,%e,%e,%e\n"%(out[i][0],out[i][1],out[i][2],out[i][3],out[i][4],out[i][5]))
     plt.scatter((-10, -9), y = (0,0), marker = marker_beta(6.9), color = color_beta(6.9), label ="$\\beta=6.90$", s = 60)
@@ -336,7 +354,7 @@ def plot_a_0_vs_m_f_pi(show=False, save = True):
     plt.grid()
     plt.legend()
     if save:
-        plt.savefig("plots/chipt_comp.pdf", bbox_inches="tight")
+        plt.savefig("output/plots/chipt_comp.pdf", bbox_inches="tight")
     if show:
         plt.show()
     plt.clf()
@@ -347,7 +365,7 @@ def write_fpi_file():
     betas = {}
     m0s = {}
     fpi_err = {}
-    with h5py.File("output/fitresults.hdf5", "r") as file:
+    with h5py.File("output/hdf5/fitresults.hdf5", "r") as file:
         for key_tmp in file.keys():
             for key in file[key_tmp]["pi"].keys():
                 if key[len(key)-13:] == "Delta_fpi_ren":
@@ -365,7 +383,7 @@ def write_fpi_file():
                         N_L[string] = file[key_tmp]["pi"]["N_L"][()]
                         fpi[string] = float(file[key_tmp]["pi"]["fpi_ren"][()])
                         fpi_err[string] = float(file[key_tmp]["pi"]["Delta_fpi_ren"][()])
-    with open("output/fpi_data.csv", "w") as ofile:
+    with open("output/tables/fpi_data.csv", "w") as ofile:
         for key in fpi.keys():
             ofile.write("%f,%f,%f,%f\n"%(betas[key], m0s[key], fpi[key], fpi_err[key]))
 

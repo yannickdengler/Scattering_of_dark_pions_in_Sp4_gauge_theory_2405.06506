@@ -69,5 +69,5 @@ function write_table_1(h5file;tabledir="output/tables")
     close(io4)
     close(fid0)
 end
-write_table_1("output/fitresults.hdf5")
+write_table_1("output/hdf5/fitresults.hdf5")
 #h5open("output/fitresults.hdf5","r")

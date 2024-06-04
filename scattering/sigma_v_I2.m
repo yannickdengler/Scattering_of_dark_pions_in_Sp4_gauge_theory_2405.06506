@@ -69,7 +69,7 @@ StripWrapperBoxes->True]\)
 intfuncMJ[a_,re_,mass_,gamma_,theta_]:=vofgamma[gamma]*MJdistgamma[gamma,theta]*sigmav[a,re,vofgamma[gamma],mass]
 IntedfuncMJtheta[a_,re_,mass_,theta_]:=NIntegrate[intfuncMJ[a,re,mass,gamma,theta],{gamma,1,5},MinRecursion->12,MaxRecursion->16,AccuracyGoal->5]
 IntedfuncMJvmean[a_,re_,mass_,vmean_]:=IntedfuncMJtheta[a,re,mass,thetavmean[vmean]]
-Sp4data =  Import[PATHTOCODE<>"/output/Sp(4)_data.csv","CSV"];
+Sp4data =  Import[PATHTOCODE<>"/output/tables/Sp(4)_data.csv","CSV"];
 aSp4units=Sp4data[[All,3]]/massSp4units;(*MeV^-1*)
 reSp4units=Sp4data[[All,4]]/massSp4units;(*MeV^-1*)
 aofmpfpichiPT[mpifpi2_]:=mpifpi2/32

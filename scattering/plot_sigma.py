@@ -64,5 +64,5 @@ legend.get_frame().set_alpha(None)
 
 plt.tight_layout()
 plt.grid()
-plt.savefig("plots/sigma_v_MJ.pdf",bbox_inches = "tight")
+plt.savefig("output/plots/sigma_v_MJ.pdf",bbox_inches = "tight")
 plt.clf()
