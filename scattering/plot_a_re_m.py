@@ -39,7 +39,6 @@ def plot_a():
     plt.legend(loc="center right")
     plt.grid()
     plt.savefig("plots/a_vs_mass.pdf",bbox_inches = "tight")
-    plt.show()
     plt.clf()
 
 def plot_re():
@@ -61,7 +60,6 @@ def plot_re():
     plt.legend(loc="upper left")
     plt.grid()
     plt.savefig("plots/re_vs_mass.pdf",bbox_inches = "tight")
-    plt.show()
     plt.clf()
 
 plot_a()
