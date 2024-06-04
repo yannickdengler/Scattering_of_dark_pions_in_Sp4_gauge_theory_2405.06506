@@ -12,6 +12,7 @@ This repository contains the code used to prepare the plots and results included
 The code in this repository has only been tested on the specific dataset provided here. It is not intended to be easily generalizable to arbitrary datasets. The analysis parameters are hard-coded in the directory `input/`.
 
 ## Requirements
+- Mathematica 14
 - Python 3.8 (see `requirements.txt` for the required packages)
 - julia 1.9
 

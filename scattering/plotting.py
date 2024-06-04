@@ -77,7 +77,7 @@ def write_result_file(file):
     m_pi_inf_err = error_of_1Darray(m_pi_inf[0])
     a0_err = error_of_1Darray(a0)
     re0_err = error_of_1Darray(re0)
-    with open("output/m_pi_a_r.dat","a") as f:
+    with open("output/m_pi_a_r.csv","a") as f:
         f.write("%f;%f;%f;%f;%f;%f;%f;%f;%f;%f;%f\n"%(beta,m12,m_pi_inf_err[0],m_pi_inf_err[1],m_pi_inf_err[2],a0_err[0],a0_err[1],a0_err[2],re0_err[0],re0_err[1],re0_err[2]))
 
 def plot_curved_errorbars(ax,xarr,yarr,length=0.2,color="green",label="",ratio=1, offset = 2):    # avarage over offset
@@ -327,7 +327,7 @@ def plot_a_0_vs_m_f_pi(show=False, save = True):
             out[len(out)-1].append(mpi_err[0])
             out[len(out)-1].append(mpifpi_err[0])
             plt.errorbar(x=[mpifpi_err[0],],xerr=[[mpifpi_err[1],],[mpifpi_err[2],]],y=[a0mpi_err[0],],yerr=[[a0mpi_err[1],],[a0mpi_err[2],]], marker = marker_beta(beta_arr[i][j]), ls = "", capsize=5, markersize=10, color = color_beta(beta_arr[i][j]))
-    with open("output/Sp(4)_data.dat", "w") as f:
+    with open("output/Sp(4)_data.csv", "w") as f:
         for i in range(len(out)):
             f.write("%e\t%e\t%e\t%e\t%e\t%e\n"%(out[i][0],out[i][1],out[i][2],out[i][3],out[i][4],out[i][5]))
     plt.scatter((-10, -9), y = (0,0), marker = marker_beta(6.9), color = color_beta(6.9), label ="$\\beta=6.90$", s = 60)

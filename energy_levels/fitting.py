@@ -5,6 +5,7 @@ import numpy as np
 import os
 import matplotlib.pyplot as plt
 import csv
+from tqdm import tqdm
 
 def get_hdf5_value(hdf5file,key):
     return hdf5file[key][()]
@@ -120,7 +121,8 @@ def fit_all_files(infile,outfile,groups,tmins,tmaxs,binsize=1):
     fid = h5py.File(infile,'r')
     oid = h5py.File(outfile, 'w')
     
-    for i in range(0,len(groups)):
+    print("Fitting correlators.... ")
+    for i in tqdm(range(0,len(groups))):
 
         group = groups[i] 
         tmin = tmins[i]
@@ -141,8 +143,7 @@ def fit_all_files(infile,outfile,groups,tmins,tmaxs,binsize=1):
         plaquettes = get_hdf5_value(fid,group+'plaquette')
 
         plotname = "beta{}_m{}_L{}_T{}".format(beta,m,L,T)
-        print(plotname)
-
+        
         # start with pipi correlator
         corr_pipi = -corr_deriv[48,:,:]
         corr_pipi = dict(Gab=corr_pipi)

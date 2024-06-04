@@ -10,6 +10,7 @@ import h5py
 import numpy as np
 import generalizedzeta as gz
 from scipy.optimize import curve_fit
+from tqdm import tqdm
 
 
 def calculations(N_Ls, E_pis, E_pipis):
@@ -47,7 +48,7 @@ def calculations(N_Ls, E_pis, E_pipis):
     for i in range(num_E):
         s_pipi_prime.append(E_pipi_prime[i]**2)
         sigma_pipi_prime.append(sigma_prime(P_pipi_prime[i], P_cot_PS_pipi_prime[i]))
-    a0 = float(fit_phase_shift_0(P2_pipi_prime, P_cot_PS_pipi_prime))
+    a0 = float(fit_phase_shift_0(P2_pipi_prime, P_cot_PS_pipi_prime)[0])
     a2, b2 = fit_phase_shift(P2_pipi_prime, P_cot_PS_pipi_prime) 
     UTE_inter_P_cot_PS = get_interpolation_points_UTE(a2,b2)
     sigma_inter_sigma = get_interpolation_points_sigma(a2,b2)
@@ -207,8 +208,8 @@ def result_sampled(beta,m0,N_L,E_pi,E_pi_err,E_pipi,E_pipi_err, num_gaussian=200
     for key in res.keys():
         res_sample[key] = []
 
-    for i in range(num_gaussian):
-        print("%1.1f"%(i*100/num_gaussian)+"%")
+    for i in tqdm(range(num_gaussian)):
+        #print("%1.1f"%(i*100/num_gaussian)+"%")
         E_pi_tmp, E_pipi_tmp = [[],[]]
         for j in range(len(E_pi)):
             E_pi_tmp.append(np.random.normal(E_pi[j], E_pi_err[j]))
@@ -267,6 +268,7 @@ if __name__ == "__main__":
             E_pipis_t = E_pipis[beta_arr.index(beta)][m_arr[beta_arr.index(beta)].index(m0)]
             E_pipi_errs_t = E_pipi_errs[beta_arr.index(beta)][m_arr[beta_arr.index(beta)].index(m0)]
 
+            print("Scattering analysis: beta=",beta,", m0=",m0,", resampling .... ")
             res, res_sam = result_sampled(beta,m0,N_Ls,E_pis_t,E_pi_errs_t,E_pipis_t,E_pipi_errs_t)
             fn_tmp = "scattering_b%1.3f_m%1.3f"%(float(res["beta"]),float(res["m_1"]))
             save_to_hdf(res, res_sam, fn_tmp)

@@ -6,11 +6,11 @@ plt.rcParams["font.size"] = 14
 color_arr = ["blue", "green", "red", "purple", "orange", "olive", "skyblue", "lime", "black", "grey", "fuchsia", "peru", "firebrick","blue", "green", "red", "purple", "orange", "olive", "skyblue", "lime", "black", "grey", "fuchsia", "peru", "firebrick","blue", "green", "red", "purple", "orange", "olive", "skyblue", "lime", "black", "grey", "fuchsia", "peru", "firebrick",]
 
 
-a_data_linsig = np.transpose(np.genfromtxt("input/a_data_linsig_90.dat"))
-re_data_linsig = np.transpose(np.genfromtxt("input/re_data_linsig_90.dat"))
+a_data_linsig = np.transpose(np.genfromtxt("input/a_data_linsig_90.csv"))
+re_data_linsig = np.transpose(np.genfromtxt("input/re_data_linsig_90.csv"))
 
 hbarc_GeV = 0.1973
-Sp4_data = np.transpose(np.genfromtxt("output/Sp(4)_data.dat"))
+Sp4_data = np.transpose(np.genfromtxt("output/Sp(4)_data.csv"))
 Sp4_masses = Sp4_data[4]
 Sp4_a = []
 Sp4_re = []
@@ -39,7 +39,6 @@ def plot_a():
     plt.legend(loc="center right")
     plt.grid()
     plt.savefig("plots/a_vs_mass.pdf",bbox_inches = "tight")
-    plt.show()
     plt.clf()
 
 def plot_re():
@@ -61,7 +60,6 @@ def plot_re():
     plt.legend(loc="upper left")
     plt.grid()
     plt.savefig("plots/re_vs_mass.pdf",bbox_inches = "tight")
-    plt.show()
     plt.clf()
 
 plot_a()
