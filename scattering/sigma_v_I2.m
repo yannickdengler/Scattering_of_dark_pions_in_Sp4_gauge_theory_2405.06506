@@ -4,7 +4,7 @@
 lightspeed = 299792;
 MeVm3tocm2g=4.57821356*10^(-6);
 
-PATHTOCODE ="/home/XXX"
+PATHTOCODE ="/home/dengler_yannick/Documents/Code_I2"
 numsteps = 200;
 vmin =18090;
 vmax = lightspeed*0.99;
