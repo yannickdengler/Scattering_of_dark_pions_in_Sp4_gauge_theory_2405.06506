@@ -33,3 +33,11 @@ The code "HDF5.py" in "Parsing" extracts the necessary information from the logf
 - "N_T": The temporal extent of the lattice
 - "operators": A list of the operators extracted from the logfile. Each operator has an entry for the real and the imaginary part.
 - "correlators": A array that contains the correlation function of each measured operator. The array has four indices and has the size: ```num_Operators x num_soruces x num_Montecarlotimes x N_T```.
+
+## External Data
+
+The file "input/sigma_v_data_errors.csv" contains the data from FIG. 1 of [1]. It shows the velocity-weighted cross-section as a function of the mean velocity of dark matter in halos of dwarf-, low-surface brightness galaxies and galaxy clusters.
+
+## References
+
+[1] - Manoj Kaplinghat, Sean Tulin, and Hai-Bo Yu. Dark Matter Halos as Particle Colliders: Unified Solution to Small-Scale Structure Puzzles from Dwarfs to Clusters. Phys. Rev. Lett., 116(4):041302, 2016. doi:10.1103/PhysRevLett.116.041302.
