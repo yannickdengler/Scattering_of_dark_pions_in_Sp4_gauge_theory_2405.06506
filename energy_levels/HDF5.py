@@ -6,7 +6,7 @@
     This file contains scripts to create a HDF5 from an output file from the HiRep Scattering Code
     Execute with: "python3 HDF5.py PATH_TO_LISTFILE"
  """
-
+from tqdm import tqdm
 import numpy as np
 import h5py
 import os
@@ -43,10 +43,7 @@ def add_pi_rho_pipi_average_I2(Operators, Correlators, N_L):
 def create_scattering(filename,hdfpath="./output/"):
     """
     Function that converts a logfile from a scattering measurement of HiRep to a HDF file with the relevant information
-    """
-    print("[create_scattering]logfile name: ", os.path.abspath(filename))
-    print("[create_scattering]hdf5 file directory: ", os.path.abspath(hdfpath))
-
+    """    
     logfile_name = filename
     for i in range(len(filename)-1):
         if filename[i] == "/":
@@ -106,7 +103,7 @@ def create_scattering(filename,hdfpath="./output/"):
                             m2_index = i
                         if words[2][i:i+8] == "/configs":
                             end_index = i
-                    print(words[2][Lt_index+2:Ls_index], words[2][Ls_index+2:beta_index], words[2][beta_index+4:m1_index], words[2][m1_index+2:m2_index], words[2][m2_index+2:end_index])
+                    
                     N_T = int(words[2][Lt_index+2:Ls_index])
                     N_L = int(words[2][Ls_index+2:beta_index])
                     beta = float(words[2][beta_index+4:m1_index])
@@ -134,12 +131,6 @@ def create_scattering(filename,hdfpath="./output/"):
             Operators_w_im.append(Operator)
             Operators_w_im.append(Operator+"_im")
         
-        print("Number of Motecarlo steps: ", len(Montecarlotimes))
-        print("Number of sources: ", num_src)
-        print("Isospin channel: ", isospin_channel)
-
-        print("Writing Correlators...")
-
         Correlators = np.zeros((len(Operators_w_im), num_src, len(Montecarlotimes),N_T))
         for lines in data:
             words = lines.split()
@@ -163,8 +154,6 @@ def create_scattering(filename,hdfpath="./output/"):
             isospin_str = "_I2"
             (Operators_w_im, Correlators) = add_pi_rho_pipi_average_I2(Operators_w_im, Correlators, N_L)
 
-        print(len(Operators_w_im), " operators (w/ imag): ", Operators_w_im)
-        print("Size of Correlator array [num_Operators][num_soruces][num_Montecarlotimes][N_T]:[%i][%i][%i][%i]"%(len(Correlators),len(Correlators[0]),len(Correlators[0][0]),len(Correlators[0][0][0])) )
         num_Montecarlotimes = len(Correlators[0][0])
         num_src = len(Correlators[0])
 
@@ -189,11 +178,11 @@ def create_scattering(filename,hdfpath="./output/"):
         f.create_dataset(groupname+"N_L", data = N_L)
         f.create_dataset(groupname+"N_T", data = N_T)
         f.create_dataset(groupname+"correlators", data = Correlators)
-        print()
-
+        
 
 fi = open(sys.argv[1])
 filelist = fi.read().splitlines()
 
-for files in filelist:
+print("Reading logfiles.... ")
+for files in tqdm(filelist):
     create_scattering(files)

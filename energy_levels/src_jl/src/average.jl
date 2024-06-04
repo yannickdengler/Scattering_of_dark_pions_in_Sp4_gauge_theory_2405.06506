@@ -89,8 +89,7 @@ function write_averaged_hdf5_files(hdfile; src_averaged_name = "output/correlato
     groups    = keys(file_id0)
 
     println("Average over stochastic sources and write correlators...")
-    for group in groups
-        @show group
+    @showprogress for group in groups
         file_id  = file_id0[group]
         file_src = create_group(file_src0, group)
 

@@ -5,10 +5,7 @@ function parse_spectrum(file,type;)
     dictarray = Dict{String,Vector{Float64}}[]
     conf0 = 0
     src0  = 0
-    # keep track of position in file for progress meter
-    p = Progress(countlines(file); dt=1, desc="Match $type: Progress:")
     for line in eachline(file)
-        next!(p)
         if occursin(type,line)
             # get configuration number
             pos_num = findfirst('#',line)
