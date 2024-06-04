@@ -1,4 +1,4 @@
-using Pkg; Pkg.activate("./energy_levels/src_jl")
+using Pkg; Pkg.activate("./energy_levels/src_jl",io=devnull)
 using I2julia
 using HDF5 
 
