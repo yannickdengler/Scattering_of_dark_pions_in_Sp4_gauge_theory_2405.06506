@@ -93,6 +93,7 @@ def plot_curved_errorbars(ax,xarr,yarr,length=0.2,color="green",label="",ratio=1
     '''
     Ratio consists of scale of the axis times the ratio of the figsize. ratio = dx/dy*ax.bbox.height/ax.bbox.width (for axis)
     '''
+    np.seterr(divide='ignore',invalid='ignore')
     def end_cap(x):
         return -x*(xarr[-1]-xarr[-offset])/(yarr[-1]-yarr[-offset])
     def begin_cap(x):
@@ -153,6 +154,7 @@ def plot_m_inf_with_luscher(file, show = True, save = True):
 
     xarr = np.linspace(0,0.4,200)
     yarr, yarr_m, yarr_p = [[],[],[]]
+    np.seterr(divide='ignore')
     for x in xarr:
         yarr.append(result.inf_mass_fit_Goldstone(1./(x),m_pi_inf[0][0],A_R[0][0])/m_pi_inf[0][0])
         yarr_m.append(result.inf_mass_fit_Goldstone(1./(x),m_pi_inf[3][0],A_R[0][0])/m_pi_inf[0][0])

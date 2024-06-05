@@ -23,3 +23,4 @@ echo Create Plots
 python3 scattering/plotting.py
 math -script scattering/sigma_v_I2.m
 python3 scattering/plot_sigma.py
+echo Done!
