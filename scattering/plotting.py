@@ -10,6 +10,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import scattering as result
 import math
+import os
 import matplotlib
 from scipy.optimize import bisect
 
@@ -391,6 +392,9 @@ def write_fpi_file():
 if __name__ == "__main__":
     beta_arr = [6.9,6.9,6.9,6.9,7.05,7.05,7.2,7.2]
     m_arr = [-0.87,-0.9,-0.91,-0.92,-0.835,-0.85,-0.78,-0.794] 
+
+    # create directory for plots if it doesn#t exit already
+    os.makedirs("output/plots", exist_ok=True)
 
     write_fpi_file()
     plot_a_0_vs_m_f_pi(show=False,save=True)

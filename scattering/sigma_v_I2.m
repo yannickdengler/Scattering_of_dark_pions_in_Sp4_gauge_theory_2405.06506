@@ -4,7 +4,7 @@
 lightspeed = 299792;
 MeVm3tocm2g=4.57821356*10^(-6);
 
-PATHTOCODE ="/home/XXX"
+PATHTOCODE =Directory[]
 numsteps = 200;
 vmin =18090;
 vmax = lightspeed*0.99;
