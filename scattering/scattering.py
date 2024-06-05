@@ -7,9 +7,11 @@
  """
 
 import h5py
+import warnings
 import numpy as np
 import generalizedzeta as gz
 from scipy.optimize import curve_fit
+from scipy.optimize import OptimizeWarning
 from tqdm import tqdm
 
 
@@ -92,7 +94,11 @@ def P_of_E_pipi_lat(E_pipi, mass_meson):
     """
     Lattice dispersion relation. Only used for consistency checks
     """
-    return 2*np.arcsin(np.sqrt(0.5*(np.cosh(E_pipi/2)-np.cosh(mass_meson))))
+    arg = 0.5*(np.cosh(E_pipi/2)-np.cosh(mass_meson))
+    if arg > 0:
+        return 2*np.arcsin(np.sqrt(arg))
+    else:
+        return np.NaN
 
 def P_of_E_pipi_prime(E_pipi_prime):
     """
@@ -141,6 +147,7 @@ def fit_phase_shift(P2s, P_cot_PSs):
             P_cot_PSs_tmp.append(P_cot_PSs[i])
     if len(P2_tmp) < 2:
         return [1e-40,1e-40]
+    warnings.simplefilter("ignore", OptimizeWarning)
     popt, pcov = curve_fit(UTE, P2_tmp, P_cot_PSs_tmp)
     return popt
 
