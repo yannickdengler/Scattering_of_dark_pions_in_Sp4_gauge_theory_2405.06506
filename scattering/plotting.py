@@ -18,7 +18,14 @@ import h5py
 from mpl_toolkits.axes_grid1.inset_locator import inset_axes
 from mpl_toolkits.axes_grid1.inset_locator import mark_inset
 
-nth = 100                                           # the how manyth point should be taken for plotting the lines?
+# nth = 50                                           # the how manyth point should be taken for plotting the lines?
+def nth(num):
+    if num <= 10:
+        return 1
+    elif num <= 500:
+        return num//10
+    else:
+        return num//100
 num_perc = math.erf(1/np.sqrt(2))
 font = {'size'   : 16}
 matplotlib.rc('font', **font)
@@ -61,24 +68,6 @@ def E_of_k(k):
 
 def k_of_Linv(L_inv, q2):
     return 2*np.pi*L_inv*np.sqrt(q2)
-
-def write_result_file(file):
-    res,  res_sample = result.read_from_hdf(file)
-    beta = res["beta"]
-    m12 = res["m_1"]
-    m_pi_inf = np.transpose(res_sample["m_pi_inf"])
-    a2 = np.transpose(res_sample["a2"])
-    b2 = np.transpose(res_sample["b2"])
-    a0 = []
-    re0 = []
-    for i in range(len(a2[0])):
-        a0.append(-1/a2[0][i])
-        re0.append(2*b2[0][i])
-    m_pi_inf_err = error_of_1Darray(m_pi_inf[0])
-    a0_err = error_of_1Darray(a0)
-    re0_err = error_of_1Darray(re0)
-    with open("output/m_pi_a_r.csv","a") as f:
-        f.write("%f;%f;%f;%f;%f;%f;%f;%f;%f;%f;%f\n"%(beta,m12,m_pi_inf_err[0],m_pi_inf_err[1],m_pi_inf_err[2],a0_err[0],a0_err[1],a0_err[2],re0_err[0],re0_err[1],re0_err[2]))
 
 def plot_curved_errorbars(ax,xarr,yarr,length=0.2,color="green",label="",ratio=1, offset = 2):    # avarage over offset
     '''
@@ -256,7 +245,7 @@ def plot_ERT_plus_sigma(file, show=False, save = True, rek_lim = True, vesc_lim 
     for i in range(len(s_prime)):
         length = len(s_prime[i])
         sorted_indices = np.argsort(s_prime[i])  
-        av = np.arange(math.floor(length*(1-num_perc)/2),math.ceil(length*(1+num_perc)/2),nth)
+        av = np.arange(math.floor(length*(1-num_perc)/2),math.ceil(length*(1+num_perc)/2),nth(length))
         s_arr2 = [np.mean(s_prime[i][sorted_indices][av[x]:av[x+1]]) for x in range(len(av)-1)]
         P_cot_arr = [np.mean(P_cot_PS_pipi_prime[i][sorted_indices][av[x]:av[x+1]]) for x in range(len(av)-1)]
         if i == 0:
@@ -288,7 +277,7 @@ def plot_a_0_vs_m_f_pi(show=False, save = True):
     plt.figure(figsize=(8,4.8))
     def chipt(x):
         return x/32
-    fpi_full = np.genfromtxt("output/fpi_data")
+    fpi_full = np.genfromtxt("output/fpi_data.csv",delimiter=",")
     xarr = np.linspace(0,10)
     yarr = [chipt(x**2) for x in xarr]
     plt.plot(xarr, yarr, ls = "dashed", color = "green", label = "LO EFT")
@@ -329,7 +318,7 @@ def plot_a_0_vs_m_f_pi(show=False, save = True):
             plt.errorbar(x=[mpifpi_err[0],],xerr=[[mpifpi_err[1],],[mpifpi_err[2],]],y=[a0mpi_err[0],],yerr=[[a0mpi_err[1],],[a0mpi_err[2],]], marker = marker_beta(beta_arr[i][j]), ls = "", capsize=5, markersize=10, color = color_beta(beta_arr[i][j]))
     with open("output/Sp(4)_data.csv", "w") as f:
         for i in range(len(out)):
-            f.write("%e\t%e\t%e\t%e\t%e\t%e\n"%(out[i][0],out[i][1],out[i][2],out[i][3],out[i][4],out[i][5]))
+            f.write("%e,%e,%e,%e,%e,%e\n"%(out[i][0],out[i][1],out[i][2],out[i][3],out[i][4],out[i][5]))
     plt.scatter((-10, -9), y = (0,0), marker = marker_beta(6.9), color = color_beta(6.9), label ="$\\beta=6.90$", s = 60)
     plt.scatter((-10, -9), y = (0,0), marker = marker_beta(7.05), color = color_beta(7.05), label ="$\\beta=7.05$", s = 60)
     plt.scatter((-10, -9), y = (0,0), marker = marker_beta(7.2), color = color_beta(7.2), label ="$\\beta=7.20$", s = 60)    
@@ -376,9 +365,9 @@ def write_fpi_file():
                         N_L[string] = file[key_tmp]["pi"]["N_L"][()]
                         fpi[string] = float(file[key_tmp]["pi"]["fpi_ren"][()])
                         fpi_err[string] = float(file[key_tmp]["pi"]["Delta_fpi_ren"][()])
-    with open("output/fpi_data", "w") as ofile:
+    with open("output/fpi_data.csv", "w") as ofile:
         for key in fpi.keys():
-            ofile.write("%f\t%f\t%f\t%f\n"%(betas[key], m0s[key], fpi[key], fpi_err[key]))
+            ofile.write("%f,%f,%f,%f\n"%(betas[key], m0s[key], fpi[key], fpi_err[key]))
 
 
 if __name__ == "__main__":
@@ -388,6 +377,5 @@ if __name__ == "__main__":
     write_fpi_file()
     plot_a_0_vs_m_f_pi(show=False,save=True)
     for i in range(len(beta_arr)):
-        write_result_file("scattering_b%1.3f_m%1.3f"%(beta_arr[i],m_arr[i]))
         plot_m_inf_with_luscher("scattering_b%1.3f_m%1.3f"%(beta_arr[i],m_arr[i]), show=False,save=True)
         plot_ERT_plus_sigma("scattering_b%1.3f_m%1.3f"%(beta_arr[i],m_arr[i]), show=False,save=True)

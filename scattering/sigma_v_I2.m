@@ -5,7 +5,7 @@ lightspeed = 299792;
 MeVm3tocm2g=4.57821356*10^(-6);
 
 (**PATHTOCODE ="/home/XXX"**)
-PATHTOCODE =Directory[]
+PATHTOCODE ="/home/dengler_yannick/Documents/Code_I2"
 numsteps = 200;
 vmin =18090;
 vmax = lightspeed*0.99;
@@ -70,7 +70,7 @@ StripWrapperBoxes->True]\)
 intfuncMJ[a_,re_,mass_,gamma_,theta_]:=vofgamma[gamma]*MJdistgamma[gamma,theta]*sigmav[a,re,vofgamma[gamma],mass]
 IntedfuncMJtheta[a_,re_,mass_,theta_]:=NIntegrate[intfuncMJ[a,re,mass,gamma,theta],{gamma,1,5},MinRecursion->12,MaxRecursion->16,AccuracyGoal->5]
 IntedfuncMJvmean[a_,re_,mass_,vmean_]:=IntedfuncMJtheta[a,re,mass,thetavmean[vmean]]
-Sp4data =  Import[PATHTOCODE<>"/output/Sp(4)_data.csv","Table"];
+Sp4data =  Import[PATHTOCODE<>"/output/Sp(4)_data.csv","CSV"];
 aSp4units=Sp4data[[All,3]]/massSp4units;(*MeV^-1*)
 reSp4units=Sp4data[[All,4]]/massSp4units;(*MeV^-1*)
 aofmpfpichiPT[mpifpi2_]:=mpifpi2/32
@@ -86,6 +86,5 @@ AppendTo[Exporttable,Table[IntedfuncMJvmean[achilow,0,massSp4units,vfunc[vmin,vm
 AppendTo[Exporttable,Table[IntedfuncMJvmean[achihigh,0,massSp4units,vfunc[vmin,vmax,numsteps,i]/lightspeed]*lightspeed/MeVm3tocm2g/massSp4units,{i,1,numsteps}]];
 For[i=1,i<Length[aSp4units]+1,i++,(a=Table[IntedfuncMJvmean[aSp4units[[i]],reSp4units[[i]],massSp4units,vfunc[vmin,vmax,numsteps,j]/lightspeed]*lightspeed/MeVm3tocm2g/massSp4units,{j,1,numsteps}];
 AppendTo[Exporttable,a])];
-Export[PATHTOCODE<>"/output/sigma_v_data.csv",Transpose[Exporttable]];
+Export[PATHTOCODE<>"/output/sigma_v_data.csv",Transpose[Exporttable]];\[AliasDelimiter]
 Quit[]
-
