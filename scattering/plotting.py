@@ -284,7 +284,7 @@ def plot_ERT_plus_sigma(file, show=False, save = True, rek_lim = True, vesc_lim 
     ax1.grid()
     ax1.set_ylabel("$P \\cot\delta_0/m_\pi^\infty$")
     ax2.grid()
-    ax2.set_xlabel("$s/m_\pi^{\infty\,2}}$")
+    ax2.set_xlabel("$s/m_\pi^{\infty\,2}$")
     ax2.set_ylabel("$\sigma m_\pi^{\infty\,2}$")
     if save:
         plt.savefig("output/plots/comb_s_b%1.3f_m%1.3f.pdf"%(res["beta"],res["m_1"]), bbox_inches="tight")
