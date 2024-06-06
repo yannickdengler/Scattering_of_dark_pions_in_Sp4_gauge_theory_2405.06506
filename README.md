@@ -50,6 +50,10 @@ The code "HDF5.py" in "Parsing" extracts the necessary information from the logf
 - "operators": A list of the operators extracted from the logfile. Each operator has an entry for the real and the imaginary part.
 - "correlators": A array that contains the correlation function of each measured operator. The array has four indices and has the size: ```num_Operators x num_soruces x num_Montecarlotimes x N_T```.
 
+## Acknowledgments
+
+YD and FZ have been supported the Austrian Science Fund research teams grant STRONG-DM (FG1). FZ has been supported by the STFC Grant No. ST/X000648/1. The computations have been performed on the Vienna Scientific Cluster (VSC4)
+
 ## External Data
 
 The file "input/sigma_v_data_errors.csv" contains the data from FIG. 1 of [1]. It shows the velocity-weighted cross-section as a function of the mean velocity of dark matter in halos of dwarf-, low-surface brightness galaxies and galaxy clusters.
