@@ -85,5 +85,5 @@ AppendTo[Exporttable,Table[IntedfuncMJvmean[achilow,0,massSp4units,vfunc[vmin,vm
 AppendTo[Exporttable,Table[IntedfuncMJvmean[achihigh,0,massSp4units,vfunc[vmin,vmax,numsteps,i]/lightspeed]*lightspeed/MeVm3tocm2g/massSp4units,{i,1,numsteps}]];
 For[i=1,i<Length[aSp4units]+1,i++,(a=Table[IntedfuncMJvmean[aSp4units[[i]],reSp4units[[i]],massSp4units,vfunc[vmin,vmax,numsteps,j]/lightspeed]*lightspeed/MeVm3tocm2g/massSp4units,{j,1,numsteps}];
 AppendTo[Exporttable,a])];
-Export[PATHTOCODE<>"/output/sigma_v_data.csv",Transpose[Exporttable]];\[AliasDelimiter]
+Export[PATHTOCODE<>"/output/tables/sigma_v_data.csv",Transpose[Exporttable]];\[AliasDelimiter]
 Quit[]
