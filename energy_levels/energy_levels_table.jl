@@ -13,9 +13,9 @@ function write_table_1(h5file;tabledir="output/tables")
     fid0  = h5open(h5file,"r")
     ensembles = keys(fid0)
 
-    io2 = open("$tabledir/results.csv", "w");
-    io1 = open("$tabledir/results_readable.csv", "w");
-    io4 = open("$tabledir/energy_levels_tex.csv", "w");
+    io2 = open("$tabledir/energy_levels.csv", "w");
+    io1 = open("$tabledir/energy_levels_readable.csv", "w");
+    io4 = open("$tabledir/energy_levels.tex", "w");
     #io = Base.stdout
 
     println(io1,"group, beta, mass, L, T, N_conf, m_pi/m_rho, E_pipi, fpi, plaq, E_rho")
@@ -69,5 +69,5 @@ function write_table_1(h5file;tabledir="output/tables")
     close(io4)
     close(fid0)
 end
-write_table_1("output/fitresults.hdf5")
+write_table_1("output/hdf5/fitresults.hdf5")
 #h5open("output/fitresults.hdf5","r")

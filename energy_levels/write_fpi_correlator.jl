@@ -31,5 +31,5 @@ function write_g0g5_correlator_to_hdf5(hdf5correlators,logfile_list)
 end
 
 logfile_list = "output/isospin_logfiles_list"
-hdf5correlators = "output/correlators.hdf5"
+hdf5correlators = "output/hdf5/correlators.hdf5"
 write_g0g5_correlator_to_hdf5(hdf5correlators,logfile_list)

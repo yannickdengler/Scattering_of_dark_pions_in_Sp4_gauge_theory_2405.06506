@@ -50,7 +50,7 @@ def print_fit_param(fit):
     print('{:2}  {:15}  {:15}'.format('a', a[0], a[1]))
     print('chi2/dof = ', chi2/dof, '\n')
 
-def main(data,T,tmin,tmax,Nmax,plotname="test",plotdir="./plots/",antisymmetric=False,plotting=False,printing=False):
+def main(data,T,tmin,tmax,Nmax,plotname="test",plotdir="./output/plots/",antisymmetric=False,plotting=False,printing=False):
     T = - abs(T) if antisymmetric else abs(T) 
     fitter = cf.CorrFitter(models=make_models(T,tmin,tmax))
     avg = gv.dataset.avg_data(data)
@@ -150,7 +150,7 @@ def fit_all_files(infile,outfile,groups,tmins,tmaxs,binsize=1):
         dset = gv.dataset.Dataset(corr_pipi,binsize=binsize)
 
         antisymmetric = True
-        plotdir = "./plots/"
+        plotdir = "./output/plots/"
         Nmax = 10
 
         E, a, E_bs, a_bs, chi2, dof = main(dset,T,tmin,tmax,Nmax,plotname,plotdir,antisymmetric)
@@ -165,7 +165,7 @@ def fit_all_files(infile,outfile,groups,tmins,tmaxs,binsize=1):
         dset_rho = gv.dataset.Dataset(corr_rho,binsize=binsize)
 
         antisymmetric = False
-        plotdir = "./plots/"
+        plotdir = "./output/plots/"
         Nmax = 10
         tmin = 1
         tmax = T/2
@@ -209,6 +209,6 @@ def read_filelist_fitparam(parameterfile):
 parameterfile  = './input/pipi_fitintervals.csv'
 groups, tmins, tmaxs = read_filelist_fitparam(parameterfile)
 
-infile  = './output/correlators.hdf5'
-outfile = './output/fitresults.hdf5'
+infile  = './output/hdf5/correlators.hdf5'
+outfile = './output/hdf5/fitresults.hdf5'
 fit_all_files(infile,outfile,groups,tmins,tmaxs)

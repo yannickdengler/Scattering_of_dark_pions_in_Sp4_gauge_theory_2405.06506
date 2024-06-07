@@ -82,7 +82,7 @@ The source-averaged file contains the following data:
     - `correlator_deriv`: numerical derivative of the data after averaging
 
 """
-function write_averaged_hdf5_files(hdfile; src_averaged_name = "output/correlators.hdf5")
+function write_averaged_hdf5_files(hdfile; src_averaged_name = "output/hdf5/correlators.hdf5")
     
     file_src0 = h5open(joinpath(src_averaged_name),"w")
     file_id0  = h5open(hdfile,"r")

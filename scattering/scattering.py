@@ -7,9 +7,11 @@
  """
 
 import h5py
+import warnings
 import numpy as np
 import generalizedzeta as gz
 from scipy.optimize import curve_fit
+from scipy.optimize import OptimizeWarning
 from tqdm import tqdm
 
 
@@ -92,7 +94,11 @@ def P_of_E_pipi_lat(E_pipi, mass_meson):
     """
     Lattice dispersion relation. Only used for consistency checks
     """
-    return 2*np.arcsin(np.sqrt(0.5*(np.cosh(E_pipi/2)-np.cosh(mass_meson))))
+    arg = 0.5*(np.cosh(E_pipi/2)-np.cosh(mass_meson))
+    if arg > 0:
+        return 2*np.arcsin(np.sqrt(arg))
+    else:
+        return np.NaN
 
 def P_of_E_pipi_prime(E_pipi_prime):
     """
@@ -141,6 +147,7 @@ def fit_phase_shift(P2s, P_cot_PSs):
             P_cot_PSs_tmp.append(P_cot_PSs[i])
     if len(P2_tmp) < 2:
         return [1e-40,1e-40]
+    warnings.simplefilter("ignore", OptimizeWarning)
     popt, pcov = curve_fit(UTE, P2_tmp, P_cot_PSs_tmp)
     return popt
 
@@ -186,7 +193,7 @@ def get_filelist_list(filename, num_lines = 12):
     return filelist_list
 
 def save_to_hdf(res,res_sample, filename):
-    with h5py.File("output/"+filename+".hdf5","w") as hfile:
+    with h5py.File("output/hdf5/"+filename+".hdf5","w") as hfile:
         for key, val in res.items():
             hfile.create_dataset("orig_"+key, data = val)
         for key, val in res_sample.items():
@@ -194,7 +201,7 @@ def save_to_hdf(res,res_sample, filename):
         
 def read_from_hdf(filename):
     res, res_tmp = [{},{}]
-    with h5py.File("output/"+filename+".hdf5","r") as hfile:
+    with h5py.File("output/hdf5/"+filename+".hdf5","r") as hfile:
         for key in hfile.keys():
             if key[:4] == "orig":
                 res[key[5:]] = hfile[key][()]
@@ -231,7 +238,7 @@ if __name__ == "__main__":
     E_pipi_errs = []
 
 
-    with h5py.File("output/fitresults.hdf5") as file:
+    with h5py.File("output/hdf5/fitresults.hdf5") as file:
         for key in file.keys():
             beta = float(file[key+"/pi/beta"][()])
             m_1 = float(file[key+"/pi/m_1"][()])

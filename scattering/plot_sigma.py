@@ -10,7 +10,7 @@ color_arr = ["blue", "green", "red", "purple", "orange", "olive", "skyblue", "li
 mass_Sp4 = 100                                               # For rescaling of our DM mass
 mass_chiPT = 100                                               # For rescaling of our DM mass
 
-sigma_v_data = np.transpose(np.genfromtxt("output/sigma_v_data.csv",delimiter=","))
+sigma_v_data = np.transpose(np.genfromtxt("output/tables/sigma_v_data.csv",delimiter=","))
 DM_halo_data_error = np.transpose(np.genfromtxt("input/sigma_v_data_errors.csv",delimiter=","))
 
 varr = sigma_v_data[0]
@@ -64,5 +64,5 @@ legend.get_frame().set_alpha(None)
 
 plt.tight_layout()
 plt.grid()
-plt.savefig("plots/sigma_v_MJ.pdf",bbox_inches = "tight")
+plt.savefig("output/plots/sigma_v_MJ.pdf",bbox_inches = "tight")
 plt.clf()

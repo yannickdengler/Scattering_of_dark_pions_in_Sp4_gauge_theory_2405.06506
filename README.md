@@ -16,6 +16,22 @@ The code in this repository has only been tested on the specific dataset provide
 - Python 3.8 (see `requirements.txt` for the required packages)
 - julia 1.9
 
+
+### Installing python requirements using Conda
+
+All python requirements may be installed from Conda by running
+
+    conda env create -f environment.yml
+
+On macOS on Apple silicon processors, it may be necessary to have Rosetta enabled, and to specify to use x86-64 packages, by running
+
+    conda env create --platform osx-64 -f environment.yml
+
+Before running the analysis,
+the environment should be activated using
+
+    conda activate Code_I2
+
 ## Logfile Parsing
 
 The code "HDF5.py" in "Parsing" extracts the necessary information from the logfile obtained with the HiRep code and parses it to a HDF5 file. The code extracts the following information and saves it as:
@@ -33,6 +49,10 @@ The code "HDF5.py" in "Parsing" extracts the necessary information from the logf
 - "N_T": The temporal extent of the lattice
 - "operators": A list of the operators extracted from the logfile. Each operator has an entry for the real and the imaginary part.
 - "correlators": A array that contains the correlation function of each measured operator. The array has four indices and has the size: ```num_Operators x num_soruces x num_Montecarlotimes x N_T```.
+
+## Acknowledgments
+
+YD and FZ have been supported the Austrian Science Fund research teams grant STRONG-DM (FG1). FZ has been supported by the STFC Grant No. ST/X000648/1. The computations have been performed on the Vienna Scientific Cluster (VSC4)
 
 ## External Data
 
