@@ -3,24 +3,15 @@
 (* ::Input::Initialization:: *)
 lightspeed = 299792;
 MeVm3tocm2g=4.57821356*10^(-6);
-
-PATHTOCODE =Directory[]
-numsteps = 200;
-vmin =18090;
-vmax = lightspeed*0.99;
 massSp4units=100;(*MeV*)
-MJdistgamma[gamma_, theta_]:= (E^(-(gamma/theta)) gamma^2*Sqrt[1-1/gamma^2])/(theta BesselK[2,1/theta])
-vmeanthetaexact[theta_]:=2 (theta (1+theta)(E^(-1/theta)) )/BesselK[2,1/theta]
-vmeanthetaexp[theta_]:=Sqrt[theta]*Sqrt[8/Pi]-Sqrt[theta]^3*7/Sqrt[8*Pi]+Sqrt[theta]^5*105/(32*Sqrt[2*Pi])-Sqrt[theta]^7*525/(256*Sqrt[2*Pi])-Sqrt[theta]^9*9765/(8192*Sqrt[2*Pi])
-vmeantheta[theta_]:=If[theta<0.00241148,vmeanthetaexp[theta],vmeanthetaexact[theta]]
-thetavmean[vmean_]:=If[vmean<6*10^(-6),0,theta/.FindRoot[vmeantheta[theta]-vmean, {theta,0.1}]]
-MJdistv[v_,vmean_]:=MJdistgamma[gammaofv[v],thetavmean[vmean]]
-
-gammaofv[v_]:=1/Sqrt[1-v^2]
-vofgamma[gamma_]:=Sqrt[1-1/gamma^2]
-Pofv[v_,mass_]:=Piecewise[{{v*mass*gammaofv[v],0<v<1}},Indeterminate]
-vofP[P_,mass_]:=P/Sqrt[mass^2+P^2]
-sigmav[a_,re_,v_,mass_]:=\!\(\*
+massLSunits=16700;(*MeV*)
+MeVfm=197.3;
+(**PATHTOCODE="xxx"**)
+vfunc[vmin_,vmax_,steps_,i_]:= vmin*(vmax/vmin)^((i-1)/(steps-1))//N;
+numsteps = 200;
+vmin =25;
+vmax =2800;
+sigmav[a_,re_,\[CapitalDelta]v_,mass_]:=\!\(\*
 TagBox[GridBox[{
 {"\[Piecewise]", GridBox[{
 {
@@ -32,19 +23,22 @@ SuperscriptBox[
 RowBox[{"Abs", "[", 
 RowBox[{"1", "-", 
 FractionBox[
-RowBox[{"a", " ", 
-SuperscriptBox["mass", "2"], " ", "re", " ", 
-SuperscriptBox["v", "2"]}], 
-RowBox[{"2", " ", 
+RowBox[{"a", " ", "re", " ", 
+SuperscriptBox["mass", "2"], " ", 
+SuperscriptBox["\[CapitalDelta]v", "2"]}], 
+RowBox[{"8", 
 RowBox[{"(", 
 RowBox[{"1", "-", 
-SuperscriptBox["v", "2"]}], ")"}]}]], "+", 
+RowBox[{
+RowBox[{"\[CapitalDelta]v", "^", "2"}], "/", "4"}]}], ")"}]}]], "+", 
 FractionBox[
-RowBox[{"I", " ", "a", " ", "mass", " ", "v"}], 
+RowBox[{"I", " ", "a", " ", "mass", " ", "\[CapitalDelta]v"}], 
+RowBox[{"2", 
 SqrtBox[
 RowBox[{"1", "-", 
-SuperscriptBox["v", "2"]}]]]}], "]"}], "2"]], "]"}], 
-RowBox[{"0", "<", "v", "<", "1"}]},
+RowBox[{
+RowBox[{"\[CapitalDelta]v", "^", "2"}], "/", "4"}]}]]}]]}], "]"}], "2"]], "]"}], 
+RowBox[{"0", "<", "\[CapitalDelta]v", "<", "1"}]},
 {"0", 
 TagBox["True",
 "PiecewiseDefault",
@@ -66,24 +60,23 @@ Editable->False,
 SelectWithContents->True,
 Selectable->False,
 StripWrapperBoxes->True]\)
-intfuncMJ[a_,re_,mass_,gamma_,theta_]:=vofgamma[gamma]*MJdistgamma[gamma,theta]*sigmav[a,re,vofgamma[gamma],mass]
-IntedfuncMJtheta[a_,re_,mass_,theta_]:=NIntegrate[intfuncMJ[a,re,mass,gamma,theta],{gamma,1,5},MinRecursion->12,MaxRecursion->16,AccuracyGoal->5]
-IntedfuncMJvmean[a_,re_,mass_,vmean_]:=IntedfuncMJtheta[a,re,mass,thetavmean[vmean]]
+MBdistvmean[\[CapitalDelta]v_,vmean_]:=(32(\[CapitalDelta]v^2) (E^(-((4 \[CapitalDelta]v^2)/(\[Pi] vmean^2)))) )/(\[Pi]^2 vmean^3)
+intfuncMB[a_,re_,mass_,\[CapitalDelta]v_,vmean_]:=\[CapitalDelta]v*MBdistvmean[\[CapitalDelta]v,vmean]*sigmav[a,re,\[CapitalDelta]v,mass]
+IntedfuncMBvmean[a_,re_,mass_,vmean_]:=NIntegrate[intfuncMB[a,re,mass,\[CapitalDelta]v,vmean],{\[CapitalDelta]v,0,1},MinRecursion->18,MaxRecursion->24,AccuracyGoal->9]
 Sp4data =  Import[PATHTOCODE<>"/output/tables/Sp(4)_data.csv","CSV"];
 aSp4units=Sp4data[[All,3]]/massSp4units;(*MeV^-1*)
 reSp4units=Sp4data[[All,4]]/massSp4units;(*MeV^-1*)
 aofmpfpichiPT[mpifpi2_]:=mpifpi2/32
-(**achilow = aofmpfpichiPT[Min[Sp4data[[All,6]]]^2]/massSp4units
-achihigh = aofmpfpichiPT[Max[Sp4data[[All,6]]]^2]/massSp4units**)
-achilow = aofmpfpichiPT[4.6^2]/massSp4units
-achihigh = aofmpfpichiPT[6.0^2]/massSp4units
-vfunc[vmin_,vmax_,steps_,i_]:= vmin*(vmax/vmin)^((i-1)/(steps-1))//N;
+achilow = aofmpfpichiPT[4.6^2]/massSp4units;
+achihigh = aofmpfpichiPT[6.0^2]/massSp4units;
+aLS=22.2/MeVfm;(*MeV^-1*)
+reLS=-2.59*10^(-3)/MeVfm;(*MeV^-1*)(*MeV^-1*)
 Clear[Exporttable]
 Exporttable = List[];
 AppendTo[Exporttable,Table[vfunc[vmin,vmax,numsteps,i],{i,1,numsteps}]];
-AppendTo[Exporttable,Table[IntedfuncMJvmean[achilow,0,massSp4units,vfunc[vmin,vmax,numsteps,i]/lightspeed]*lightspeed/MeVm3tocm2g/massSp4units,{i,1,numsteps}]];
-AppendTo[Exporttable,Table[IntedfuncMJvmean[achihigh,0,massSp4units,vfunc[vmin,vmax,numsteps,i]/lightspeed]*lightspeed/MeVm3tocm2g/massSp4units,{i,1,numsteps}]];
-For[i=1,i<Length[aSp4units]+1,i++,(a=Table[IntedfuncMJvmean[aSp4units[[i]],reSp4units[[i]],massSp4units,vfunc[vmin,vmax,numsteps,j]/lightspeed]*lightspeed/MeVm3tocm2g/massSp4units,{j,1,numsteps}];
+AppendTo[Exporttable,Table[IntedfuncMBvmean[achilow,0,massSp4units,vfunc[vmin,vmax,numsteps,i]/lightspeed]*lightspeed/MeVm3tocm2g/massSp4units,{i,1,numsteps}]];
+AppendTo[Exporttable,Table[IntedfuncMBvmean[achihigh,0,massSp4units,vfunc[vmin,vmax,numsteps,i]/lightspeed]*lightspeed/MeVm3tocm2g/massSp4units,{i,1,numsteps}]];
+For[i=1,i<Length[aSp4units]+1,i++,(a=Table[IntedfuncMBvmean[aSp4units[[i]],reSp4units[[i]],massSp4units,vfunc[vmin,vmax,numsteps,j]/lightspeed]*lightspeed/MeVm3tocm2g/massSp4units,{j,1,numsteps}];
 AppendTo[Exporttable,a])];
-Export[PATHTOCODE<>"/output/tables/sigma_v_data.csv",Transpose[Exporttable]];\[AliasDelimiter]
-Quit[]
+AppendTo[Exporttable,Table[IntedfuncMBvmean[aLS,reLS,massLSunits,vfunc[vmin,vmax,numsteps,i]/lightspeed]*lightspeed/MeVm3tocm2g/massLSunits,{i,1,numsteps}]];
+Export[PATHTOCODE<>"/output/tables/sigma_v_data.csv",Transpose[Exporttable]];
