@@ -217,6 +217,75 @@ def plot_m_inf_with_luscher(file, show = True, save = True):
     if show:
         plt.show()
 
+
+def plot_toy_sign(file, show = True, save = True):
+    zeta_zeros = get_Zeta_zeros()               # q2
+    fontsize = 14
+    font = {'size'   : fontsize}
+    matplotlib.rc('font', **font)
+    plt.rcParams['figure.figsize'] = [10, 6] 
+
+    fig, [ax1,ax2] = plt.subplots(nrows=2, ncols=1, sharex=True)
+    plt.subplots_adjust(wspace=0, hspace=0.1)   
+    w_inch, h_inch = ax2.figure.get_size_inches() * ax2.get_position().size
+    axins1 = ax2.inset_axes([1.5/w_inch,0.7/h_inch,3/w_inch,1.3/h_inch]) #
+    axins1.grid()
+    axins1.set_xlim(0.053, 0.087)
+    axins1.set_ylim(0.999, 1.0075)
+
+
+    axins1.set_xticks([0.06,0.08,], labels = [])
+    axins1.set_yticks([1.0,], labels = [])
+
+    L_inv_lat = np.linspace(0,1.2/min(N_L),200)                                              # in lattice units
+
+    E_triv, E_nontriv, E_nontriv_min, E_nontriv_max = [[],[],[],[]]
+    for i in range(6):
+        E_triv.append([])
+        E_nontriv.append([])
+        for j in range(len(L_inv_lat)):
+            E_triv[i].append(E_of_k(k_of_Linv(L_inv_lat[j], i)/mass))
+            E_nontriv[i].append(E_of_k(k_of_Linv(L_inv_lat[j], zeta_zeros[i])/mass))
+
+    for i in range(5):
+        if i == 0:
+            l3 = ax1.plot(L_inv_lat, E_triv[i+1], color = "black", ls = "dashed", label = "trivial")
+            l4 = ax1.plot(L_inv_lat, E_nontriv[i], color = "black", linewidth = .1, label = "$\cot(\delta_0)=0$")
+        else:
+            ax1.plot(L_inv_lat, E_triv[i+1], color = "black", ls = "dashed")
+            ax1.plot(L_inv_lat, E_nontriv[i], color = "black", linewidth = .1)
+        ax1.fill_between(L_inv_lat, y1=E_triv[i], y2=E_nontriv[i],color="lightblue",alpha = 0.5)#,hatch="x")
+        ax1.fill_between(L_inv_lat, y1=E_nontriv[i], y2=E_triv[i+1],color="lightblue",alpha = 0.7)#,hatch="\\\\")
+    ax1.text(x=0.061, y = 2.308, s="$\delta_0 > 0$")
+    ax1.text(x=0.081, y = 2.308, s="$\delta_0 < 0$")
+
+    ax1.annotate("", xy=(0.0565, E_of_k(k_of_Linv(0.0565, zeta_zeros[0])/mass)), xytext=(0.065, 2.15),
+            arrowprops=dict(facecolor='black',width = 0.5, headwidth = 3, headlength = 3),fontsize = "small")
+    ax1.text(s="$\cot(\delta_0)=0$",x = 0.0655, y = 2.135)
+
+    ax1.text(s="$q^2 \in \mathbb{Z}$",x = 0.0555, y = 2.25)
+    ax1.annotate("", xy=(0.0454, E_of_k(k_of_Linv(0.0455, 1)/mass)), xytext=(0.055, 2.26),
+            arrowprops=dict(facecolor='black',width = 0.5, headwidth = 3, headlength = 3),fontsize = "small")
+    ax1.annotate("", xy=(0.0360, E_of_k(k_of_Linv(0.0361, 2)/mass)), xytext=(0.055, 2.26),
+            arrowprops=dict(facecolor='black',width = 0.5, headwidth = 3, headlength = 3),fontsize = "small")
+
+    ax2.set_xlabel("a/L")
+    ax2.text(s="$E/m_\pi^\infty$", rotation = "vertical", x=-0.012, y = 1.13, fontsize = 14)
+
+    x1,x2,y1,y2 = [0,0.13,2,2.35]
+    ax1.set_xlim([x1,x2])
+    ax1.set_ylim([y1,y2])
+    ax2.set_ylim([0.995,1.13])
+
+    mark_inset(ax2, axins1, loc1=1, loc2=3, fc="none", ec="0.5", zorder = -5)
+    ax2.grid()
+    ax1.grid()
+    ax2.legend([l1, l2],["$\pi$", "$\pi\pi$"], loc = "upper left")
+    if save:
+        plt.savefig("plots/EpiEpipi_%1.3f_m%1.3f.pdf"%(res["beta"],res["m_1"]), bbox_inches="tight")
+    if show:
+        plt.show()
+
 def plot_ERT_plus_sigma(file, show=False, save = True, rek_lim = True, vesc_lim = True):
     plt.rcParams['figure.figsize'] = [10, 6]
     fontsize = 14
