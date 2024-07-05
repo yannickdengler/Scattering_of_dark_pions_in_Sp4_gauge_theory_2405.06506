@@ -7,3 +7,6 @@ input/*
 !input/pipi_fitintervals.csv
 !input/sigma_v_data_errors.csv
 scattering/__pycache__/
+*.o
+*.d
+*.pyc
