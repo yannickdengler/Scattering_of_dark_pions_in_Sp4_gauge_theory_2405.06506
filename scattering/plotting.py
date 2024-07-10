@@ -309,6 +309,8 @@ def plot_a_0_vs_m_f_pi(show=False, save = True):
     a0_mpi_total_arr = []
     mpifpi_total_arr = []
     out = []
+    f0 = open("output/tables/effective_range_parameters.csv", "w")
+    f0.write("beta,mass,a0mpi,Delta_a0mpi_lower,Delta_a0mpi_upper,r0mpi,Delta_r0mpi_lower,Delta_r0mpi_upper\n")
     for i in range(len(beta_arr)):
         for j in range(len(beta_arr[i])):
             a0mpi_arr = []
@@ -339,6 +341,8 @@ def plot_a_0_vs_m_f_pi(show=False, save = True):
             out[len(out)-1].append(mpi_err[0])
             out[len(out)-1].append(mpifpi_err[0])
             plt.errorbar(x=[mpifpi_err[0],],xerr=[[mpifpi_err[1],],[mpifpi_err[2],]],y=[a0mpi_err[0],],yerr=[[a0mpi_err[1],],[a0mpi_err[2],]], marker = marker_beta(beta_arr[i][j]), ls = "", capsize=5, markersize=10, color = color_beta(beta_arr[i][j]))
+            f0.write("%f,%f,%e,%e,%e,%e,%e,%e\n"%(beta_arr[i][j],m_arr[i][j],a0mpi_err[0],a0mpi_err[1],a0mpi_err[2], rempi_err[0], rempi_err[1], rempi_err[2] ))
+    f0.close()
     with open("output/tables/Sp(4)_data.csv", "w") as f:
         for i in range(len(out)):
             f.write("%e,%e,%e,%e,%e,%e\n"%(out[i][0],out[i][1],out[i][2],out[i][3],out[i][4],out[i][5]))
