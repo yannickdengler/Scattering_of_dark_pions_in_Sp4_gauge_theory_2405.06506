@@ -2,7 +2,7 @@ loglistI2="./output/isospin_logfiles_I2_list"
 loglist="./output/isospin_logfiles_list"
 
 # activate correct julia environment and set up dependencies
-julia -e 'using Pkg; Pkg.activate("./energy_levels/src_jl"); Pkg.instantiate()'
+julia -e 'using Pkg; Pkg.activate("./energy_levels/src_jl")' #; Pkg.instantiate()'
 find ./input/ -name "out_scattering_I2" > $loglistI2
 find ./input/ -name "out_spectrum" > $loglist
 python3 energy_levels/HDF5.py $loglistI2
@@ -24,3 +24,5 @@ python3 scattering/plotting.py
 math -script scattering/sigma_v_I2.m
 python3 scattering/plot_sigma.py
 echo Done!
+
+julia energy_levels/phaseshift_corrections.jl

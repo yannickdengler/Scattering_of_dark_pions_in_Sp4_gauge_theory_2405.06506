@@ -34,15 +34,22 @@ using Pkg; Pkg.activate("./energy_levels/src_jl",io=devnull)
 using I2julia
 using HDF5
 
-h5io = h5open("./output/hdf5/scattering_b6.900_m-0.870.hdf5")
-h5io = h5open("./output/hdf5/scattering_b7.200_m-0.780.hdf5")
-h5io = h5open("./output/hdf5/scattering_b6.900_m-0.900.hdf5")  
-pcotδ_div_mπ = h5io["orig_P_cot_PS_pipi_prime"][]
-pcotδ_div_mπ_sample = h5io["sample_P_cot_PS_pipi_prime"][]
-Ls = h5io["orig_N_Ls"][]
-mπ = h5io["orig_m_pi_inf"][1]
-for i in eachindex(pcotδ_div_mπ)
-    Δ = Δpcotδ(mπ,Ls[i]) / mπ
-    pcotδ = pcotδ_div_mπ[i] 
-    @show Δ, pcotδ
+
+for file in readdir("./output/hdf5/",join=true)
+
+    contains(file,"scattering") || continue
+ 
+    h5io = h5open(file)  
+    @show basename(file)
+    pcotδ_div_mπ = h5io["orig_P_cot_PS_pipi_prime"][]
+    pcotδ_div_mπ_sample = h5io["sample_P_cot_PS_pipi_prime"][]
+    Ls = h5io["orig_N_Ls"][]
+    mπ = h5io["orig_m_pi_inf"][1]
+    for i in eachindex(pcotδ_div_mπ)
+        Δ = Δpcotδ(mπ,Ls[i]) / mπ
+        pcotδ = pcotδ_div_mπ[i]
+        L = Ls[i] 
+        ratio = Δ / pcotδ
+        @show L, pcotδ, Δ, ratio
+    end
 end
