@@ -1,9 +1,9 @@
 *.pdf
 *.txt
 *.hdf5
+*.csv
 rsync/*
-output/*
-input/*
+input/Lt*
 !input/pipi_fitintervals.csv
 !input/sigma_v_data_errors.csv
 scattering/__pycache__/
