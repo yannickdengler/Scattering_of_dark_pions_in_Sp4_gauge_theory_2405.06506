@@ -118,7 +118,7 @@ def get_Zeta_zeros(num_zero = 6):
         zeros.append(bisect(gz.Zeta, i+1e-9,i+1-1e-9))
     return zeros
 
-def plot_m_inf_with_luscher(file, show = True, save = True):
+def plot_m_inf_with_luscher(file, show = True, save = True, zoom = False, draw_arrows = False):  # the values for draw_arrows are hard-coded and only work for 7.2 -0.78
     zeta_zeros = get_Zeta_zeros()               # q2
     fontsize = 14
     font = {'size'   : fontsize}
@@ -127,27 +127,41 @@ def plot_m_inf_with_luscher(file, show = True, save = True):
 
     fig, [ax1,ax2] = plt.subplots(nrows=2, ncols=1, sharex=True)
     plt.subplots_adjust(wspace=0, hspace=0.1)   
-    w_inch, h_inch = ax2.figure.get_size_inches() * ax2.get_position().size
-    axins1 = ax2.inset_axes([1.5/w_inch,0.7/h_inch,3/w_inch,1.3/h_inch]) #
-    axins1.grid()
-    axins1.set_xlim(0.053, 0.087)
-    axins1.set_ylim(0.999, 1.0075)
-
-
-    axins1.set_xticks([0.06,0.08,], labels = [])
-    axins1.set_yticks([1.0,], labels = [])
 
     res,  res_sample = result.read_from_hdf(file)
 
-    E_pi = error_of_array(res_sample["E_pi_prime"])
-    E_pipi = error_of_array(res_sample["E_pipi_prime"])
+    # E_pi = error_of_array(res_sample["E_pi_prime"])
+    # E_pipi = error_of_array(res_sample["E_pipi_prime"])
+    # m_pi_inf = error_of_array(res_sample["m_pi_inf"])
+    # mass = m_pi_inf[0][0]
+    # A_R = error_of_array(res_sample["A_R"])
+    # N_L = res["N_Ls"]
+    # N_L_inv = [1./L for L in N_L_t]
+
+    #####################
+    E_pi_t = error_of_array(res_sample["E_pi_prime"])
+    E_pipi_t = error_of_array(res_sample["E_pipi_prime"])
     m_pi_inf = error_of_array(res_sample["m_pi_inf"])
     mass = m_pi_inf[0][0]
     A_R = error_of_array(res_sample["A_R"])
-    N_L = res["N_Ls"]
+    N_L_t = res["N_Ls"]
+    N_L_inv = [1./L for L in N_L_t]
+    N_L_ind = []
+    for i in range(len(N_L_t)):
+        if N_L_t[i] > 11:
+            N_L_ind.append(i)
+
+    E_pi = np.transpose([np.transpose(E_pi_t)[i] for i in N_L_ind])
+    E_pipi = np.transpose([np.transpose(E_pipi_t)[i] for i in N_L_ind])
+    N_L = np.transpose([np.transpose(N_L_t)[i] for i in N_L_ind])
     N_L_inv = [1./L for L in N_L]
-    beta = res["beta"]
-    m12 = res["m_1"]
+    #####################
+
+
+    x1,x2,y1,y2,y3,y4 = [0,max(N_L_inv)*1.1,1.995,2+(max(E_pipi[0])-2)*1.2,0.995,1+(max(E_pi[0])-1)*1.2]
+    ax1.set_xlim([x1,x2])
+    ax1.set_ylim([y1,y2])
+    ax2.set_ylim([y3,y4])
 
     l1=ax2.errorbar(x=N_L_inv, y=E_pi[0], yerr=[E_pi[1],E_pi[2]], ls = "", capsize=3, color = "blue", marker = "v", markersize = 4, label = "$\pi$")
     l2=ax1.errorbar(x=N_L_inv, y=E_pipi[0], yerr=[E_pipi[1],E_pipi[2]], ls = "", capsize=3, color = "red", marker = "^", markersize = 4, label = "$\pi\pi$")
@@ -163,10 +177,19 @@ def plot_m_inf_with_luscher(file, show = True, save = True):
     ax2.plot(xarr, yarr, color = "blue", label = "Fit")
     ax2.fill_between(xarr, yarr_m, yarr_p, alpha = 0.3, color = "blue")
 
-    axins1.plot(xarr, yarr, color = "blue", label = "Fit")
-    axins1.fill_between(xarr, yarr_m, yarr_p, alpha = 0.3, color = "blue")    
-    axins1.errorbar(x=N_L_inv, y=E_pi[0], yerr=[E_pi[1],E_pi[2]], ls = "", capsize=3, color = "blue", marker = "v", markersize = 4, label = "$\pi$")
 
+    if zoom:
+        w_inch, h_inch = ax2.figure.get_size_inches() * ax2.get_position().size
+        axins1 = ax2.inset_axes([1.5/w_inch,0.7/h_inch,3/w_inch,1.3/h_inch]) #
+        axins1.grid()
+        axins1.set_xlim(0.053, 0.087)
+        axins1.set_ylim(0.999, 1.0075)
+        axins1.set_xticks([0.06,0.08,], labels = [])
+        axins1.set_yticks([1.0,], labels = [])
+        axins1.plot(xarr, yarr, color = "blue", label = "Fit")
+        axins1.fill_between(xarr, yarr_m, yarr_p, alpha = 0.3, color = "blue")    
+        axins1.errorbar(x=N_L_inv, y=E_pi[0], yerr=[E_pi[1],E_pi[2]], ls = "", capsize=3, color = "blue", marker = "v", markersize = 4, label = "$\pi$")
+        mark_inset(ax2, axins1, loc1=1, loc2=3, fc="none", ec="0.5", zorder = -5)
 
     L_inv_lat = np.linspace(0,1.2/min(N_L),200)                                              # in lattice units
 
@@ -187,28 +210,62 @@ def plot_m_inf_with_luscher(file, show = True, save = True):
             ax1.plot(L_inv_lat, E_nontriv[i], color = "black", linewidth = .1)
         ax1.fill_between(L_inv_lat, y1=E_triv[i], y2=E_nontriv[i],color="lightblue",alpha = 0.5)#,hatch="x")
         ax1.fill_between(L_inv_lat, y1=E_nontriv[i], y2=E_triv[i+1],color="lightblue",alpha = 0.7)#,hatch="\\\\")
-    ax1.text(x=0.061, y = 2.308, s="$\delta_0 > 0$")
-    ax1.text(x=0.081, y = 2.308, s="$\delta_0 < 0$")
+        
+    if draw_arrows:
+        # # for b705m085
+        ax1.text(x=0.041, y = 2.41, s="$\delta_0 > 0$")
+        ax1.text(x=0.0565, y = 2.41, s="$\delta_0 < 0$")
 
-    ax1.annotate("", xy=(0.0565, E_of_k(k_of_Linv(0.0565, zeta_zeros[0])/mass)), xytext=(0.065, 2.15),
-            arrowprops=dict(facecolor='black',width = 0.5, headwidth = 3, headlength = 3),fontsize = "small")
-    ax1.text(s="$\cot(\delta_0)=0$",x = 0.0655, y = 2.135)
+        ax1.annotate("", xy=(0.039, E_of_k(k_of_Linv(0.039, zeta_zeros[0])/mass)), xytext=(0.045, 2.143),
+                arrowprops=dict(facecolor='black',width = 0.5, headwidth = 3, headlength = 3),fontsize = "small")
+        ax1.text(s="$\cot(\delta_0)=0$",x = 0.045, y = 2.12)
 
-    ax1.text(s="$q^2 \in \mathbb{Z}$",x = 0.0555, y = 2.25)
-    ax1.annotate("", xy=(0.0454, E_of_k(k_of_Linv(0.0455, 1)/mass)), xytext=(0.055, 2.26),
-            arrowprops=dict(facecolor='black',width = 0.5, headwidth = 3, headlength = 3),fontsize = "small")
-    ax1.annotate("", xy=(0.0360, E_of_k(k_of_Linv(0.0361, 2)/mass)), xytext=(0.055, 2.26),
-            arrowprops=dict(facecolor='black',width = 0.5, headwidth = 3, headlength = 3),fontsize = "small")
+        ax1.annotate("", xy=(0.025, E_of_k(k_of_Linv(0.025, 2)/mass)), xytext=(0.0367, 2.335),
+                arrowprops=dict(facecolor='black',width = 0.5, headwidth = 3, headlength = 3),fontsize = "small")
+        ax1.annotate("", xy=(0.03, E_of_k(k_of_Linv(0.03, 1)/mass)), xytext=(0.0367, 2.335),
+                arrowprops=dict(facecolor='black',width = 0.5, headwidth = 3, headlength = 3),fontsize = "small")
+        ax1.text(s="$q^2 \in \mathbb{Z}$",x = 0.037, y = 2.325)
 
-    ax2.set_xlabel("a/L")
-    ax2.text(s="$E/m_\pi^\infty$", rotation = "vertical", x=-0.012, y = 1.13, fontsize = 14)
+        ax2.set_xlabel("a/L")
+        ax2.text(s="$E/m_\pi^\infty$", rotation = "vertical", x=-0.012, y = 0.995+(y4-0.995)*1.05, fontsize = 14)
+        # # for b72m078
+        # ax1.text(x=0.05, y = max(E_pipi[0]), s="$\delta_0 > 0$")
+        # ax1.text(x=0.065, y = max(E_pipi[0]), s="$\delta_0 < 0$")
 
-    x1,x2,y1,y2 = [0,0.13,2,2.35]
-    ax1.set_xlim([x1,x2])
-    ax1.set_ylim([y1,y2])
-    ax2.set_ylim([0.995,1.13])
+        # ax1.annotate("", xy=(0.0565, E_of_k(k_of_Linv(0.0565, zeta_zeros[0])/mass)), xytext=(0.0617, 2.337),
+        #         arrowprops=dict(facecolor='black',width = 0.5, headwidth = 3, headlength = 3),fontsize = "small")
+        # ax1.text(s="$\cot(\delta_0)=0$",x = 0.062, y = 2.3)
 
-    mark_inset(ax2, axins1, loc1=1, loc2=3, fc="none", ec="0.5", zorder = -5)
+        # ax1.annotate("", xy=(0.03, E_of_k(k_of_Linv(0.03, 2)/mass)), xytext=(0.0415, 2.35),
+        #         arrowprops=dict(facecolor='black',width = 0.5, headwidth = 3, headlength = 3),fontsize = "small")
+        # ax1.annotate("", xy=(0.035, E_of_k(k_of_Linv(0.035, 1)/mass)), xytext=(0.0415, 2.35),
+        #         arrowprops=dict(facecolor='black',width = 0.5, headwidth = 3, headlength = 3),fontsize = "small")
+        # ax1.text(s="$q^2 \in \mathbb{Z}$",x = 0.042, y = 2.33)
+
+        # ax2.set_xlabel("a/L")
+        # ax2.text(s="$E/m_\pi^\infty$", rotation = "vertical", x=-0.012, y = 0.995+(y4-0.995)*1.05, fontsize = 14)
+        # # for b69m090
+        # ax1.text(x=0.061, y = 2.308, s="$\delta_0 > 0$")
+        # ax1.text(x=0.081, y = 2.308, s="$\delta_0 < 0$")
+
+        # ax1.annotate("", xy=(0.0565, E_of_k(k_of_Linv(0.0565, zeta_zeros[0])/mass)), xytext=(0.065, 2.15),
+        #         arrowprops=dict(facecolor='black',width = 0.5, headwidth = 3, headlength = 3),fontsize = "small")
+        # ax1.text(s="$\cot(\delta_0)=0$",x = 0.0655, y = 2.135)
+
+        # ax1.text(s="$q^2 \in \mathbb{Z}$",x = 0.0555, y = 2.25)
+        # ax1.annotate("", xy=(0.0454, E_of_k(k_of_Linv(0.0455, 1)/mass)), xytext=(0.055, 2.26),
+        #         arrowprops=dict(facecolor='black',width = 0.5, headwidth = 3, headlength = 3),fontsize = "small")
+        # ax1.annotate("", xy=(0.0360, E_of_k(k_of_Linv(0.0361, 2)/mass)), xytext=(0.055, 2.26),
+        #         arrowprops=dict(facecolor='black',width = 0.5, headwidth = 3, headlength = 3),fontsize = "small")
+
+        # ax2.set_xlabel("a/L")
+        # ax2.text(s="$E/m_\pi^\infty$", rotation = "vertical", x=-0.012, y = 1.13, fontsize = 14)
+
+    # x1,x2,y1,y2 = [0,0.13,2,2.35]
+    # ax1.set_xlim([x1,x2])
+    # ax1.set_ylim([y1,y2])
+    # ax2.set_ylim([0.995,1.13])
+
     ax2.grid()
     ax1.grid()
     ax2.legend([l1, l2],["$\pi$", "$\pi\pi$"], loc = "upper left")
@@ -228,16 +285,13 @@ def plot_ERT_plus_sigma(file, show=False, save = True, rek_lim = True, vesc_lim 
     res,  res_sample = result.read_from_hdf(file)
     num_gaussian = len(res_sample["P2_pipi_prime"])
 
-    x1,x2,y1,y2 = [4,5.4,-3.7,-0.6]
-    ax1.set_xlim([x1,x2])
-    ax1.set_ylim([y1,y2])
-    ratio = (x2-x1)/(y2-y1)*ax1.bbox.height/ax1.bbox.width
-    ax2.set_xlim([x1,x2])
-    ax2.set_ylim([0,13])
-
     P_cot_PS_pipi_prime = np.transpose(res_sample["P_cot_PS_pipi_prime"])
     s_prime = np.transpose(res_sample["s_pipi_prime"])
     sigma = np.transpose(res_sample["sigma_pipi_prime"])
+
+    P_cot_err = error_of_array(np.transpose(P_cot_PS_pipi_prime))
+    s_err = error_of_array(np.transpose(s_prime))
+    sig_err = error_of_array(np.transpose(sigma))
 
     inter_UTE = np.transpose(res_sample["UTE_inter_P_cot_PS"])
     P2_arr = np.logspace(np.log10(1e-4), np.log10(3), len(inter_UTE))
@@ -264,6 +318,14 @@ def plot_ERT_plus_sigma(file, show=False, save = True, rek_lim = True, vesc_lim 
         inter_sigma_plot.append(tmp[length//2])
         inter_sigma_plot_m.append(tmp[math.floor(length*(1-num_perc)/2)])
         inter_sigmaplot_p.append(tmp[math.ceil(length*(1+num_perc)/2)])
+
+
+    # x1,x2,y1,y2,y3,y4 = [4,4+(max(s_res)-4)*1.1,min(P_cot_res)*1.1,max(P_cot_res)*0.9,min(sig_res)*0.9,max(sig_res)*1.1]
+    x1,x2,y1,y2,y3,y4 = [4,4+(max(s_err[4])-4)*1.05,min(P_cot_err[3])*1.05,max(P_cot_err[4])*0.6,min(sig_err[3])*0.95,max(sig_err[4])*1.05]
+    ax1.set_xlim([x1,x2])
+    ax1.set_ylim([y1,y2])
+    ax2.set_ylim([y3,y4])
+    ratio = (x2-x1)/(y2-y1)*ax1.bbox.height/ax1.bbox.width
 
     for i in range(len(s_prime)):
         length = len(s_prime[i])
@@ -400,9 +462,8 @@ def write_fpi_file():
 if __name__ == "__main__":
     beta_arr = [6.9,6.9,6.9,6.9,7.05,7.05,7.2,7.2]
     m_arr = [-0.87,-0.9,-0.91,-0.92,-0.835,-0.85,-0.78,-0.794] 
-    os.makedirs("output/plots/", exist_ok=True)
 
-    # create directory for plots if it doesn#t exit already
+    # create directory for plots if it doesn't exist already
     os.makedirs("output/plots", exist_ok=True)
 
     write_fpi_file()

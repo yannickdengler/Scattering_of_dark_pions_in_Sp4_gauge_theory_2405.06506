@@ -1,6 +1,9 @@
 *.pdf
 *.txt
 *.hdf5
+*.csv
+*.png
+*.tex
 rsync/*
 output/*
 input/*
