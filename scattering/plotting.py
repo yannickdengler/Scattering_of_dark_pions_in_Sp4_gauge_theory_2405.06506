@@ -130,32 +130,32 @@ def plot_m_inf_with_luscher(file, show = True, save = True, zoom = False, draw_a
 
     res,  res_sample = result.read_from_hdf(file)
 
-    # E_pi = error_of_array(res_sample["E_pi_prime"])
-    # E_pipi = error_of_array(res_sample["E_pipi_prime"])
-    # m_pi_inf = error_of_array(res_sample["m_pi_inf"])
-    # mass = m_pi_inf[0][0]
-    # A_R = error_of_array(res_sample["A_R"])
-    # N_L = res["N_Ls"]
-    # N_L_inv = [1./L for L in N_L_t]
-
-    #####################
-    E_pi_t = error_of_array(res_sample["E_pi_prime"])
-    E_pipi_t = error_of_array(res_sample["E_pipi_prime"])
+    E_pi = error_of_array(res_sample["E_pi_prime"])
+    E_pipi = error_of_array(res_sample["E_pipi_prime"])
     m_pi_inf = error_of_array(res_sample["m_pi_inf"])
     mass = m_pi_inf[0][0]
     A_R = error_of_array(res_sample["A_R"])
-    N_L_t = res["N_Ls"]
+    N_L = res["N_Ls"]
     N_L_inv = [1./L for L in N_L_t]
-    N_L_ind = []
-    for i in range(len(N_L_t)):
-        if N_L_t[i] > 11:
-            N_L_ind.append(i)
 
-    E_pi = np.transpose([np.transpose(E_pi_t)[i] for i in N_L_ind])
-    E_pipi = np.transpose([np.transpose(E_pipi_t)[i] for i in N_L_ind])
-    N_L = np.transpose([np.transpose(N_L_t)[i] for i in N_L_ind])
-    N_L_inv = [1./L for L in N_L]
-    #####################
+    # #####################
+    # E_pi_t = error_of_array(res_sample["E_pi_prime"])
+    # E_pipi_t = error_of_array(res_sample["E_pipi_prime"])
+    # m_pi_inf = error_of_array(res_sample["m_pi_inf"])
+    # mass = m_pi_inf[0][0]
+    # A_R = error_of_array(res_sample["A_R"])
+    # N_L_t = res["N_Ls"]
+    # N_L_inv = [1./L for L in N_L_t]
+    # N_L_ind = []
+    # for i in range(len(N_L_t)):
+    #     if N_L_t[i] > 11:
+    #         N_L_ind.append(i)
+
+    # E_pi = np.transpose([np.transpose(E_pi_t)[i] for i in N_L_ind])
+    # E_pipi = np.transpose([np.transpose(E_pipi_t)[i] for i in N_L_ind])
+    # N_L = np.transpose([np.transpose(N_L_t)[i] for i in N_L_ind])
+    # N_L_inv = [1./L for L in N_L]
+    # #####################
 
 
     x1,x2,y1,y2,y3,y4 = [0,max(N_L_inv)*1.1,1.995,2+(max(E_pipi[0])-2)*1.2,0.995,1+(max(E_pi[0])-1)*1.2]
