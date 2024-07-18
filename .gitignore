@@ -1,6 +1,7 @@
 *.pdf
 *.txt
 *.hdf5
+*.exe
 rsync/*
 output/*
 input/*

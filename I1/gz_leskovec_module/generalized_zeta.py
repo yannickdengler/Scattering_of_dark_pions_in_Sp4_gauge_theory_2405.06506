@@ -23,6 +23,15 @@ def generalized_zeta(l,m,d1,d2,d3,m1,m2,q2,N_L,size=10):            # m1, m2 in 
     res = gen_zeta(l,m,d1,d2,d3,m1,m2,q2,N_L,size).value
     return res.real, res.imag
 
+Wlm_c = C_gen_zeta.Wlm_PL
+
+Wlm_c.argtypes = [ct.c_int, ct.c_int, ct.c_int, ct.c_int, ct.c_int, ct.c_double, ct.c_double, ct.c_double, ct.c_int, ct.c_int]
+Wlm_c.restype = c_double_complex
+
+def Wlm(l,m,d1,d2,d3,m1,m2,q2,N_L,size=10):            # m1, m2 in lattice units (m*a)
+    res = Wlm_c(l,m,d1,d2,d3,m1,m2,q2,N_L,size).value
+    return res.real, res.imag
+
 if __name__ == "__main__":
     m1=float(sys.argv[1])
     m2=float(sys.argv[2])
@@ -36,3 +45,5 @@ if __name__ == "__main__":
     d3=int(sys.argv[10])
     zeta = generalized_zeta(l,m,d1,d2,d3,m1,m2,q2,N_L,sz)
     print("%18.14f,%18.14f"%(zeta[0], zeta[1]))
+    W = Wlm(l,m,d1,d2,d3,m1,m2,q2,N_L,sz)
+    print("%18.14f,%18.14f"%(W[0], W[1]))
