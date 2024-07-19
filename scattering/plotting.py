@@ -455,10 +455,10 @@ def write_fpi_file():
 if __name__ == "__main__":
     # beta_arr = [[6.9,6.9,6.9,6.9],[7.05,7.05],[7.2,7.2]]                      # those with 3 or more datapoints
     # m_arr = [[-0.87,-0.9,-0.91,-0.92],[-0.835,-0.85],[-0.78,-0.794]]
-    # beta_arr = [[6.9,],[7.05,7.05],[7.2,7.2]]                      # those with E_pipi > 0.95
-    # m_arr = [[-0.92,],[-0.835,-0.85],[-0.78,-0.794]]
-    beta_arr = [[6.9,]]                      # b6.9m-0.9 L>8
-    m_arr = [[-0.9,]]
+    beta_arr = [[6.9,],[7.05,7.05],[7.2,7.2]]                      # those with E_pipi > 0.95
+    m_arr = [[-0.92,],[-0.835,-0.85],[-0.78,-0.794]]
+    # beta_arr = [[6.9,]]                      # b6.9m-0.9 L>8
+    # m_arr = [[-0.9,]]
 
     # create directory for plots if it doesn't exist already
     os.makedirs("output/plots", exist_ok=True)

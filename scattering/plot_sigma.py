@@ -16,8 +16,8 @@ if __name__ == "__main__":
 
     varr = sigma_v_data[0]
     chiPT_data_in = sigma_v_data[1:3]
-    Sp4_data_in = sigma_v_data[3:11]
-    LS_data_in = sigma_v_data[11]
+    LS_data_in = sigma_v_data[4]
+    Sp4_data_in = sigma_v_data[4:]
     LS_data = []
     LS_data.append(0)
     for i in range(len(LS_data_in)):
