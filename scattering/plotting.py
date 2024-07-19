@@ -261,11 +261,6 @@ def plot_m_inf_with_luscher(file, show = True, save = True, zoom = False, draw_a
         # ax2.set_xlabel("a/L")
         # ax2.text(s="$E/m_\pi^\infty$", rotation = "vertical", x=-0.012, y = 1.13, fontsize = 14)
 
-    # x1,x2,y1,y2 = [0,0.13,2,2.35]
-    # ax1.set_xlim([x1,x2])
-    # ax1.set_ylim([y1,y2])
-    # ax2.set_ylim([0.995,1.13])
-
     ax2.grid()
     ax1.grid()
     ax2.legend([l1, l2],["$\pi$", "$\pi\pi$"], loc = "upper left")
@@ -358,7 +353,7 @@ def plot_ERT_plus_sigma(file, show=False, save = True, rek_lim = True, vesc_lim 
         plt.show()
     plt.clf()
 
-def plot_a_0_vs_m_f_pi(show=False, save = True):
+def plot_a_0_vs_m_f_pi(beta_arr, m_arr, show=False, save = True):
     plt.figure(figsize=(8,4.8))
     def chipt(x):
         return x/32
@@ -366,8 +361,6 @@ def plot_a_0_vs_m_f_pi(show=False, save = True):
     xarr = np.linspace(0,10)
     yarr = [chipt(x**2) for x in xarr]
     plt.plot(xarr, yarr, ls = "dashed", color = "green", label = "LO EFT")
-    beta_arr = [[6.9,6.9,6.9,6.9],[7.05,7.05],[7.2,7.2]]                      # those with 3 or more datapoints
-    m_arr = [[-0.87,-0.9,-0.91,-0.92],[-0.835,-0.85],[-0.78,-0.794]]
     a0_mpi_total_arr = []
     mpifpi_total_arr = []
     out = []
@@ -460,16 +453,19 @@ def write_fpi_file():
 
 
 if __name__ == "__main__":
-    beta_arr = [6.9,6.9,6.9,6.9,7.05,7.05,7.2,7.2]
-    m_arr = [-0.87,-0.9,-0.91,-0.92,-0.835,-0.85,-0.78,-0.794] 
-    beta_arr = [7.05,]
-    m_arr = [-0.85,] 
+    # beta_arr = [[6.9,6.9,6.9,6.9],[7.05,7.05],[7.2,7.2]]                      # those with 3 or more datapoints
+    # m_arr = [[-0.87,-0.9,-0.91,-0.92],[-0.835,-0.85],[-0.78,-0.794]]
+    # beta_arr = [[6.9,],[7.05,7.05],[7.2,7.2]]                      # those with E_pipi > 0.95
+    # m_arr = [[-0.92,],[-0.835,-0.85],[-0.78,-0.794]]
+    beta_arr = [[6.9,]]                      # b6.9m-0.9 L>8
+    m_arr = [[-0.9,]]
 
     # create directory for plots if it doesn't exist already
     os.makedirs("output/plots", exist_ok=True)
 
     write_fpi_file()
-    plot_a_0_vs_m_f_pi(show=False,save=True)
+    plot_a_0_vs_m_f_pi(beta_arr, m_arr, show=False,save=True)
     for i in range(len(beta_arr)):
-        plot_m_inf_with_luscher("scattering_b%1.3f_m%1.3f"%(beta_arr[i],m_arr[i]), show=False,save=True, draw_arrows=True)
-        plot_ERT_plus_sigma("scattering_b%1.3f_m%1.3f"%(beta_arr[i],m_arr[i]), show=False,save=True)
+        for j in range(len(beta_arr[i])):
+            plot_m_inf_with_luscher("scattering_b%1.3f_m%1.3f"%(beta_arr[i][j],m_arr[i][j]), show=False,save=True, draw_arrows=False)
+            plot_ERT_plus_sigma("scattering_b%1.3f_m%1.3f"%(beta_arr[i][j],m_arr[i][j]), show=False,save=True)
