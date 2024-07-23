@@ -303,15 +303,38 @@ if __name__ == "__main__":
             # print("Ensembles skipped: beta=",beta,", m0=",m0)
             # ##################################
             ############# beta = 6.9, m = -0.9, L > 8 #####################
-            if beta == 6.9:
-                if m0 == -0.9:
+            # if beta == 6.9:
+            #     if m0 == -0.9:
+            #         N_Ls = []
+            #         E_pis_t = []
+            #         E_pi_errs_t = []
+            #         E_pipis_t = []
+            #         E_pipi_errs_t = []
+            #         for i in range(len(N_L_arr[beta_arr.index(beta)][m_arr[beta_arr.index(beta)].index(m0)])):
+            #             if N_L_arr[beta_arr.index(beta)][m_arr[beta_arr.index(beta)].index(m0)][i] > 11:
+            #                 N_Ls.append(N_L_arr[beta_arr.index(beta)][m_arr[beta_arr.index(beta)].index(m0)][i])
+            #                 E_pis_t.append(E_pis[beta_arr.index(beta)][m_arr[beta_arr.index(beta)].index(m0)][i])
+            #                 E_pi_errs_t.append(E_pi_errs[beta_arr.index(beta)][m_arr[beta_arr.index(beta)].index(m0)][i])
+            #                 E_pipis_t.append(E_pipis[beta_arr.index(beta)][m_arr[beta_arr.index(beta)].index(m0)][i])
+            #                 E_pipi_errs_t.append(E_pipi_errs[beta_arr.index(beta)][m_arr[beta_arr.index(beta)].index(m0)][i])
+            #         if len(N_Ls) > 1:
+            #             print("Scattering analysis: beta=",beta,", m0=",m0,", resampling .... ")
+            #             res, res_sam = result_sampled(beta,m0,N_Ls,E_pis_t,E_pi_errs_t,E_pipis_t,E_pipi_errs_t)
+            #             fn_tmp = "scattering_b%1.3f_m%1.3f"%(float(res["beta"]),float(res["m_1"]))
+            #             save_to_hdf(res, res_sam, fn_tmp)
+            #             res, res_sam = read_from_hdf(fn_tmp)
+            # print("Ensembles skipped: beta=",beta,", m0=",m0)
+            ##################################
+            ############ beta = 7.2, m = -0.78, L > 9 #####################
+            if beta == 7.2:
+                if m0 == -0.78:
                     N_Ls = []
                     E_pis_t = []
                     E_pi_errs_t = []
                     E_pipis_t = []
                     E_pipi_errs_t = []
                     for i in range(len(N_L_arr[beta_arr.index(beta)][m_arr[beta_arr.index(beta)].index(m0)])):
-                        if N_L_arr[beta_arr.index(beta)][m_arr[beta_arr.index(beta)].index(m0)][i] > 11:
+                        if N_L_arr[beta_arr.index(beta)][m_arr[beta_arr.index(beta)].index(m0)][i] > 9:
                             N_Ls.append(N_L_arr[beta_arr.index(beta)][m_arr[beta_arr.index(beta)].index(m0)][i])
                             E_pis_t.append(E_pis[beta_arr.index(beta)][m_arr[beta_arr.index(beta)].index(m0)][i])
                             E_pi_errs_t.append(E_pi_errs[beta_arr.index(beta)][m_arr[beta_arr.index(beta)].index(m0)][i])
@@ -324,4 +347,4 @@ if __name__ == "__main__":
                         save_to_hdf(res, res_sam, fn_tmp)
                         res, res_sam = read_from_hdf(fn_tmp)
             print("Ensembles skipped: beta=",beta,", m0=",m0)
-            ##################################
+            #################################
