@@ -270,7 +270,7 @@ def plot_m_inf_with_luscher(file, show = True, save = True, zoom = False, draw_a
         plt.show()
 
 
-def plot_ERT_plus_sigma(file, show=False, save = True, rek_lim = True, vesc_lim = True):
+def plot_ERT_plus_sigma(file, show=False, save = True, rek_lim = False, vesc_lim = False):
     plt.rcParams['figure.figsize'] = [10, 6]
     fontsize = 14
     font = {'size'   : fontsize}
@@ -316,7 +316,7 @@ def plot_ERT_plus_sigma(file, show=False, save = True, rek_lim = True, vesc_lim 
 
 
     # x1,x2,y1,y2,y3,y4 = [4,4+(max(s_res)-4)*1.1,min(P_cot_res)*1.1,max(P_cot_res)*0.9,min(sig_res)*0.9,max(sig_res)*1.1]
-    x1,x2,y1,y2,y3,y4 = [4,4+(max(s_err[4])-4)*1.05,min(P_cot_err[3])*1.05,max(P_cot_err[4])*0.6,min(sig_err[3])*0.95,max(sig_err[4])*1.05]
+    x1,x2,y1,y2,y3,y4 = [4,4+(max(s_err[4])-4)*1.05,min(P_cot_err[3])*1.05,max(P_cot_err[4])*0.6,min(sig_err[3])*0.95,min(max(sig_err[4])*1.05,20)]
     ax1.set_xlim([x1,x2])
     ax1.set_ylim([y1,y2])
     ax2.set_ylim([y3,y4])
@@ -453,12 +453,14 @@ def write_fpi_file():
 
 
 if __name__ == "__main__":
-    # beta_arr = [[6.9,6.9,6.9,6.9],[7.05,7.05],[7.2,7.2]]                      # those with 3 or more datapoints
+    # beta_arr = [[6.9,6.9,6.9,6.9],[7.05,7.05],[7.2,7.2]]                      # those with 3 or more datapoints # "full"
     # m_arr = [[-0.87,-0.9,-0.91,-0.92],[-0.835,-0.85],[-0.78,-0.794]]
-    beta_arr = [[6.9,],[7.05,7.05],[7.2,7.2]]                      # those with E_pipi > 0.95
-    m_arr = [[-0.92,],[-0.835,-0.85],[-0.78,-0.794]]
+    # beta_arr = [[6.9,],[7.05,7.05],[7.2,7.2]]                      # those with E_pipi > 0.95
+    # m_arr = [[-0.92,],[-0.835,-0.85],[-0.78,-0.794]]
     # beta_arr = [[6.9,]]                      # b6.9m-0.9 L>8
     # m_arr = [[-0.9,]]
+    beta_arr = [[7.2,],]                      # b7.2m-0.78 L>8
+    m_arr = [[-0.78,],]
 
     # create directory for plots if it doesn't exist already
     os.makedirs("output/plots", exist_ok=True)
