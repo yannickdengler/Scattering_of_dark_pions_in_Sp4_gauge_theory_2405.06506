@@ -459,8 +459,10 @@ if __name__ == "__main__":
     # m_arr = [[-0.92,],[-0.835,-0.85],[-0.78,-0.794]]
     # beta_arr = [[6.9,]]                      # b6.9m-0.9 L>8
     # m_arr = [[-0.9,]]
-    beta_arr = [[7.2,],]                      # b7.2m-0.78 L>8
+    beta_arr = [[7.2,],]                      # b7.2m-0.78 L>x
     m_arr = [[-0.78,],]
+    # beta_arr = [[7.2,],]                      # b7.2m-0.794
+    # m_arr = [[-0.794,],]
 
     # create directory for plots if it doesn't exist already
     os.makedirs("output/plots", exist_ok=True)
