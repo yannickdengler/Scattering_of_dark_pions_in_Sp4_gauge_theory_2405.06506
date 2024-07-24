@@ -53,8 +53,14 @@ def calculations(N_Ls, E_pis, E_pipis):
         sigma_pipi_prime.append(sigma_prime(P_pipi_prime[i], P_cot_PS_pipi_prime[i]))
     a0 = float(fit_phase_shift_0(P2_pipi_prime, P_cot_PS_pipi_prime)[0])
     a2, b2 = fit_phase_shift(P2_pipi_prime, P_cot_PS_pipi_prime) 
-    a_Ad_free, c_Ad_free = fit_phase_shift_Adler_c_free(P2_pipi_prime, P_cot_PS_pipi_prime)
-    a_Ad_fixed, c_Ad_fixed = fit_phase_shift_Adler_c_fixed(P2_ipi_prime, P_cot_PS_pipi_prime) 
+    try:
+        a_Ad_free, c_Ad_free = fit_phase_shift_Adler_c_free(P2_pipi_prime, P_cot_PS_pipi_prime)
+    except RuntimeError:
+        a_Ad_free, c_Ad_free = [np.NaN,np.NaN]
+    try:
+        a_Ad_fixed, c_Ad_fixed = fit_phase_shift_Adler_c_fixed(P2_pipi_prime, P_cot_PS_pipi_prime) 
+    except RuntimeError:
+        a_Ad_fixed, c_Ad_fixed = [np.NaN,np.NaN]
     UTE_inter_P_cot_PS = get_interpolation_points_UTE(a2,b2)
     sigma_inter_sigma = get_interpolation_points_sigma(a2,b2)
     result["N_Ls"] = N_Ls
