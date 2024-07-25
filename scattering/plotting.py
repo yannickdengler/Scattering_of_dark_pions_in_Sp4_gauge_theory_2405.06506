@@ -119,7 +119,7 @@ def get_Zeta_zeros(num_zero = 6):
         zeros.append(bisect(gz.Zeta, i+1e-9,i+1-1e-9))
     return zeros
 
-def plot_m_inf_with_luscher(file, show = True, save = True, zoom = False, draw_arrows = False):  # the values for draw_arrows are hard-coded and only work for 7.2 -0.78
+def plot_m_inf_with_luscher(file, show = False, save = True, zoom = False, draw_arrows = False):  # the values for draw_arrows are hard-coded and only work for 7.2 -0.78
     zeta_zeros = get_Zeta_zeros()               # q2
     fontsize = 14
     font = {'size'   : fontsize}
@@ -565,6 +565,6 @@ if __name__ == "__main__":
     # plot_a_0_vs_m_f_pi(beta_arr, m_arr, show=False,save=True)
     for i in range(len(beta_arr)):
         for j in range(len(beta_arr[i])):
-            # plot_m_inf_with_luscher("scattering_b%1.3f_m%1.3f"%(beta_arr[i][j],m_arr[i][j]), show=False,save=True, draw_arrows=False)
-            # plot_ERT_plus_sigma("scattering_b%1.3f_m%1.3f"%(beta_arr[i][j],m_arr[i][j]), show=False,save=True)
-            plot_ERT_plus_sigma_Adler("scattering_b%1.3f_m%1.3f"%(beta_arr[i][j],m_arr[i][j]), show=True,save=True)
+            plot_m_inf_with_luscher("scattering_b%1.3f_m%1.3f"%(beta_arr[i][j],m_arr[i][j]), show=False,save=True, draw_arrows=False)
+            plot_ERT_plus_sigma("scattering_b%1.3f_m%1.3f"%(beta_arr[i][j],m_arr[i][j]), show=False,save=True)
+            #plot_ERT_plus_sigma_Adler("scattering_b%1.3f_m%1.3f"%(beta_arr[i][j],m_arr[i][j]), show=True,save=True)
