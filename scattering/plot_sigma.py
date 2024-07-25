@@ -81,5 +81,5 @@ if __name__ == "__main__":
         plt.savefig("output/plots/sigma_v.pdf",bbox_inches = "tight")
     else:
         plt.savefig("output/plots/sigma_v.png",bbox_inches = "tight")
-    # plt.show()
+    plt.show()
     plt.clf()
