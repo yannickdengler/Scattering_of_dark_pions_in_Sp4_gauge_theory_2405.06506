@@ -159,8 +159,7 @@ def create_scattering(filename,hdfpath="./output/hdf5/"):
 
         os.makedirs(hdfpath, exist_ok=True)
         filename  = os.path.join(hdfpath,"logfiles.hdf5")
-        # f = h5py.File(filename,"a")
-        f = h5py.File(filename,"w")
+        f = h5py.File(filename,"a")
 
         groupname = "Scattering%s_%s_beta%1.3f_m1%1.3f_m2%1.3f_T%i_L%i/"%(isospin_str, gauge_group, beta, m_1, m_2, N_T, N_L)
         
