@@ -130,32 +130,32 @@ def plot_m_inf_with_luscher(file, show = True, save = True, zoom = False, draw_a
 
     res,  res_sample = result.read_from_hdf(file)
 
-    # E_pi = error_of_array(res_sample["E_pi_prime"])
-    # E_pipi = error_of_array(res_sample["E_pipi_prime"])
-    # m_pi_inf = error_of_array(res_sample["m_pi_inf"])
-    # mass = m_pi_inf[0][0]
-    # A_R = error_of_array(res_sample["A_R"])
-    # N_L = res["N_Ls"]
-    # N_L_inv = [1./L for L in N_L_t]
-
-    #####################
-    E_pi_t = error_of_array(res_sample["E_pi_prime"])
-    E_pipi_t = error_of_array(res_sample["E_pipi_prime"])
+    E_pi = error_of_array(res_sample["E_pi_prime"])
+    E_pipi = error_of_array(res_sample["E_pipi_prime"])
     m_pi_inf = error_of_array(res_sample["m_pi_inf"])
     mass = m_pi_inf[0][0]
     A_R = error_of_array(res_sample["A_R"])
-    N_L_t = res["N_Ls"]
-    N_L_inv = [1./L for L in N_L_t]
-    N_L_ind = []
-    for i in range(len(N_L_t)):
-        if N_L_t[i] > 11:
-            N_L_ind.append(i)
-
-    E_pi = np.transpose([np.transpose(E_pi_t)[i] for i in N_L_ind])
-    E_pipi = np.transpose([np.transpose(E_pipi_t)[i] for i in N_L_ind])
-    N_L = np.transpose([np.transpose(N_L_t)[i] for i in N_L_ind])
+    N_L = res["N_Ls"]
     N_L_inv = [1./L for L in N_L]
-    #####################
+
+    # #####################
+    # E_pi_t = error_of_array(res_sample["E_pi_prime"])
+    # E_pipi_t = error_of_array(res_sample["E_pipi_prime"])
+    # m_pi_inf = error_of_array(res_sample["m_pi_inf"])
+    # mass = m_pi_inf[0][0]
+    # A_R = error_of_array(res_sample["A_R"])
+    # N_L_t = res["N_Ls"]
+    # N_L_inv = [1./L for L in N_L_t]
+    # N_L_ind = []
+    # for i in range(len(N_L_t)):
+    #     if N_L_t[i] > 11:
+    #         N_L_ind.append(i)
+
+    # E_pi = np.transpose([np.transpose(E_pi_t)[i] for i in N_L_ind])
+    # E_pipi = np.transpose([np.transpose(E_pipi_t)[i] for i in N_L_ind])
+    # N_L = np.transpose([np.transpose(N_L_t)[i] for i in N_L_ind])
+    # N_L_inv = [1./L for L in N_L]
+    # #####################
 
 
     x1,x2,y1,y2,y3,y4 = [0,max(N_L_inv)*1.1,1.995,2+(max(E_pipi[0])-2)*1.2,0.995,1+(max(E_pi[0])-1)*1.2]
@@ -462,6 +462,8 @@ def write_fpi_file():
 if __name__ == "__main__":
     beta_arr = [6.9,6.9,6.9,6.9,7.05,7.05,7.2,7.2]
     m_arr = [-0.87,-0.9,-0.91,-0.92,-0.835,-0.85,-0.78,-0.794] 
+    beta_arr = [7.05,]
+    m_arr = [-0.85,] 
 
     # create directory for plots if it doesn't exist already
     os.makedirs("output/plots", exist_ok=True)
@@ -469,5 +471,5 @@ if __name__ == "__main__":
     write_fpi_file()
     plot_a_0_vs_m_f_pi(show=False,save=True)
     for i in range(len(beta_arr)):
-        plot_m_inf_with_luscher("scattering_b%1.3f_m%1.3f"%(beta_arr[i],m_arr[i]), show=False,save=True)
+        plot_m_inf_with_luscher("scattering_b%1.3f_m%1.3f"%(beta_arr[i],m_arr[i]), show=False,save=True, draw_arrows=True)
         plot_ERT_plus_sigma("scattering_b%1.3f_m%1.3f"%(beta_arr[i],m_arr[i]), show=False,save=True)
