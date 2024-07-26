@@ -254,7 +254,7 @@ def read_from_hdf(filename):
                 res_tmp[key[7:]] = hfile[key][()]
     return res, res_tmp
 
-def result_sampled(beta,m0,N_L,E_pi,E_pi_err,E_pipi,E_pipi_err, num_gaussian=200):
+def result_sampled(beta,m0,N_L,E_pi,E_pi_err,E_pipi,E_pipi_err, num_gaussian=2000):
     res = calculations(N_Ls,E_pi,E_pipi)
     res_sample = {}
     for key in res.keys():
@@ -335,7 +335,6 @@ if __name__ == "__main__":
             for i in range(len(N_L_arr[beta_arr.index(beta)][m_arr[beta_arr.index(beta)].index(m0)])):
                 if N_L_arr[beta_arr.index(beta)][m_arr[beta_arr.index(beta)].index(m0)][i] > 8:
                     if not (beta == 7.2 and m0 == -0.794 and N_L_arr[beta_arr.index(beta)][m_arr[beta_arr.index(beta)].index(m0)][i] == 12):
-                        print(beta, m0, N_L_arr[beta_arr.index(beta)][m_arr[beta_arr.index(beta)].index(m0)][i])
                         N_Ls.append(N_L_arr[beta_arr.index(beta)][m_arr[beta_arr.index(beta)].index(m0)][i])
                         E_pis_t.append(E_pis[beta_arr.index(beta)][m_arr[beta_arr.index(beta)].index(m0)][i])
                         E_pi_errs_t.append(E_pi_errs[beta_arr.index(beta)][m_arr[beta_arr.index(beta)].index(m0)][i])
@@ -357,7 +356,6 @@ if __name__ == "__main__":
             E_pipi_errs_t = []
             for i in range(len(N_L_arr[beta_arr.index(beta)][m_arr[beta_arr.index(beta)].index(m0)])):
                 if E_pipis[beta_arr.index(beta)][m_arr[beta_arr.index(beta)].index(m0)][i] < 0.95:
-                    print(beta, m0, N_L_arr[beta_arr.index(beta)][m_arr[beta_arr.index(beta)].index(m0)][i])
                     N_Ls.append(N_L_arr[beta_arr.index(beta)][m_arr[beta_arr.index(beta)].index(m0)][i])
                     E_pis_t.append(E_pis[beta_arr.index(beta)][m_arr[beta_arr.index(beta)].index(m0)][i])
                     E_pi_errs_t.append(E_pi_errs[beta_arr.index(beta)][m_arr[beta_arr.index(beta)].index(m0)][i])
@@ -381,7 +379,6 @@ if __name__ == "__main__":
                 if N_L_arr[beta_arr.index(beta)][m_arr[beta_arr.index(beta)].index(m0)][i] > 8:
                     if not (beta == 7.2 and m0 == -0.794 and N_L_arr[beta_arr.index(beta)][m_arr[beta_arr.index(beta)].index(m0)][i] == 12):
                         if E_pipis[beta_arr.index(beta)][m_arr[beta_arr.index(beta)].index(m0)][i] < 0.95:
-                            print(beta, m0, N_L_arr[beta_arr.index(beta)][m_arr[beta_arr.index(beta)].index(m0)][i])
                             N_Ls.append(N_L_arr[beta_arr.index(beta)][m_arr[beta_arr.index(beta)].index(m0)][i])
                             E_pis_t.append(E_pis[beta_arr.index(beta)][m_arr[beta_arr.index(beta)].index(m0)][i])
                             E_pi_errs_t.append(E_pi_errs[beta_arr.index(beta)][m_arr[beta_arr.index(beta)].index(m0)][i])
