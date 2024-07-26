@@ -4,12 +4,9 @@ import matplotlib.pyplot as plt
 pdf = False
 
 if __name__ == "__main__":
-    pdf = False
+    plt.figure(figsize=[10,6],dpi=300)
 
-if __name__ == "__main__":
-    plt.figure(figsize=[10,6],dpi=300,dpi=300)
-
-        plt.rcParams["font.size"] = 14
+    plt.rcParams["font.size"] = 14
 
     mass_Sp4 = 100
     mass_chiPT = 100
@@ -26,7 +23,6 @@ if __name__ == "__main__":
     for i in range(len(LS_data_in)):
         LS_data.append(LS_data_in[i])
 
-    varr = np.insert(varr,0,10)
     varr = np.insert(varr,0,10)
 
     chiPT_data = []

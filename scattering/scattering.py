@@ -61,14 +61,6 @@ def calculations(N_Ls, E_pis, E_pipis):
         a_Ad_fixed, c_Ad_fixed = fit_phase_shift_Adler_c_fixed(P2_pipi_prime, P_cot_PS_pipi_prime) 
     except RuntimeError:
         a_Ad_fixed, c_Ad_fixed = [np.NaN,np.NaN]
-    try:
-        a_Ad_free, c_Ad_free = fit_phase_shift_Adler_c_free(P2_pipi_prime, P_cot_PS_pipi_prime)
-    except RuntimeError:
-        a_Ad_free, c_Ad_free = [np.NaN,np.NaN]
-    try:
-        a_Ad_fixed, c_Ad_fixed = fit_phase_shift_Adler_c_fixed(P2_pipi_prime, P_cot_PS_pipi_prime) 
-    except RuntimeError:
-        a_Ad_fixed, c_Ad_fixed = [np.NaN,np.NaN]
     Adler_fixed_inter_P_cot_PS = get_interpolation_points_Adler_fixed(a_Ad_fixed,c_Ad_fixed)
     Adler_free_inter_P_cot_PS = get_interpolation_points_Adler_free(a_Ad_free,c_Ad_free)
     UTE_inter_P_cot_PS = get_interpolation_points_UTE(a2,b2)
