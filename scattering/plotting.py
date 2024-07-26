@@ -119,7 +119,7 @@ def get_Zeta_zeros(num_zero = 6):
         zeros.append(bisect(gz.Zeta, i+1e-9,i+1-1e-9))
     return zeros
 
-def plot_m_inf_with_luscher(file, show = False, save = True, zoom = False, draw_arrows = False):  # the values for draw_arrows are hard-coded and only work for 7.2 -0.78
+def plot_m_inf_with_luscher(file, show = True, save = True, zoom = False, draw_arrows = False, pref=""):  # the values for draw_arrows are hard-coded and only work for 7.2 -0.78
     zeta_zeros = get_Zeta_zeros()               # q2
     fontsize = 14
     font = {'size'   : fontsize}
@@ -138,26 +138,6 @@ def plot_m_inf_with_luscher(file, show = False, save = True, zoom = False, draw_
     A_R = error_of_array(res_sample["A_R"])
     N_L = res["N_Ls"]
     N_L_inv = [1./L for L in N_L]
-
-    # #####################
-    # E_pi_t = error_of_array(res_sample["E_pi_prime"])
-    # E_pipi_t = error_of_array(res_sample["E_pipi_prime"])
-    # m_pi_inf = error_of_array(res_sample["m_pi_inf"])
-    # mass = m_pi_inf[0][0]
-    # A_R = error_of_array(res_sample["A_R"])
-    # N_L_t = res["N_Ls"]
-    # N_L_inv = [1./L for L in N_L_t]
-    # N_L_ind = []
-    # for i in range(len(N_L_t)):
-    #     if N_L_t[i] > 11:
-    #         N_L_ind.append(i)
-
-    # E_pi = np.transpose([np.transpose(E_pi_t)[i] for i in N_L_ind])
-    # E_pipi = np.transpose([np.transpose(E_pipi_t)[i] for i in N_L_ind])
-    # N_L = np.transpose([np.transpose(N_L_t)[i] for i in N_L_ind])
-    # N_L_inv = [1./L for L in N_L]
-    # #####################
-
 
     x1,x2,y1,y2,y3,y4 = [0,max(N_L_inv)*1.1,1.995,2+(max(E_pipi[0])-2)*1.2,0.995,1+(max(E_pi[0])-1)*1.2]
     ax1.set_xlim([x1,x2])
@@ -266,11 +246,11 @@ def plot_m_inf_with_luscher(file, show = False, save = True, zoom = False, draw_
     ax1.grid()
     ax2.legend([l1, l2],["$\pi$", "$\pi\pi$"], loc = "upper left")
     if save:
-        plt.savefig("output/plots/EpiEpipi_%1.3f_m%1.3f.pdf"%(res["beta"],res["m_1"]), bbox_inches="tight")
+        plt.savefig("output/plots/EpiEpipi"+pref+"_%1.3f_m%1.3f.pdf"%(res["beta"],res["m_1"]), bbox_inches="tight")
     if show:
         plt.show()
 
-def plot_ERT_plus_sigma(file, show=False, save = True, rek_lim = False, vesc_lim = False):
+def plot_ERT_plus_sigma(file, show=False, save = True, rek_lim = False, vesc_lim = False, pref = ""):
     plt.rcParams['figure.figsize'] = [10, 6]
     fontsize = 14
     font = {'size'   : fontsize}
@@ -297,7 +277,6 @@ def plot_ERT_plus_sigma(file, show=False, save = True, rek_lim = False, vesc_lim
     inter_sigma = np.transpose(res_sample["sigma_inter_sigma"])
     s_arr = np.logspace(np.log10(4), np.log10(15), len(inter_sigma))
 
-
     for i in range(len(inter_UTE)):
         tmp = inter_UTE[i]
         tmp.sort()
@@ -314,8 +293,6 @@ def plot_ERT_plus_sigma(file, show=False, save = True, rek_lim = False, vesc_lim
         inter_sigma_plot_m.append(tmp[math.floor(length*(1-num_perc)/2)])
         inter_sigmaplot_p.append(tmp[math.ceil(length*(1+num_perc)/2)])
 
-
-    # x1,x2,y1,y2,y3,y4 = [4,4+(max(s_res)-4)*1.1,min(P_cot_res)*1.1,max(P_cot_res)*0.9,min(sig_res)*0.9,max(sig_res)*1.1]
     x1,x2,y1,y2,y3,y4 = [4,4+(max(s_err[4])-4)*1.05,min(P_cot_err[3])*1.05,max(P_cot_err[4])*0.6,min(sig_err[3])*0.95,min(max(sig_err[4])*1.05,20)]
     ax1.set_xlim([x1,x2])
     ax1.set_ylim([y1,y2])
@@ -348,12 +325,12 @@ def plot_ERT_plus_sigma(file, show=False, save = True, rek_lim = False, vesc_lim
     ax2.set_xlabel("$s/m_\pi^{\infty\,2}$")
     ax2.set_ylabel("$\sigma m_\pi^{\infty\,2}$")
     if save:
-        plt.savefig("output/plots/comb_s_b%1.3f_m%1.3f.pdf"%(res["beta"],res["m_1"]), bbox_inches="tight")
+        plt.savefig("output/plots/comb_s"+pref+"_b%1.3f_m%1.3f.pdf"%(res["beta"],res["m_1"]), bbox_inches="tight")
     if show:
         plt.show()
     plt.clf()
 
-def plot_ERT_plus_sigma_Adler(file, show=False, save = True, rek_lim = False, vesc_lim = False):
+def plot_ERT_plus_sigma_Adler(file, show=False, save = True, rek_lim = False, vesc_lim = False, pref = ""):
     plt.rcParams['figure.figsize'] = [10, 6]
     fontsize = 14
     font = {'size'   : fontsize}
@@ -372,14 +349,17 @@ def plot_ERT_plus_sigma_Adler(file, show=False, save = True, rek_lim = False, ve
     sig_err = error_of_array(np.transpose(sigma))
 
     inter_UTE = np.transpose(res_sample["UTE_inter_P_cot_PS"])
+    inter_Adler_free = np.transpose(res_sample["Adler_free_inter_P_cot_PS"])
+    inter_Adler_fixed = np.transpose(res_sample["Adler_fixed_inter_P_cot_PS"])
     P2_arr = np.logspace(np.log10(1e-4), np.log10(3), len(inter_UTE))
     s_arr_of_P2 = []
     for P2 in P2_arr:
         s_arr_of_P2.append(4+4*P2)
     inter_UTE_plot, inter_UTE_plot_m, inter_UTE_plot_p = [[],[],[]]
+    inter_Adler_free_plot, inter_Adler_free_plot_m, inter_Adler_free_plot_p = [[],[],[]]
+    inter_Adler_fixed_plot, inter_Adler_fixed_plot_m, inter_Adler_fixed_plot_p = [[],[],[]]
     inter_sigma = np.transpose(res_sample["sigma_inter_sigma"])
     s_arr = np.logspace(np.log10(4), np.log10(15), len(inter_sigma))
-
 
     for i in range(len(inter_UTE)):
         tmp = inter_UTE[i]
@@ -388,6 +368,20 @@ def plot_ERT_plus_sigma_Adler(file, show=False, save = True, rek_lim = False, ve
         inter_UTE_plot.append(tmp[length//2])
         inter_UTE_plot_m.append(tmp[math.floor(length*(1-num_perc)/2)])
         inter_UTE_plot_p.append(tmp[math.ceil(length*(1+num_perc)/2)])
+    for i in range(len(inter_Adler_free)):
+        tmp = inter_Adler_free[i]
+        tmp.sort()
+        length = len(tmp)
+        inter_Adler_free_plot.append(tmp[length//2])
+        inter_Adler_free_plot_m.append(tmp[math.floor(length*(1-num_perc)/2)])
+        inter_Adler_free_plot_p.append(tmp[math.ceil(length*(1+num_perc)/2)])
+    for i in range(len(inter_Adler_fixed)):
+        tmp = inter_Adler_fixed[i]
+        tmp.sort()
+        length = len(tmp)
+        inter_Adler_fixed_plot.append(tmp[length//2])
+        inter_Adler_fixed_plot_m.append(tmp[math.floor(length*(1-num_perc)/2)])
+        inter_Adler_fixed_plot_p.append(tmp[math.ceil(length*(1+num_perc)/2)])
     inter_sigma_plot, inter_sigma_plot_m, inter_sigmaplot_p = [[],[],[]]
     for i in range(len(inter_sigma)):
         tmp = inter_sigma[i]
@@ -404,11 +398,9 @@ def plot_ERT_plus_sigma_Adler(file, show=False, save = True, rek_lim = False, ve
 
     from scattering import UTE_A0_c_fixed, UTE_A0_c_free
 
-    ax1.plot(s_arr_of_P2, UTE_A0_c_fixed(P2_arr,a_Ad_fixed,c_Ad_fixed), label = "Adler fixed")
-    ax1.plot(s_arr_of_P2, UTE_A0_c_free(P2_arr,a_Ad_free,c_Ad_free), label = "Adler free")
+    # ax1.plot(s_arr_of_P2, UTE_A0_c_fixed(P2_arr,a_Ad_fixed,c_Ad_fixed), label = "Adler fixed")
+    # ax1.plot(s_arr_of_P2, UTE_A0_c_free(P2_arr,a_Ad_free,c_Ad_free), label = "Adler free")
 
-
-    # x1,x2,y1,y2,y3,y4 = [4,4+(max(s_res)-4)*1.1,min(P_cot_res)*1.1,max(P_cot_res)*0.9,min(sig_res)*0.9,max(sig_res)*1.1]
     x1,x2,y1,y2,y3,y4 = [4,4+(max(s_err[4])-4)*1.05,min(P_cot_err[3])*1.05,max(P_cot_err[4])*0.6,min(sig_err[3])*0.95,min(max(sig_err[4])*1.05,20)]
     ax1.set_xlim([x1,x2])
     ax1.set_ylim([y1,y2])
@@ -427,6 +419,10 @@ def plot_ERT_plus_sigma_Adler(file, show=False, save = True, rek_lim = False, ve
             plot_curved_errorbars(ax1,s_arr2, P_cot_arr, ratio=ratio, color = "green", label = "pipi", offset=5)
     ax1.plot(s_arr_of_P2, inter_UTE_plot, label = "Fit")
     ax1.fill_between(s_arr_of_P2, inter_UTE_plot_m, inter_UTE_plot_p, alpha = 0.2)
+    ax1.plot(s_arr_of_P2, inter_Adler_free_plot, label = "Adler free")
+    ax1.fill_between(s_arr_of_P2, inter_Adler_free_plot_m, inter_Adler_free_plot_p, alpha = 0.2)
+    ax1.plot(s_arr_of_P2, inter_Adler_fixed_plot, label = "Adler fixed")
+    ax1.fill_between(s_arr_of_P2, inter_Adler_fixed_plot_m, inter_Adler_fixed_plot_p, alpha = 0.2)
     
     s_pipi_prime_err = error_of_array(np.transpose(s_prime))
     sigma_prime_err = error_of_array(res_sample["sigma_pipi_prime"])
@@ -442,12 +438,12 @@ def plot_ERT_plus_sigma_Adler(file, show=False, save = True, rek_lim = False, ve
     ax2.set_ylabel("$\sigma m_\pi^{\infty\,2}$")
     ax1.legend()
     if save:
-        plt.savefig("output/plots/comb_s_b%1.3f_m%1.3f_Adler.pdf"%(res["beta"],res["m_1"]), bbox_inches="tight")
+        plt.savefig("output/plots/comb_s"+pref+"_b%1.3f_m%1.3f_Adler.pdf"%(res["beta"],res["m_1"]), bbox_inches="tight")
     if show:
         plt.show()
     plt.clf()
 
-def plot_a_0_vs_m_f_pi(beta_arr, m_arr, show=False, save = True):
+def plot_a_0_vs_m_f_pi(beta_arr, m_arr, show=False, save = True, pref = ""):
     plt.figure(figsize=(8,4.8))
     def chipt(x):
         return x/32
@@ -498,6 +494,7 @@ def plot_a_0_vs_m_f_pi(beta_arr, m_arr, show=False, save = True):
     plt.scatter((-10, -9), y = (0,0), marker = marker_beta(6.9), color = color_beta(6.9), label ="$\\beta=6.90$", s = 60)
     plt.scatter((-10, -9), y = (0,0), marker = marker_beta(7.05), color = color_beta(7.05), label ="$\\beta=7.05$", s = 60)
     plt.scatter((-10, -9), y = (0,0), marker = marker_beta(7.2), color = color_beta(7.2), label ="$\\beta=7.20$", s = 60)    
+
     a0_mpi_total_err = error_of_1Darray(a0_mpi_total_arr)
     mpifpi_total_err = error_of_1Darray(mpifpi_total_arr)
     plt.fill_between(x=(-100,100), y1=(a0_mpi_total_err[3],a0_mpi_total_err[3]), y2=(a0_mpi_total_err[4],a0_mpi_total_err[4]), color = "grey", alpha = 0.25)
@@ -624,19 +621,20 @@ def write_fpi_file():
         for key in fpi.keys():
             ofile.write("%f,%f,%f,%f\n"%(betas[key], m0s[key], fpi[key], fpi_err[key]))
 
+def plot_version(beta_arr, m_arr, pref):
+
+    plot_a_0_vs_m_f_pi(beta_arr, m_arr, show=False,save=True, pref = pref)
+    # plot_a_0_vs_m_f_pi_Adler(beta_arr, m_arr, show=False,save=True, pref = pref)
+    for i in range(len(beta_arr)):
+        for j in range(len(beta_arr[i])):
+            if beta_arr[i] == 7.05 and m_arr[i][j] == -0.85:
+                plot_m_inf_with_luscher("scattering"+pref+"_b%1.3f_m%1.3f"%(beta_arr[i][j],m_arr[i][j]), show=False,save=True, draw_arrows=True, pref=pref)
+            else:
+                plot_m_inf_with_luscher("scattering"+pref+"_b%1.3f_m%1.3f"%(beta_arr[i][j],m_arr[i][j]), show=False,save=True, draw_arrows=False, pref=pref)
+            plot_ERT_plus_sigma("scattering"+pref+"_b%1.3f_m%1.3f"%(beta_arr[i][j],m_arr[i][j]), show=False,save=True, pref=pref)
+            # plot_ERT_plus_sigma_Adler("scattering"+pref+"_b%1.3f_m%1.3f"%(beta_arr[i][j],m_arr[i][j]), show=False,save=True, pref=pref)
 
 if __name__ == "__main__":
-    # beta_arr = [[6.9,6.9,6.9,6.9],[7.05,7.05],[7.2,7.2]]                      # those with 3 or more datapoints # "full"
-    # m_arr = [[-0.87,-0.9,-0.91,-0.92],[-0.835,-0.85],[-0.78,-0.794]]
-    beta_arr = [[6.9,],[7.05,7.05],[7.2,7.2]]                      # those with E_pipi > 0.95
-    m_arr = [[-0.92,],[-0.835,-0.85],[-0.78,-0.794]]
-    # beta_arr = [[6.9,]]                      # b6.9m-0.9 L>8
-    # m_arr = [[-0.9,]]
-    # beta_arr = [[7.2,],]                      # b7.2m-0.78 L>x
-    # m_arr = [[-0.78,],]
-    # beta_arr = [[7.2,],]                      # b7.2m-0.794
-    # m_arr = [[-0.794,],]
-
     # create directory for plots if it doesn't exist already
     os.makedirs("output/plots", exist_ok=True)
 
@@ -682,8 +680,8 @@ if __name__ == "__main__":
 
     # write_fpi_file()
     # plot_a_0_vs_m_f_pi(beta_arr, m_arr, show=False,save=True)
-    for i in range(len(beta_arr)):
-        for j in range(len(beta_arr[i])):
-            plot_m_inf_with_luscher("scattering_b%1.3f_m%1.3f"%(beta_arr[i][j],m_arr[i][j]), show=False,save=True, draw_arrows=False)
-            plot_ERT_plus_sigma("scattering_b%1.3f_m%1.3f"%(beta_arr[i][j],m_arr[i][j]), show=False,save=True)
-            #plot_ERT_plus_sigma_Adler("scattering_b%1.3f_m%1.3f"%(beta_arr[i][j],m_arr[i][j]), show=True,save=True)
+    # for i in range(len(beta_arr)):
+    #     for j in range(len(beta_arr[i])):
+    #         plot_m_inf_with_luscher("scattering_b%1.3f_m%1.3f"%(beta_arr[i][j],m_arr[i][j]), show=False,save=True, draw_arrows=False)
+    #         plot_ERT_plus_sigma("scattering_b%1.3f_m%1.3f"%(beta_arr[i][j],m_arr[i][j]), show=False,save=True)
+    #         plot_ERT_plus_sigma_Adler("scattering_b%1.3f_m%1.3f"%(beta_arr[i][j],m_arr[i][j]), show=True,save=True)

@@ -61,6 +61,16 @@ def calculations(N_Ls, E_pis, E_pipis):
         a_Ad_fixed, c_Ad_fixed = fit_phase_shift_Adler_c_fixed(P2_pipi_prime, P_cot_PS_pipi_prime) 
     except RuntimeError:
         a_Ad_fixed, c_Ad_fixed = [np.NaN,np.NaN]
+    try:
+        a_Ad_free, c_Ad_free = fit_phase_shift_Adler_c_free(P2_pipi_prime, P_cot_PS_pipi_prime)
+    except RuntimeError:
+        a_Ad_free, c_Ad_free = [np.NaN,np.NaN]
+    try:
+        a_Ad_fixed, c_Ad_fixed = fit_phase_shift_Adler_c_fixed(P2_pipi_prime, P_cot_PS_pipi_prime) 
+    except RuntimeError:
+        a_Ad_fixed, c_Ad_fixed = [np.NaN,np.NaN]
+    Adler_fixed_inter_P_cot_PS = get_interpolation_points_Adler_fixed(a_Ad_fixed,c_Ad_fixed)
+    Adler_free_inter_P_cot_PS = get_interpolation_points_Adler_free(a_Ad_free,c_Ad_free)
     UTE_inter_P_cot_PS = get_interpolation_points_UTE(a2,b2)
     sigma_inter_sigma = get_interpolation_points_sigma(a2,b2)
     result["N_Ls"] = N_Ls
@@ -86,6 +96,8 @@ def calculations(N_Ls, E_pis, E_pipis):
     result["c_Ad_fixed"] = [c_Ad_fixed,]
     result["UTE_inter_P_cot_PS"] = UTE_inter_P_cot_PS
     result["sigma_inter_sigma"] = sigma_inter_sigma
+    result["Adler_free_inter_P_cot_PS"] = Adler_free_inter_P_cot_PS
+    result["Adler_fixed_inter_P_cot_PS"] = Adler_fixed_inter_P_cot_PS
     return result
 
 def inf_mass_fit_Goldstone(N_L, m_inf, A):
@@ -217,6 +229,26 @@ def get_interpolation_points_UTE(a, b, start = 1e-4, stop = 3, num_inter = 2000)
     P_cot_PS_arr = []
     for P2 in P2_arr:
         P_cot_PS_arr.append(UTE(P2, a, b))
+    return np.asarray(P_cot_PS_arr)
+
+def get_interpolation_points_Adler_fixed(a, c, start = 1e-4, stop = 3, num_inter = 2000):
+    """
+    Interpolates the fixed Adler expansion for an error estimate at each value of P
+    """
+    P2_arr = np.logspace(np.log10(start), np.log10(stop), num_inter)
+    P_cot_PS_arr = []
+    for P2 in P2_arr:
+        P_cot_PS_arr.append(UTE_A0_c_fixed(P2, a, c))
+    return np.asarray(P_cot_PS_arr)
+
+def get_interpolation_points_Adler_free(a, c, start = 1e-4, stop = 3, num_inter = 2000):
+    """
+    Interpolates the fixed Adler expansion for an error estimate at each value of P
+    """
+    P2_arr = np.logspace(np.log10(start), np.log10(stop), num_inter)
+    P_cot_PS_arr = []
+    for P2 in P2_arr:
+        P_cot_PS_arr.append(UTE_A0_c_free(P2, a, c))
     return np.asarray(P_cot_PS_arr)
 
 def get_interpolation_points_sigma(a, b, start = 4, stop = 15, num_inter = 2000):

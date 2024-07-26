@@ -4,9 +4,12 @@ import matplotlib.pyplot as plt
 pdf = False
 
 if __name__ == "__main__":
-    plt.figure(figsize=[10,6],dpi=300)
+    pdf = False
 
-    plt.rcParams["font.size"] = 14
+if __name__ == "__main__":
+    plt.figure(figsize=[10,6],dpi=300,dpi=300)
+
+        plt.rcParams["font.size"] = 14
 
     mass_Sp4 = 100
     mass_chiPT = 100
@@ -16,13 +19,14 @@ if __name__ == "__main__":
 
     varr = sigma_v_data[0]
     chiPT_data_in = sigma_v_data[1:3]
-    Sp4_data_in = sigma_v_data[3:11]
-    LS_data_in = sigma_v_data[11]
+    LS_data_in = sigma_v_data[4]
+    Sp4_data_in = sigma_v_data[4:]
     LS_data = []
     LS_data.append(0)
     for i in range(len(LS_data_in)):
         LS_data.append(LS_data_in[i])
 
+    varr = np.insert(varr,0,10)
     varr = np.insert(varr,0,10)
 
     chiPT_data = []
@@ -81,4 +85,5 @@ if __name__ == "__main__":
         plt.savefig("output/plots/sigma_v.pdf",bbox_inches = "tight")
     else:
         plt.savefig("output/plots/sigma_v.png",bbox_inches = "tight")
+    plt.show()
     plt.clf()

@@ -76,7 +76,7 @@ Exporttable = List[];
 AppendTo[Exporttable,Table[vfunc[vmin,vmax,numsteps,i],{i,1,numsteps}]];
 AppendTo[Exporttable,Table[IntedfuncMBvmean[achilow,0,massSp4units,vfunc[vmin,vmax,numsteps,i]/lightspeed]*lightspeed/MeVm3tocm2g/massSp4units,{i,1,numsteps}]];
 AppendTo[Exporttable,Table[IntedfuncMBvmean[achihigh,0,massSp4units,vfunc[vmin,vmax,numsteps,i]/lightspeed]*lightspeed/MeVm3tocm2g/massSp4units,{i,1,numsteps}]];
+AppendTo[Exporttable,Table[IntedfuncMBvmean[aLS,reLS,massLSunits,vfunc[vmin,vmax,numsteps,i]/lightspeed]*lightspeed/MeVm3tocm2g/massLSunits,{i,1,numsteps}]];
 For[i=1,i<Length[aSp4units]+1,i++,(a=Table[IntedfuncMBvmean[aSp4units[[i]],reSp4units[[i]],massSp4units,vfunc[vmin,vmax,numsteps,j]/lightspeed]*lightspeed/MeVm3tocm2g/massSp4units,{j,1,numsteps}];
 AppendTo[Exporttable,a])];
-AppendTo[Exporttable,Table[IntedfuncMBvmean[aLS,reLS,massLSunits,vfunc[vmin,vmax,numsteps,i]/lightspeed]*lightspeed/MeVm3tocm2g/massLSunits,{i,1,numsteps}]];
 Export[PATHTOCODE<>"/output/tables/sigma_v_data.csv",Transpose[Exporttable]];
