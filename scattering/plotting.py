@@ -462,7 +462,7 @@ def plot_a_0_vs_m_f_pi(beta_arr, m_arr, show=False, save = True, pref = ""):
             rempi_arr = []
             mpi_arr = []
             mpifpi_arr = []
-            res,  res_sample = result.read_from_hdf("scattering_b%1.3f_m%1.3f"%(beta_arr[i][j],m_arr[i][j]))
+            res,  res_sample = result.read_from_hdf("scattering"+pref+"_b%1.3f_m%1.3f"%(beta_arr[i][j],m_arr[i][j]))
             for k in range(len(res_sample["a2"])):
                 a0mpi_arr.append(float(-1/res_sample["a2"][k][0]))
                 rempi_arr.append(float(2*res_sample["b2"][k][0]))
@@ -533,7 +533,7 @@ def plot_a_0_vs_m_f_pi_Adler(beta_arr, m_arr, show=False, save = True, pref = ""
             rempi_arr = []
             mpi_arr = []
             mpifpi_arr = []
-            res,  res_sample = result.read_from_hdf("scattering_b%1.3f_m%1.3f"%(beta_arr[i][j],m_arr[i][j]))
+            res,  res_sample = result.read_from_hdf("scattering"+pref+"_b%1.3f_m%1.3f"%(beta_arr[i][j],m_arr[i][j]))
             for k in range(len(res_sample["a2"])):
                 a0mpi_arr.append(float(-1/res_sample["a2"][k][0]))
                 a0_Adler_free_arr.append(float(res_sample["a_Ad_free"][k][0]))
@@ -563,16 +563,16 @@ def plot_a_0_vs_m_f_pi_Adler(beta_arr, m_arr, show=False, save = True, pref = ""
             out[len(out)-1].append(a0_Adler_free_err[0])
             out[len(out)-1].append(a0_Adler_fixed_err[0])
             plt.errorbar(x=[mpifpi_err[0],],xerr=[[mpifpi_err[1],],[mpifpi_err[2],]],y=[a0mpi_err[0],],yerr=[[a0mpi_err[1],],[a0mpi_err[2],]], marker = marker_beta(beta_arr[i][j]), ls = "", capsize=5, markersize=10, color = color_beta(beta_arr[i][j]))
-            plt.errorbar(x=[mpifpi_err[0],],xerr=[[mpifpi_err[1],],[mpifpi_err[2],]],y=[a0_Adler_free_err[0],],yerr=[[a0_Adler_free_err[1],],[a0_Adler_free_err[2],]], marker = ">", ls = "", capsize=5, markersize=10, color = "black")
-            plt.errorbar(x=[mpifpi_err[0],],xerr=[[mpifpi_err[1],],[mpifpi_err[2],]],y=[a0_Adler_fixed_err[0],],yerr=[[a0_Adler_fixed_err[1],],[a0_Adler_fixed_err[2],]], marker = "<", ls = "", capsize=5, markersize=10, color = "black")
+            # plt.errorbar(x=[mpifpi_err[0],],xerr=[[mpifpi_err[1],],[mpifpi_err[2],]],y=[a0_Adler_free_err[0],],yerr=[[a0_Adler_free_err[1],],[a0_Adler_free_err[2],]], marker = ">", ls = "", capsize=3, markersize=6, color = "grey")
+            plt.errorbar(x=[mpifpi_err[0],],xerr=[[mpifpi_err[1],],[mpifpi_err[2],]],y=[a0_Adler_fixed_err[0],],yerr=[[a0_Adler_fixed_err[1],],[a0_Adler_fixed_err[2],]], marker = "<", ls = "", capsize=3, markersize=6, color = "green")
     with open("output/tables/Sp(4)_data_Adler.csv", "w") as f:
         for i in range(len(out)):
             f.write("%e,%e,%e,%e,%e,%e\n"%(out[i][0],out[i][1],out[i][2],out[i][3],out[i][4],out[i][5]))
     plt.scatter((-10, -9), y = (0,0), marker = marker_beta(6.9), color = color_beta(6.9), label ="$\\beta=6.90$", s = 60)
     plt.scatter((-10, -9), y = (0,0), marker = marker_beta(7.05), color = color_beta(7.05), label ="$\\beta=7.05$", s = 60)
     plt.scatter((-10, -9), y = (0,0), marker = marker_beta(7.2), color = color_beta(7.2), label ="$\\beta=7.20$", s = 60)   
-    plt.scatter((-10, -9), y = (0,0), marker = "<", color = "black", label ="Adler fixed", s = 60)   
-    plt.scatter((-10, -9), y = (0,0), marker = ">", color = "black", label ="Adler free", s = 60)   
+    plt.scatter((-10, -9), y = (0,0), marker = ">", color = "grey", label ="Adler free", s = 36)   
+    plt.scatter((-10, -9), y = (0,0), marker = "<", color = "green", label ="Adler fixed", s = 36)   
 
     a0_mpi_total_err = error_of_1Darray(a0_mpi_total_arr)
     mpifpi_total_err = error_of_1Darray(mpifpi_total_arr)
@@ -644,26 +644,38 @@ if __name__ == "__main__":
     m_arr = [[-0.87,-0.9,-0.91,-0.92],[-0.835,-0.85],[-0.78,-0.794]]
     plot_version(beta_arr, m_arr, "")
 
-    beta_arr = [[6.9,],[7.05,7.05],[7.2,7.2]]                      # those with E_pipi > 0.95
+    beta_arr = [[6.9,6.9,6.9,6.9],[7.05,7.05],[7.2,7.2]]                      # those from Fig 5.1
+    m_arr = [[-0.87,-0.9,-0.91,-0.92],[-0.835,-0.85],[-0.78,-0.794]]
+    plot_version(beta_arr, m_arr, "_Fig5.1")
+
+    beta_arr = [[6.9,],[7.05,7.05],[7.2,7.2]]                      # those from Fig 5.2
     m_arr = [[-0.92,],[-0.835,-0.85],[-0.78,-0.794]]
-    plot_version(beta_arr, m_arr, "_epipi_095")
+    plot_version(beta_arr, m_arr, "_Fig5.2")
+
+    beta_arr = [[6.9,],[7.05,7.05],[7.2,7.2]]                      # those from Fig 5.3
+    m_arr = [[-0.92,],[-0.835,-0.85],[-0.78,-0.794]]
+    plot_version(beta_arr, m_arr, "_Fig5.3")
 
 
-    beta_arr = [[6.9,]]                      # b6.9m-0.9 L>8
+    beta_arr = [[6.9,]]                      # for Fig 6
     m_arr = [[-0.9,]]
     plot_version(beta_arr, m_arr, "_b69_m90_Lg8")
     plot_version(beta_arr, m_arr, "_b69_m90_Lg10")
 
-
-    beta_arr = [[7.2,],]                      # b7.2m-0.78 L>x
-    m_arr = [[-0.78,],]
-    plot_version(beta_arr, m_arr, "_b72_m78_Lg8")
-    plot_version(beta_arr, m_arr, "_b72_m78_Lg10")
+    # beta_arr = [[6.9,],[7.05,7.05],[7.2,7.2]]                      # those with E_pipi > 0.95
+    # m_arr = [[-0.92,],[-0.835,-0.85],[-0.78,-0.794]]
+    # plot_version(beta_arr, m_arr, "_epipi_095")
 
 
-    beta_arr = [[7.2,],]                      # b7.2m-0.794
-    m_arr = [[-0.794,],]
-    plot_version(beta_arr, m_arr, "_b72_m794_mpir13")
+    # beta_arr = [[7.2,],]                      # b7.2m-0.78 L>x
+    # m_arr = [[-0.78,],]
+    # plot_version(beta_arr, m_arr, "_b72_m78_Lg8")
+    # plot_version(beta_arr, m_arr, "_b72_m78_Lg10")
+
+
+    # beta_arr = [[7.2,],]                      # b7.2m-0.794
+    # m_arr = [[-0.794,],]
+    # plot_version(beta_arr, m_arr, "_b72_m794_mpir13")
 
 
     # write_fpi_file()

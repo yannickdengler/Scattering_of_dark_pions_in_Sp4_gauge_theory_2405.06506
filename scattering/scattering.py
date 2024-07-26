@@ -156,7 +156,7 @@ def UTE_A0_c_fixed(P2,a,c):
     """
     Adler-zero fit with c=1
     """
-    return Adler_A0(1,P2)*(-1/a+c+P2)
+    return Adler_A0(1,P2)*(-1/a+c*P2)
 
 def UTE_A0_c_free(P2,a,c):
     """
@@ -278,7 +278,7 @@ def read_from_hdf(filename):
                 res_tmp[key[7:]] = hfile[key][()]
     return res, res_tmp
 
-def result_sampled(beta,m0,N_L,E_pi,E_pi_err,E_pipi,E_pipi_err, num_gaussian=2000):
+def result_sampled(beta,m0,N_L,E_pi,E_pi_err,E_pipi,E_pipi_err, num_gaussian=200):
     res = calculations(N_Ls,E_pi,E_pipi)
     res_sample = {}
     for key in res.keys():
@@ -338,19 +338,42 @@ if __name__ == "__main__":
             E_pipi_errs[beta_arr.index(beta)][m_arr[beta_arr.index(beta)].index(m_1)].append(E_pipi_err)
     for beta in beta_arr:
         for m0 in m_arr[beta_arr.index(beta)]:
-            ############## default ####################
-            N_Ls = N_L_arr[beta_arr.index(beta)][m_arr[beta_arr.index(beta)].index(m0)]
-            E_pis_t = E_pis[beta_arr.index(beta)][m_arr[beta_arr.index(beta)].index(m0)]
-            E_pi_errs_t = E_pi_errs[beta_arr.index(beta)][m_arr[beta_arr.index(beta)].index(m0)]
-            E_pipis_t = E_pipis[beta_arr.index(beta)][m_arr[beta_arr.index(beta)].index(m0)]
-            E_pipi_errs_t = E_pipi_errs[beta_arr.index(beta)][m_arr[beta_arr.index(beta)].index(m0)]
-            print("Scattering analysis: beta=",beta,", m0=",m0,", resampling .... ")
-            res, res_sam = result_sampled(beta,m0,N_Ls,E_pis_t,E_pi_errs_t,E_pipis_t,E_pipi_errs_t)
-            fn_tmp = "scattering_b%1.3f_m%1.3f"%(float(res["beta"]),float(res["m_1"]))
-            save_to_hdf(res, res_sam, fn_tmp)
-            res, res_sam = read_from_hdf(fn_tmp)
+            # ############## default ####################
+            # N_Ls = N_L_arr[beta_arr.index(beta)][m_arr[beta_arr.index(beta)].index(m0)]
+            # E_pis_t = E_pis[beta_arr.index(beta)][m_arr[beta_arr.index(beta)].index(m0)]
+            # E_pi_errs_t = E_pi_errs[beta_arr.index(beta)][m_arr[beta_arr.index(beta)].index(m0)]
+            # E_pipis_t = E_pipis[beta_arr.index(beta)][m_arr[beta_arr.index(beta)].index(m0)]
+            # E_pipi_errs_t = E_pipi_errs[beta_arr.index(beta)][m_arr[beta_arr.index(beta)].index(m0)]
+            # print("Scattering analysis: beta=",beta,", m0=",m0,", resampling .... ")
+            # res, res_sam = result_sampled(beta,m0,N_Ls,E_pis_t,E_pi_errs_t,E_pipis_t,E_pipi_errs_t)
+            # fn_tmp = "scattering_b%1.3f_m%1.3f"%(float(res["beta"]),float(res["m_1"]))
+            # save_to_hdf(res, res_sam, fn_tmp)
+            # res, res_sam = read_from_hdf(fn_tmp)
+            # ##################################
+            ############## Fig 5.1 ####################
+            N_Ls = []
+            E_pis_t = []
+            E_pi_errs_t = []
+            E_pipis_t = []
+            E_pipi_errs_t = []
+            for i in range(len(N_L_arr[beta_arr.index(beta)][m_arr[beta_arr.index(beta)].index(m0)])):
+                if N_L_arr[beta_arr.index(beta)][m_arr[beta_arr.index(beta)].index(m0)][i] > 8:
+                    if not (beta == 7.2 and m0 == -0.794 and N_L_arr[beta_arr.index(beta)][m_arr[beta_arr.index(beta)].index(m0)][i] == 12):
+                        print(beta, m0, N_L_arr[beta_arr.index(beta)][m_arr[beta_arr.index(beta)].index(m0)][i])
+                        N_Ls.append(N_L_arr[beta_arr.index(beta)][m_arr[beta_arr.index(beta)].index(m0)][i])
+                        E_pis_t.append(E_pis[beta_arr.index(beta)][m_arr[beta_arr.index(beta)].index(m0)][i])
+                        E_pi_errs_t.append(E_pi_errs[beta_arr.index(beta)][m_arr[beta_arr.index(beta)].index(m0)][i])
+                        E_pipis_t.append(E_pipis[beta_arr.index(beta)][m_arr[beta_arr.index(beta)].index(m0)][i])
+                        E_pipi_errs_t.append(E_pipi_errs[beta_arr.index(beta)][m_arr[beta_arr.index(beta)].index(m0)][i])
+            if len(N_Ls) > 1:
+                print("Scattering analysis: beta=",beta,", m0=",m0,", resampling .... ")
+                res, res_sam = result_sampled(beta,m0,N_Ls,E_pis_t,E_pi_errs_t,E_pipis_t,E_pipi_errs_t)
+                fn_tmp = "scattering_Fig5.1_b%1.3f_m%1.3f"%(float(res["beta"]),float(res["m_1"]))
+                save_to_hdf(res, res_sam, fn_tmp)
+                res, res_sam = read_from_hdf(fn_tmp)
+            print("Ensembles skipped: beta=",beta,", m0=",m0)
             ##################################
-            ############# Epipi < 0.95 ####################
+            ############## Fig 5.2 ####################
             N_Ls = []
             E_pis_t = []
             E_pi_errs_t = []
@@ -358,6 +381,7 @@ if __name__ == "__main__":
             E_pipi_errs_t = []
             for i in range(len(N_L_arr[beta_arr.index(beta)][m_arr[beta_arr.index(beta)].index(m0)])):
                 if E_pipis[beta_arr.index(beta)][m_arr[beta_arr.index(beta)].index(m0)][i] < 0.95:
+                    print(beta, m0, N_L_arr[beta_arr.index(beta)][m_arr[beta_arr.index(beta)].index(m0)][i])
                     N_Ls.append(N_L_arr[beta_arr.index(beta)][m_arr[beta_arr.index(beta)].index(m0)][i])
                     E_pis_t.append(E_pis[beta_arr.index(beta)][m_arr[beta_arr.index(beta)].index(m0)][i])
                     E_pi_errs_t.append(E_pi_errs[beta_arr.index(beta)][m_arr[beta_arr.index(beta)].index(m0)][i])
@@ -366,11 +390,61 @@ if __name__ == "__main__":
             if len(N_Ls) > 1:
                 print("Scattering analysis: beta=",beta,", m0=",m0,", resampling .... ")
                 res, res_sam = result_sampled(beta,m0,N_Ls,E_pis_t,E_pi_errs_t,E_pipis_t,E_pipi_errs_t)
-                fn_tmp = "scattering_epipi_095_b%1.3f_m%1.3f"%(float(res["beta"]),float(res["m_1"]))
+                fn_tmp = "scattering_Fig5.2_b%1.3f_m%1.3f"%(float(res["beta"]),float(res["m_1"]))
                 save_to_hdf(res, res_sam, fn_tmp)
                 res, res_sam = read_from_hdf(fn_tmp)
             print("Ensembles skipped: beta=",beta,", m0=",m0)
-            #################################
+            ##################################
+            ############## Fig 5.3 ####################
+            N_Ls = []
+            E_pis_t = []
+            E_pi_errs_t = []
+            E_pipis_t = []
+            E_pipi_errs_t = []
+            for i in range(len(N_L_arr[beta_arr.index(beta)][m_arr[beta_arr.index(beta)].index(m0)])):
+                if N_L_arr[beta_arr.index(beta)][m_arr[beta_arr.index(beta)].index(m0)][i] > 8:
+                    if not (beta == 7.2 and m0 == -0.794 and N_L_arr[beta_arr.index(beta)][m_arr[beta_arr.index(beta)].index(m0)][i] == 12):
+                        if E_pipis[beta_arr.index(beta)][m_arr[beta_arr.index(beta)].index(m0)][i] < 0.95:
+                            print(beta, m0, N_L_arr[beta_arr.index(beta)][m_arr[beta_arr.index(beta)].index(m0)][i])
+                            N_Ls.append(N_L_arr[beta_arr.index(beta)][m_arr[beta_arr.index(beta)].index(m0)][i])
+                            E_pis_t.append(E_pis[beta_arr.index(beta)][m_arr[beta_arr.index(beta)].index(m0)][i])
+                            E_pi_errs_t.append(E_pi_errs[beta_arr.index(beta)][m_arr[beta_arr.index(beta)].index(m0)][i])
+                            E_pipis_t.append(E_pipis[beta_arr.index(beta)][m_arr[beta_arr.index(beta)].index(m0)][i])
+                            E_pipi_errs_t.append(E_pipi_errs[beta_arr.index(beta)][m_arr[beta_arr.index(beta)].index(m0)][i])
+            if len(N_Ls) > 1:
+                print("Scattering analysis: beta=",beta,", m0=",m0,", resampling .... ")
+                res, res_sam = result_sampled(beta,m0,N_Ls,E_pis_t,E_pi_errs_t,E_pipis_t,E_pipi_errs_t)
+                fn_tmp = "scattering_Fig5.3_b%1.3f_m%1.3f"%(float(res["beta"]),float(res["m_1"]))
+                save_to_hdf(res, res_sam, fn_tmp)
+                res, res_sam = read_from_hdf(fn_tmp)
+            print("Ensembles skipped: beta=",beta,", m0=",m0)
+            ##################################
+
+
+
+
+
+            # ############# Epipi < 0.95 ####################
+            # N_Ls = []
+            # E_pis_t = []
+            # E_pi_errs_t = []
+            # E_pipis_t = []
+            # E_pipi_errs_t = []
+            # for i in range(len(N_L_arr[beta_arr.index(beta)][m_arr[beta_arr.index(beta)].index(m0)])):
+            #     if E_pipis[beta_arr.index(beta)][m_arr[beta_arr.index(beta)].index(m0)][i] < 0.95:
+            #         N_Ls.append(N_L_arr[beta_arr.index(beta)][m_arr[beta_arr.index(beta)].index(m0)][i])
+            #         E_pis_t.append(E_pis[beta_arr.index(beta)][m_arr[beta_arr.index(beta)].index(m0)][i])
+            #         E_pi_errs_t.append(E_pi_errs[beta_arr.index(beta)][m_arr[beta_arr.index(beta)].index(m0)][i])
+            #         E_pipis_t.append(E_pipis[beta_arr.index(beta)][m_arr[beta_arr.index(beta)].index(m0)][i])
+            #         E_pipi_errs_t.append(E_pipi_errs[beta_arr.index(beta)][m_arr[beta_arr.index(beta)].index(m0)][i])
+            # if len(N_Ls) > 1:
+            #     print("Scattering analysis: beta=",beta,", m0=",m0,", resampling .... ")
+            #     res, res_sam = result_sampled(beta,m0,N_Ls,E_pis_t,E_pi_errs_t,E_pipis_t,E_pipi_errs_t)
+            #     fn_tmp = "scattering_epipi_095_b%1.3f_m%1.3f"%(float(res["beta"]),float(res["m_1"]))
+            #     save_to_hdf(res, res_sam, fn_tmp)
+            #     res, res_sam = read_from_hdf(fn_tmp)
+            # print("Ensembles skipped: beta=",beta,", m0=",m0)
+            # #################################
             ############ beta = 6.9, m = -0.90, L > x #####################
             for x in [8,10]:
                 if beta == 6.9:
@@ -395,50 +469,50 @@ if __name__ == "__main__":
                             res, res_sam = read_from_hdf(fn_tmp)
             print("Ensembles skipped: beta=",beta,", m0=",m0)
             #################################
-            ############ beta = 7.2, m = -0.78, L > x #####################
-            for x in [8,10]:
-                if beta == 7.2:
-                    if m0 == -0.78:
-                        N_Ls = []
-                        E_pis_t = []
-                        E_pi_errs_t = []
-                        E_pipis_t = []
-                        E_pipi_errs_t = []
-                        for i in range(len(N_L_arr[beta_arr.index(beta)][m_arr[beta_arr.index(beta)].index(m0)])):
-                            if N_L_arr[beta_arr.index(beta)][m_arr[beta_arr.index(beta)].index(m0)][i] > x:
-                                N_Ls.append(N_L_arr[beta_arr.index(beta)][m_arr[beta_arr.index(beta)].index(m0)][i])
-                                E_pis_t.append(E_pis[beta_arr.index(beta)][m_arr[beta_arr.index(beta)].index(m0)][i])
-                                E_pi_errs_t.append(E_pi_errs[beta_arr.index(beta)][m_arr[beta_arr.index(beta)].index(m0)][i])
-                                E_pipis_t.append(E_pipis[beta_arr.index(beta)][m_arr[beta_arr.index(beta)].index(m0)][i])
-                                E_pipi_errs_t.append(E_pipi_errs[beta_arr.index(beta)][m_arr[beta_arr.index(beta)].index(m0)][i])
-                        if len(N_Ls) > 1:
-                            print("Scattering analysis: beta=",beta,", m0=",m0,", resampling .... ")
-                            res, res_sam = result_sampled(beta,m0,N_Ls,E_pis_t,E_pi_errs_t,E_pipis_t,E_pipi_errs_t)
-                            fn_tmp = "scattering_b72_m78_Lg%i_b%1.3f_m%1.3f"%(x,float(res["beta"]),float(res["m_1"]))
-                            save_to_hdf(res, res_sam, fn_tmp)
-                            res, res_sam = read_from_hdf(fn_tmp)
-            print("Ensembles skipped: beta=",beta,", m0=",m0)
-            #################################
-            ############ beta = 7.2, m = -0.794, mpi/mpiinf<1.3 #####################
-            if beta == 7.2:
-                if m0 == -0.794:
-                    N_Ls = []
-                    E_pis_t = []
-                    E_pi_errs_t = []
-                    E_pipis_t = []
-                    E_pipi_errs_t = []
-                    for i in range(len(N_L_arr[beta_arr.index(beta)][m_arr[beta_arr.index(beta)].index(m0)])):
-                        if N_L_arr[beta_arr.index(beta)][m_arr[beta_arr.index(beta)].index(m0)][i] > 13:
-                            N_Ls.append(N_L_arr[beta_arr.index(beta)][m_arr[beta_arr.index(beta)].index(m0)][i])
-                            E_pis_t.append(E_pis[beta_arr.index(beta)][m_arr[beta_arr.index(beta)].index(m0)][i])
-                            E_pi_errs_t.append(E_pi_errs[beta_arr.index(beta)][m_arr[beta_arr.index(beta)].index(m0)][i])
-                            E_pipis_t.append(E_pipis[beta_arr.index(beta)][m_arr[beta_arr.index(beta)].index(m0)][i])
-                            E_pipi_errs_t.append(E_pipi_errs[beta_arr.index(beta)][m_arr[beta_arr.index(beta)].index(m0)][i])
-                    if len(N_Ls) > 1:
-                        print("Scattering analysis: beta=",beta,", m0=",m0,", resampling .... ")
-                        res, res_sam = result_sampled(beta,m0,N_Ls,E_pis_t,E_pi_errs_t,E_pipis_t,E_pipi_errs_t)
-                        fn_tmp = "scattering_b72_m794_mpir13_b%1.3f_m%1.3f"%(float(res["beta"]),float(res["m_1"]))
-                        save_to_hdf(res, res_sam, fn_tmp)
-                        res, res_sam = read_from_hdf(fn_tmp)
-            print("Ensembles skipped: beta=",beta,", m0=",m0)
-            #################################
+            # ############ beta = 7.2, m = -0.78, L > x #####################
+            # for x in [8,10]:
+            #     if beta == 7.2:
+            #         if m0 == -0.78:
+            #             N_Ls = []
+            #             E_pis_t = []
+            #             E_pi_errs_t = []
+            #             E_pipis_t = []
+            #             E_pipi_errs_t = []
+            #             for i in range(len(N_L_arr[beta_arr.index(beta)][m_arr[beta_arr.index(beta)].index(m0)])):
+            #                 if N_L_arr[beta_arr.index(beta)][m_arr[beta_arr.index(beta)].index(m0)][i] > x:
+            #                     N_Ls.append(N_L_arr[beta_arr.index(beta)][m_arr[beta_arr.index(beta)].index(m0)][i])
+            #                     E_pis_t.append(E_pis[beta_arr.index(beta)][m_arr[beta_arr.index(beta)].index(m0)][i])
+            #                     E_pi_errs_t.append(E_pi_errs[beta_arr.index(beta)][m_arr[beta_arr.index(beta)].index(m0)][i])
+            #                     E_pipis_t.append(E_pipis[beta_arr.index(beta)][m_arr[beta_arr.index(beta)].index(m0)][i])
+            #                     E_pipi_errs_t.append(E_pipi_errs[beta_arr.index(beta)][m_arr[beta_arr.index(beta)].index(m0)][i])
+            #             if len(N_Ls) > 1:
+            #                 print("Scattering analysis: beta=",beta,", m0=",m0,", resampling .... ")
+            #                 res, res_sam = result_sampled(beta,m0,N_Ls,E_pis_t,E_pi_errs_t,E_pipis_t,E_pipi_errs_t)
+            #                 fn_tmp = "scattering_b72_m78_Lg%i_b%1.3f_m%1.3f"%(x,float(res["beta"]),float(res["m_1"]))
+            #                 save_to_hdf(res, res_sam, fn_tmp)
+            #                 res, res_sam = read_from_hdf(fn_tmp)
+            # print("Ensembles skipped: beta=",beta,", m0=",m0)
+            # #################################
+            # ############ beta = 7.2, m = -0.794, mpi/mpiinf<1.3 #####################
+            # if beta == 7.2:
+            #     if m0 == -0.794:
+            #         N_Ls = []
+            #         E_pis_t = []
+            #         E_pi_errs_t = []
+            #         E_pipis_t = []
+            #         E_pipi_errs_t = []
+            #         for i in range(len(N_L_arr[beta_arr.index(beta)][m_arr[beta_arr.index(beta)].index(m0)])):
+            #             if N_L_arr[beta_arr.index(beta)][m_arr[beta_arr.index(beta)].index(m0)][i] > 13:
+            #                 N_Ls.append(N_L_arr[beta_arr.index(beta)][m_arr[beta_arr.index(beta)].index(m0)][i])
+            #                 E_pis_t.append(E_pis[beta_arr.index(beta)][m_arr[beta_arr.index(beta)].index(m0)][i])
+            #                 E_pi_errs_t.append(E_pi_errs[beta_arr.index(beta)][m_arr[beta_arr.index(beta)].index(m0)][i])
+            #                 E_pipis_t.append(E_pipis[beta_arr.index(beta)][m_arr[beta_arr.index(beta)].index(m0)][i])
+            #                 E_pipi_errs_t.append(E_pipi_errs[beta_arr.index(beta)][m_arr[beta_arr.index(beta)].index(m0)][i])
+            #         if len(N_Ls) > 1:
+            #             print("Scattering analysis: beta=",beta,", m0=",m0,", resampling .... ")
+            #             res, res_sam = result_sampled(beta,m0,N_Ls,E_pis_t,E_pi_errs_t,E_pipis_t,E_pipi_errs_t)
+            #             fn_tmp = "scattering_b72_m794_mpir13_b%1.3f_m%1.3f"%(float(res["beta"]),float(res["m_1"]))
+            #             save_to_hdf(res, res_sam, fn_tmp)
+            #             res, res_sam = read_from_hdf(fn_tmp)
+            # print("Ensembles skipped: beta=",beta,", m0=",m0)
+            # #################################
