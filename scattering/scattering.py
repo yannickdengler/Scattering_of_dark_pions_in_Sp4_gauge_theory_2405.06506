@@ -338,18 +338,18 @@ if __name__ == "__main__":
             E_pipi_errs[beta_arr.index(beta)][m_arr[beta_arr.index(beta)].index(m_1)].append(E_pipi_err)
     for beta in beta_arr:
         for m0 in m_arr[beta_arr.index(beta)]:
-            # ############## default ####################
-            # N_Ls = N_L_arr[beta_arr.index(beta)][m_arr[beta_arr.index(beta)].index(m0)]
-            # E_pis_t = E_pis[beta_arr.index(beta)][m_arr[beta_arr.index(beta)].index(m0)]
-            # E_pi_errs_t = E_pi_errs[beta_arr.index(beta)][m_arr[beta_arr.index(beta)].index(m0)]
-            # E_pipis_t = E_pipis[beta_arr.index(beta)][m_arr[beta_arr.index(beta)].index(m0)]
-            # E_pipi_errs_t = E_pipi_errs[beta_arr.index(beta)][m_arr[beta_arr.index(beta)].index(m0)]
-            # print("Scattering analysis: beta=",beta,", m0=",m0,", resampling .... ")
-            # res, res_sam = result_sampled(beta,m0,N_Ls,E_pis_t,E_pi_errs_t,E_pipis_t,E_pipi_errs_t)
-            # fn_tmp = "scattering_b%1.3f_m%1.3f"%(float(res["beta"]),float(res["m_1"]))
-            # save_to_hdf(res, res_sam, fn_tmp)
-            # res, res_sam = read_from_hdf(fn_tmp)
-            # ##################################
+            ############## default ####################
+            N_Ls = N_L_arr[beta_arr.index(beta)][m_arr[beta_arr.index(beta)].index(m0)]
+            E_pis_t = E_pis[beta_arr.index(beta)][m_arr[beta_arr.index(beta)].index(m0)]
+            E_pi_errs_t = E_pi_errs[beta_arr.index(beta)][m_arr[beta_arr.index(beta)].index(m0)]
+            E_pipis_t = E_pipis[beta_arr.index(beta)][m_arr[beta_arr.index(beta)].index(m0)]
+            E_pipi_errs_t = E_pipi_errs[beta_arr.index(beta)][m_arr[beta_arr.index(beta)].index(m0)]
+            print("Scattering analysis: beta=",beta,", m0=",m0,", resampling .... ")
+            res, res_sam = result_sampled(beta,m0,N_Ls,E_pis_t,E_pi_errs_t,E_pipis_t,E_pipi_errs_t)
+            fn_tmp = "scattering_b%1.3f_m%1.3f"%(float(res["beta"]),float(res["m_1"]))
+            save_to_hdf(res, res_sam, fn_tmp)
+            res, res_sam = read_from_hdf(fn_tmp)
+            ##################################
             ############## Fig 5.1 ####################
             N_Ls = []
             E_pis_t = []
