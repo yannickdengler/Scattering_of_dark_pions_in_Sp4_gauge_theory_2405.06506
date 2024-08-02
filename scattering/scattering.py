@@ -218,7 +218,8 @@ def get_interpolation_points_UTE(a, b, start = -3, stop = 3, num_inter = 2000):
     """
     Interpolates the universal threshold expansion for an error estimate at each value of P
     """
-    P2_arr = np.logspace(np.log10(start), np.log10(stop), num_inter)
+    # P2_arr = np.logspace(np.log10(start), np.log10(stop), num_inter)
+    P2_arr = np.linspace(start, stop, num_inter)
     P_cot_PS_arr = []
     for P2 in P2_arr:
         P_cot_PS_arr.append(UTE(P2, a, b))
@@ -229,7 +230,8 @@ def get_interpolation_points_Adler_fixed(a, c, start = -3, stop = 3, num_inter =
     """
     Interpolates the fixed Adler expansion for an error estimate at each value of P
     """
-    P2_arr = np.logspace(np.log10(start), np.log10(stop), num_inter)
+    # P2_arr = np.logspace(np.log10(start), np.log10(stop), num_inter)
+    P2_arr = np.linspace(start, stop, num_inter)
     P_cot_PS_arr = []
     for P2 in P2_arr:
         P_cot_PS_arr.append(UTE_A0_c_fixed(P2, a, c))
@@ -240,7 +242,8 @@ def get_interpolation_points_Adler_free(a, c, start = -3, stop = 3, num_inter = 
     """
     Interpolates the fixed Adler expansion for an error estimate at each value of P
     """
-    P2_arr = np.logspace(np.log10(start), np.log10(stop), num_inter)
+    # P2_arr = np.logspace(np.log10(start), np.log10(stop), num_inter)
+    P2_arr = np.linspace(start, stop, num_inter)
     P_cot_PS_arr = []
     for P2 in P2_arr:
         P_cot_PS_arr.append(UTE_A0_c_free(P2, a, c))
