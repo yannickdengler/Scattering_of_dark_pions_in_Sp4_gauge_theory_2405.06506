@@ -61,8 +61,8 @@ def calculations(N_Ls, E_pis, E_pipis):
         a_Ad_fixed, c_Ad_fixed = fit_phase_shift_Adler_c_fixed(P2_pipi_prime, P_cot_PS_pipi_prime) 
     except RuntimeError:
         a_Ad_fixed, c_Ad_fixed = [np.NaN,np.NaN]
-    Adler_fixed_inter_P_cot_PS = get_interpolation_points_Adler_fixed(a_Ad_fixed,c_Ad_fixed)
-    Adler_free_inter_P_cot_PS = get_interpolation_points_Adler_free(a_Ad_free,c_Ad_free)
+    # Adler_fixed_inter_P_cot_PS = get_interpolation_points_Adler_fixed(a_Ad_fixed,c_Ad_fixed)
+    # Adler_free_inter_P_cot_PS = get_interpolation_points_Adler_free(a_Ad_free,c_Ad_free)
     UTE_inter_P_cot_PS = get_interpolation_points_UTE(a2,b2)
     sigma_inter_sigma = get_interpolation_points_sigma(a2,b2)
     result["N_Ls"] = N_Ls
@@ -88,8 +88,8 @@ def calculations(N_Ls, E_pis, E_pipis):
     result["c_Ad_fixed"] = [c_Ad_fixed,]
     result["UTE_inter_P_cot_PS"] = UTE_inter_P_cot_PS
     result["sigma_inter_sigma"] = sigma_inter_sigma
-    result["Adler_free_inter_P_cot_PS"] = Adler_free_inter_P_cot_PS
-    result["Adler_fixed_inter_P_cot_PS"] = Adler_fixed_inter_P_cot_PS
+    # result["Adler_free_inter_P_cot_PS"] = Adler_free_inter_P_cot_PS
+    # result["Adler_fixed_inter_P_cot_PS"] = Adler_fixed_inter_P_cot_PS
     return result
 
 def inf_mass_fit_Goldstone(N_L, m_inf, A):
@@ -150,7 +150,7 @@ def Adler_A0(c,P2):
     """
     Additional term for Adler-zeros
     """
-    return c*np.sqrt(P2+1)/(2*P2+c)
+    return c*np.sqrt(P2+1)/(2*P2+c)     
 
 def UTE_A0_c_fixed(P2,a,c):
     """
