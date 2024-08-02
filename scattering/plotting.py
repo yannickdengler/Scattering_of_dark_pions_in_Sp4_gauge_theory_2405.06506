@@ -488,7 +488,7 @@ def plot_a_0_vs_m_f_pi(beta_arr, m_arr, show=False, save = True, pref = ""):
             plt.errorbar(x=[mpifpi_err[0],],xerr=[[mpifpi_err[1],],[mpifpi_err[2],]],y=[a0mpi_err[0],],yerr=[[a0mpi_err[1],],[a0mpi_err[2],]], marker = marker_beta(beta_arr[i][j]), ls = "", capsize=5, markersize=10, color = color_beta(beta_arr[i][j]))
             f0.write("%f,%f,%e,%e,%e,%e,%e,%e\n"%(beta_arr[i][j],m_arr[i][j],a0mpi_err[0],a0mpi_err[1],a0mpi_err[2], rempi_err[0], rempi_err[1], rempi_err[2] ))
     f0.close()
-    with open("output/tables/Sp(4)_data.csv", "w") as f:
+    with open("output/tables/Sp(4)_data"+pref+".csv", "w") as f:
         for i in range(len(out)):
             f.write("%e,%e,%e,%e,%e,%e\n"%(out[i][0],out[i][1],out[i][2],out[i][3],out[i][4],out[i][5]))
     plt.scatter((-10, -9), y = (0,0), marker = marker_beta(6.9), color = color_beta(6.9), label ="$\\beta=6.90$", s = 60)
@@ -565,7 +565,7 @@ def plot_a_0_vs_m_f_pi_Adler(beta_arr, m_arr, show=False, save = True, pref = ""
             plt.errorbar(x=[mpifpi_err[0],],xerr=[[mpifpi_err[1],],[mpifpi_err[2],]],y=[a0mpi_err[0],],yerr=[[a0mpi_err[1],],[a0mpi_err[2],]], marker = marker_beta(beta_arr[i][j]), ls = "", capsize=5, markersize=10, color = color_beta(beta_arr[i][j]))
             # plt.errorbar(x=[mpifpi_err[0],],xerr=[[mpifpi_err[1],],[mpifpi_err[2],]],y=[a0_Adler_free_err[0],],yerr=[[a0_Adler_free_err[1],],[a0_Adler_free_err[2],]], marker = ">", ls = "", capsize=3, markersize=6, color = "grey")
             plt.errorbar(x=[mpifpi_err[0],],xerr=[[mpifpi_err[1],],[mpifpi_err[2],]],y=[a0_Adler_fixed_err[0],],yerr=[[a0_Adler_fixed_err[1],],[a0_Adler_fixed_err[2],]], marker = "<", ls = "", capsize=3, markersize=6, color = "green")
-    with open("output/tables/Sp(4)_data_Adler.csv", "w") as f:
+    with open("output/tables/Sp(4)_data_Adler"+pref+".csv", "w") as f:
         for i in range(len(out)):
             f.write("%e,%e,%e,%e,%e,%e\n"%(out[i][0],out[i][1],out[i][2],out[i][3],out[i][4],out[i][5]))
     plt.scatter((-10, -9), y = (0,0), marker = marker_beta(6.9), color = color_beta(6.9), label ="$\\beta=6.90$", s = 60)
