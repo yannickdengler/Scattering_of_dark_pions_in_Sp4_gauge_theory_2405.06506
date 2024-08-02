@@ -258,7 +258,6 @@ def plot_ERT_plus_sigma(file, show=False, save = True, rek_lim = False, vesc_lim
     fig, [ax1,ax2] = plt.subplots(nrows=2, ncols=1, sharex=True)
     plt.subplots_adjust(wspace=0, hspace=0.1)   
     res,  res_sample = result.read_from_hdf(file)
-    num_gaussian = len(res_sample["P2_pipi_prime"])
 
     P_cot_PS_pipi_prime = np.transpose(res_sample["P_cot_PS_pipi_prime"])
     s_prime = np.transpose(res_sample["s_pipi_prime"])
@@ -326,6 +325,82 @@ def plot_ERT_plus_sigma(file, show=False, save = True, rek_lim = False, vesc_lim
     ax2.set_ylabel("$\sigma m_\pi^{\infty\,2}$")
     if save:
         plt.savefig("output/plots/comb_s"+pref+"_b%1.3f_m%1.3f.pdf"%(res["beta"],res["m_1"]), bbox_inches="tight")
+    if show:
+        plt.show()
+    plt.clf()
+
+def plot_ERT_virtual(file, show=False, save = True, rek_lim = False, vesc_lim = False, pref = ""):
+    plt.rcParams['figure.figsize'] = [10, 6]
+    fontsize = 14
+    font = {'size'   : fontsize}
+    matplotlib.rc('font', **font)
+    fig, [ax1,] = plt.subplots(nrows=1, ncols=1, sharex=True)
+    plt.subplots_adjust(wspace=0, hspace=0.1)   
+    res,  res_sample = result.read_from_hdf(file)
+
+    P_cot_PS_pipi_prime = np.transpose(res_sample["P_cot_PS_pipi_prime"])    
+    P2_prime = np.transpose(res_sample["P2_pipi_prime"])
+
+
+    P_cot_err = error_of_array(np.transpose(P_cot_PS_pipi_prime))
+
+    inter_UTE = np.transpose(res_sample["UTE_inter_P_cot_PS"])
+    inter_Adler_free = np.transpose(res_sample["Adler_free_inter_P_cot_PS"])
+    inter_Adler_fixed = np.transpose(res_sample["Adler_fixed_inter_P_cot_PS"])
+    inter_Adler_free_plot, inter_Adler_free_plot_m, inter_Adler_free_plot_p = [[],[],[]]
+    inter_Adler_fixed_plot, inter_Adler_fixed_plot_m, inter_Adler_fixed_plot_p = [[],[],[]]
+    inter_UTE_plot, inter_UTE_plot_m, inter_UTE_plot_p = [[],[],[]]
+
+    P2_arr = np.logspace(np.log10(1e-4), np.log10(3), len(inter_UTE))
+
+    for i in range(len(inter_UTE)):
+        tmp = inter_UTE[i]
+        tmp.sort()
+        length = len(tmp)
+        inter_UTE_plot.append(tmp[length//2])
+        inter_UTE_plot_m.append(tmp[math.floor(length*(1-num_perc)/2)])
+        inter_UTE_plot_p.append(tmp[math.ceil(length*(1+num_perc)/2)])
+    for i in range(len(inter_Adler_free)):
+        tmp = inter_Adler_free[i]
+        tmp.sort()
+        length = len(tmp)
+        inter_Adler_free_plot.append(tmp[length//2])
+        inter_Adler_free_plot_m.append(tmp[math.floor(length*(1-num_perc)/2)])
+        inter_Adler_free_plot_p.append(tmp[math.ceil(length*(1+num_perc)/2)])
+    for i in range(len(inter_Adler_fixed)):
+        tmp = inter_Adler_fixed[i]
+        tmp.sort()
+        length = len(tmp)
+        inter_Adler_fixed_plot.append(tmp[length//2])
+        inter_Adler_fixed_plot_m.append(tmp[math.floor(length*(1-num_perc)/2)])
+        inter_Adler_fixed_plot_p.append(tmp[math.ceil(length*(1+num_perc)/2)])
+
+    x1,x2,y1,y2 = [-3,3,min(P_cot_err[3])*1.05,max(P_cot_err[4])*0.6]
+    ax1.set_xlim([x1,x2])
+    ax1.set_ylim([y1,y2])
+    ratio = (x2-x1)/(y2-y1)*ax1.bbox.height/ax1.bbox.width
+
+    for i in range(len(P2_prime)):
+        length = len(P2_prime[i])
+        sorted_indices = np.argsort(P2_prime[i])  
+        av = np.arange(math.floor(length*(1-num_perc)/2),math.ceil(length*(1+num_perc)/2),nth(length))
+        P_cot_arr = [np.mean(P_cot_PS_pipi_prime[i][sorted_indices][av[x]:av[x+1]]) for x in range(len(av)-1)]
+        if i == 0:
+            plot_curved_errorbars(ax1,P2_arr, P_cot_arr, ratio=ratio, color = "green", label = "pipi", offset=5)
+        else:            
+            plot_curved_errorbars(ax1,P2_arr, P_cot_arr, ratio=ratio, color = "green", label = "pipi", offset=5)
+    ax1.plot(P2_arr, inter_UTE_plot, label = "Fit")
+    ax1.fill_between(P2_arr, inter_UTE_plot_m, inter_UTE_plot_p, alpha = 0.2)
+    ax1.plot(P2_arr, inter_Adler_free_plot, label = "Adler free")
+    ax1.fill_between(P2_arr, inter_Adler_free_plot_m, inter_Adler_free_plot_p, alpha = 0.2)
+    ax1.plot(P2_arr, inter_Adler_fixed_plot, label = "Adler fixed")
+    ax1.fill_between(P2_arr, inter_Adler_fixed_plot_m, inter_Adler_fixed_plot_p, alpha = 0.2)
+    
+
+    ax1.grid()
+    ax1.set_ylabel("$P \\cot\delta_0/m_\pi^\infty$")
+    if save:
+        plt.savefig("output/plots/ERR_virtual_s"+pref+"_b%1.3f_m%1.3f.pdf"%(res["beta"],res["m_1"]), bbox_inches="tight")
     if show:
         plt.show()
     plt.clf()
@@ -398,8 +473,8 @@ def plot_ERT_plus_sigma_Adler(file, show=False, save = True, rek_lim = False, ve
 
     from scattering import UTE_A0_c_fixed, UTE_A0_c_free
 
-    # ax1.plot(s_arr_of_P2, UTE_A0_c_fixed(P2_arr,a_Ad_fixed,c_Ad_fixed), label = "Adler fixed")
-    # ax1.plot(s_arr_of_P2, UTE_A0_c_free(P2_arr,a_Ad_free,c_Ad_free), label = "Adler free")
+    ax1.plot(s_arr_of_P2, UTE_A0_c_fixed(P2_arr,a_Ad_fixed,c_Ad_fixed), label = "Adler fixed")
+    ax1.plot(s_arr_of_P2, UTE_A0_c_free(P2_arr,a_Ad_free,c_Ad_free), label = "Adler free")
 
     x1,x2,y1,y2,y3,y4 = [4,4+(max(s_err[4])-4)*1.05,min(P_cot_err[3])*1.05,max(P_cot_err[4])*0.6,min(sig_err[3])*0.95,min(max(sig_err[4])*1.05,20)]
     ax1.set_xlim([x1,x2])
@@ -632,6 +707,7 @@ def plot_version(beta_arr, m_arr, pref):
             else:
                 plot_m_inf_with_luscher("scattering"+pref+"_b%1.3f_m%1.3f"%(beta_arr[i][j],m_arr[i][j]), show=False,save=True, draw_arrows=False, pref=pref)
             plot_ERT_plus_sigma("scattering"+pref+"_b%1.3f_m%1.3f"%(beta_arr[i][j],m_arr[i][j]), show=False,save=True, pref=pref)
+            plot_ERT_virtual("scattering"+pref+"_b%1.3f_m%1.3f"%(beta_arr[i][j],m_arr[i][j]), show=False,save=True, pref=pref)
             # plot_ERT_plus_sigma_Adler("scattering"+pref+"_b%1.3f_m%1.3f"%(beta_arr[i][j],m_arr[i][j]), show=False,save=True, pref=pref)
 
 if __name__ == "__main__":

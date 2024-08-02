@@ -213,7 +213,8 @@ def fit_phase_shift_Adler_c_free(P2s, P_cot_PSs):
     popt, pcov = curve_fit(UTE_A0_c_free, P2s, P_cot_PSs)
     return popt
 
-def get_interpolation_points_UTE(a, b, start = 1e-4, stop = 3, num_inter = 2000):
+# def get_interpolation_points_UTE(a, b, start = 1e-4, stop = 3, num_inter = 2000):
+def get_interpolation_points_UTE(a, b, start = -3, stop = 3, num_inter = 2000):
     """
     Interpolates the universal threshold expansion for an error estimate at each value of P
     """
@@ -223,7 +224,8 @@ def get_interpolation_points_UTE(a, b, start = 1e-4, stop = 3, num_inter = 2000)
         P_cot_PS_arr.append(UTE(P2, a, b))
     return np.asarray(P_cot_PS_arr)
 
-def get_interpolation_points_Adler_fixed(a, c, start = 1e-4, stop = 3, num_inter = 2000):
+# def get_interpolation_points_Adler_fixed(a, c, start = 1e-4, stop = 3, num_inter = 2000):
+def get_interpolation_points_Adler_fixed(a, c, start = -3, stop = 3, num_inter = 2000):
     """
     Interpolates the fixed Adler expansion for an error estimate at each value of P
     """
@@ -233,7 +235,8 @@ def get_interpolation_points_Adler_fixed(a, c, start = 1e-4, stop = 3, num_inter
         P_cot_PS_arr.append(UTE_A0_c_fixed(P2, a, c))
     return np.asarray(P_cot_PS_arr)
 
-def get_interpolation_points_Adler_free(a, c, start = 1e-4, stop = 3, num_inter = 2000):
+# def get_interpolation_points_Adler_free(a, c, start = 1e-4, stop = 3, num_inter = 2000):
+def get_interpolation_points_Adler_free(a, c, start = -3, stop = 3, num_inter = 2000):
     """
     Interpolates the fixed Adler expansion for an error estimate at each value of P
     """
