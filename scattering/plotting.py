@@ -400,7 +400,7 @@ def plot_ERT_virtual(file, show=False, save = True, rek_lim = False, vesc_lim = 
     ax1.grid()
     ax1.set_ylabel("$P \\cot\delta_0/m_\pi^\infty$")
     if save:
-        plt.savefig("output/plots/ERR_virtual_s"+pref+"_b%1.3f_m%1.3f.pdf"%(res["beta"],res["m_1"]), bbox_inches="tight")
+        plt.savefig("output/plots/ERE_virtual_s"+pref+"_b%1.3f_m%1.3f.pdf"%(res["beta"],res["m_1"]), bbox_inches="tight")
     if show:
         plt.show()
     plt.clf()
