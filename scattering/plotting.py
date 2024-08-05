@@ -529,7 +529,7 @@ def plot_a_0_vs_m_f_pi(beta_arr, m_arr, show=False, save = True, pref = ""):
     a0_mpi_total_arr = []
     mpifpi_total_arr = []
     out = []
-    f0 = open("output/tables/effective_range_parameters.csv", "w")
+    f0 = open("output/tables/effective_range_parameters"+pref+"_.csv", "w")
     f0.write("beta,mass,a0mpi,Delta_a0mpi_lower,Delta_a0mpi_upper,r0mpi,Delta_r0mpi_lower,Delta_r0mpi_upper\n")
     for i in range(len(beta_arr)):
         for j in range(len(beta_arr[i])):
