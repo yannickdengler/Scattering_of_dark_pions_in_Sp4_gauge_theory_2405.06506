@@ -98,7 +98,8 @@ def plot_curved_errorbars(ax,xarr,yarr,length=0.2,color="green",label="",ratio=1
         return -x*(xarr[-1]-xarr[-offset])/(yarr[-1]-yarr[-offset])
     def begin_cap(x):
         return -x*(xarr[offset]-xarr[0])/(yarr[offset]-yarr[0])
-    ax.plot(xarr,yarr,color=color,label=label)
+    # ax.plot(xarr,yarr,color=color,label=label)
+    ax.plot(xarr,yarr,color=color)
     xend = xarr[-1]
     len_x = ratio**2
     len_y = 1
@@ -118,7 +119,7 @@ def get_Zeta_zeros(num_zero = 6):
         zeros.append(bisect(gz.Zeta, i+1e-9,i+1-1e-9))
     return zeros
 
-def plot_m_inf_with_luscher(file, show = True, save = True):
+def plot_m_inf_with_luscher(file, show = True, save = True, zoom = False, draw_arrows = False, pref=""):  # the values for draw_arrows are hard-coded and only work for 7.2 -0.78
     zeta_zeros = get_Zeta_zeros()               # q2
     fontsize = 14
     font = {'size'   : fontsize}
@@ -127,15 +128,6 @@ def plot_m_inf_with_luscher(file, show = True, save = True):
 
     fig, [ax1,ax2] = plt.subplots(nrows=2, ncols=1, sharex=True)
     plt.subplots_adjust(wspace=0, hspace=0.1)   
-    w_inch, h_inch = ax2.figure.get_size_inches() * ax2.get_position().size
-    axins1 = ax2.inset_axes([1.5/w_inch,0.7/h_inch,3/w_inch,1.3/h_inch]) #
-    axins1.grid()
-    axins1.set_xlim(0.053, 0.087)
-    axins1.set_ylim(0.999, 1.0075)
-
-
-    axins1.set_xticks([0.06,0.08,], labels = [])
-    axins1.set_yticks([1.0,], labels = [])
 
     res,  res_sample = result.read_from_hdf(file)
 
@@ -146,8 +138,11 @@ def plot_m_inf_with_luscher(file, show = True, save = True):
     A_R = error_of_array(res_sample["A_R"])
     N_L = res["N_Ls"]
     N_L_inv = [1./L for L in N_L]
-    beta = res["beta"]
-    m12 = res["m_1"]
+
+    x1,x2,y1,y2,y3,y4 = [0,max(N_L_inv)*1.1,1.995,2+(max(E_pipi[0])-2)*1.2,0.995,1+(max(E_pi[0])-1)*1.2]
+    ax1.set_xlim([x1,x2])
+    ax1.set_ylim([y1,y2])
+    ax2.set_ylim([y3,y4])
 
     l1=ax2.errorbar(x=N_L_inv, y=E_pi[0], yerr=[E_pi[1],E_pi[2]], ls = "", capsize=3, color = "blue", marker = "v", markersize = 4, label = "$\pi$")
     l2=ax1.errorbar(x=N_L_inv, y=E_pipi[0], yerr=[E_pipi[1],E_pipi[2]], ls = "", capsize=3, color = "red", marker = "^", markersize = 4, label = "$\pi\pi$")
@@ -163,10 +158,19 @@ def plot_m_inf_with_luscher(file, show = True, save = True):
     ax2.plot(xarr, yarr, color = "blue", label = "Fit")
     ax2.fill_between(xarr, yarr_m, yarr_p, alpha = 0.3, color = "blue")
 
-    axins1.plot(xarr, yarr, color = "blue", label = "Fit")
-    axins1.fill_between(xarr, yarr_m, yarr_p, alpha = 0.3, color = "blue")    
-    axins1.errorbar(x=N_L_inv, y=E_pi[0], yerr=[E_pi[1],E_pi[2]], ls = "", capsize=3, color = "blue", marker = "v", markersize = 4, label = "$\pi$")
 
+    if zoom:
+        w_inch, h_inch = ax2.figure.get_size_inches() * ax2.get_position().size
+        axins1 = ax2.inset_axes([1.5/w_inch,0.7/h_inch,3/w_inch,1.3/h_inch]) #
+        axins1.grid()
+        axins1.set_xlim(0.053, 0.087)
+        axins1.set_ylim(0.999, 1.0075)
+        axins1.set_xticks([0.06,0.08,], labels = [])
+        axins1.set_yticks([1.0,], labels = [])
+        axins1.plot(xarr, yarr, color = "blue", label = "Fit")
+        axins1.fill_between(xarr, yarr_m, yarr_p, alpha = 0.3, color = "blue")    
+        axins1.errorbar(x=N_L_inv, y=E_pi[0], yerr=[E_pi[1],E_pi[2]], ls = "", capsize=3, color = "blue", marker = "v", markersize = 4, label = "$\pi$")
+        mark_inset(ax2, axins1, loc1=1, loc2=3, fc="none", ec="0.5", zorder = -5)
 
     L_inv_lat = np.linspace(0,1.2/min(N_L),200)                                              # in lattice units
 
@@ -187,38 +191,66 @@ def plot_m_inf_with_luscher(file, show = True, save = True):
             ax1.plot(L_inv_lat, E_nontriv[i], color = "black", linewidth = .1)
         ax1.fill_between(L_inv_lat, y1=E_triv[i], y2=E_nontriv[i],color="lightblue",alpha = 0.5)#,hatch="x")
         ax1.fill_between(L_inv_lat, y1=E_nontriv[i], y2=E_triv[i+1],color="lightblue",alpha = 0.7)#,hatch="\\\\")
-    ax1.text(x=0.061, y = 2.308, s="$\delta_0 > 0$")
-    ax1.text(x=0.081, y = 2.308, s="$\delta_0 < 0$")
+        
+    if draw_arrows:
+        # # for b705m085
+        ax1.text(x=0.041, y = 2.41, s="$\delta_0 > 0$")
+        ax1.text(x=0.0565, y = 2.41, s="$\delta_0 < 0$")
 
-    ax1.annotate("", xy=(0.0565, E_of_k(k_of_Linv(0.0565, zeta_zeros[0])/mass)), xytext=(0.065, 2.15),
-            arrowprops=dict(facecolor='black',width = 0.5, headwidth = 3, headlength = 3),fontsize = "small")
-    ax1.text(s="$\cot(\delta_0)=0$",x = 0.0655, y = 2.135)
+        ax1.annotate("", xy=(0.039, E_of_k(k_of_Linv(0.039, zeta_zeros[0])/mass)), xytext=(0.045, 2.143),
+                arrowprops=dict(facecolor='black',width = 0.5, headwidth = 3, headlength = 3),fontsize = "small")
+        ax1.text(s="$\cot(\delta_0)=0$",x = 0.045, y = 2.12)
 
-    ax1.text(s="$q^2 \in \mathbb{Z}$",x = 0.0555, y = 2.25)
-    ax1.annotate("", xy=(0.0454, E_of_k(k_of_Linv(0.0455, 1)/mass)), xytext=(0.055, 2.26),
-            arrowprops=dict(facecolor='black',width = 0.5, headwidth = 3, headlength = 3),fontsize = "small")
-    ax1.annotate("", xy=(0.0360, E_of_k(k_of_Linv(0.0361, 2)/mass)), xytext=(0.055, 2.26),
-            arrowprops=dict(facecolor='black',width = 0.5, headwidth = 3, headlength = 3),fontsize = "small")
+        ax1.annotate("", xy=(0.025, E_of_k(k_of_Linv(0.025, 2)/mass)), xytext=(0.0367, 2.335),
+                arrowprops=dict(facecolor='black',width = 0.5, headwidth = 3, headlength = 3),fontsize = "small")
+        ax1.annotate("", xy=(0.03, E_of_k(k_of_Linv(0.03, 1)/mass)), xytext=(0.0367, 2.335),
+                arrowprops=dict(facecolor='black',width = 0.5, headwidth = 3, headlength = 3),fontsize = "small")
+        ax1.text(s="$q^2 \in \mathbb{Z}$",x = 0.037, y = 2.325)
 
-    ax2.set_xlabel("a/L")
-    ax2.text(s="$E/m_\pi^\infty$", rotation = "vertical", x=-0.012, y = 1.13, fontsize = 14)
+        ax2.set_xlabel("a/L")
+        ax2.text(s="$E/m_\pi^\infty$", rotation = "vertical", x=-0.012, y = 0.995+(y4-0.995)*1.05, fontsize = 14)
+        # # for b72m078
+        # ax1.text(x=0.05, y = max(E_pipi[0]), s="$\delta_0 > 0$")
+        # ax1.text(x=0.065, y = max(E_pipi[0]), s="$\delta_0 < 0$")
 
-    x1,x2,y1,y2 = [0,0.13,2,2.35]
-    ax1.set_xlim([x1,x2])
-    ax1.set_ylim([y1,y2])
-    ax2.set_ylim([0.995,1.13])
+        # ax1.annotate("", xy=(0.0565, E_of_k(k_of_Linv(0.0565, zeta_zeros[0])/mass)), xytext=(0.0617, 2.337),
+        #         arrowprops=dict(facecolor='black',width = 0.5, headwidth = 3, headlength = 3),fontsize = "small")
+        # ax1.text(s="$\cot(\delta_0)=0$",x = 0.062, y = 2.3)
 
-    mark_inset(ax2, axins1, loc1=1, loc2=3, fc="none", ec="0.5", zorder = -5)
+        # ax1.annotate("", xy=(0.03, E_of_k(k_of_Linv(0.03, 2)/mass)), xytext=(0.0415, 2.35),
+        #         arrowprops=dict(facecolor='black',width = 0.5, headwidth = 3, headlength = 3),fontsize = "small")
+        # ax1.annotate("", xy=(0.035, E_of_k(k_of_Linv(0.035, 1)/mass)), xytext=(0.0415, 2.35),
+        #         arrowprops=dict(facecolor='black',width = 0.5, headwidth = 3, headlength = 3),fontsize = "small")
+        # ax1.text(s="$q^2 \in \mathbb{Z}$",x = 0.042, y = 2.33)
+
+        # ax2.set_xlabel("a/L")
+        # ax2.text(s="$E/m_\pi^\infty$", rotation = "vertical", x=-0.012, y = 0.995+(y4-0.995)*1.05, fontsize = 14)
+        # # for b69m090
+        # ax1.text(x=0.061, y = 2.308, s="$\delta_0 > 0$")
+        # ax1.text(x=0.081, y = 2.308, s="$\delta_0 < 0$")
+
+        # ax1.annotate("", xy=(0.0565, E_of_k(k_of_Linv(0.0565, zeta_zeros[0])/mass)), xytext=(0.065, 2.15),
+        #         arrowprops=dict(facecolor='black',width = 0.5, headwidth = 3, headlength = 3),fontsize = "small")
+        # ax1.text(s="$\cot(\delta_0)=0$",x = 0.0655, y = 2.135)
+
+        # ax1.text(s="$q^2 \in \mathbb{Z}$",x = 0.0555, y = 2.25)
+        # ax1.annotate("", xy=(0.0454, E_of_k(k_of_Linv(0.0455, 1)/mass)), xytext=(0.055, 2.26),
+        #         arrowprops=dict(facecolor='black',width = 0.5, headwidth = 3, headlength = 3),fontsize = "small")
+        # ax1.annotate("", xy=(0.0360, E_of_k(k_of_Linv(0.0361, 2)/mass)), xytext=(0.055, 2.26),
+        #         arrowprops=dict(facecolor='black',width = 0.5, headwidth = 3, headlength = 3),fontsize = "small")
+
+        # ax2.set_xlabel("a/L")
+        # ax2.text(s="$E/m_\pi^\infty$", rotation = "vertical", x=-0.012, y = 1.13, fontsize = 14)
+
     ax2.grid()
     ax1.grid()
     ax2.legend([l1, l2],["$\pi$", "$\pi\pi$"], loc = "upper left")
     if save:
-        plt.savefig("output/plots/EpiEpipi_%1.3f_m%1.3f.pdf"%(res["beta"],res["m_1"]), bbox_inches="tight")
+        plt.savefig("output/plots/EpiEpipi"+pref+"_%1.3f_m%1.3f.pdf"%(res["beta"],res["m_1"]), bbox_inches="tight")
     if show:
         plt.show()
 
-
-def plot_ERT_plus_sigma(file, show=False, save = True, rek_lim = True, vesc_lim = True):
+def plot_ERT_plus_sigma(file, show=False, save = True, rek_lim = False, vesc_lim = False, pref = ""):
     plt.rcParams['figure.figsize'] = [10, 6]
     fontsize = 14
     font = {'size'   : fontsize}
@@ -226,28 +258,24 @@ def plot_ERT_plus_sigma(file, show=False, save = True, rek_lim = True, vesc_lim 
     fig, [ax1,ax2] = plt.subplots(nrows=2, ncols=1, sharex=True)
     plt.subplots_adjust(wspace=0, hspace=0.1)   
     res,  res_sample = result.read_from_hdf(file)
-    num_gaussian = len(res_sample["P2_pipi_prime"])
-
-    x1,x2,y1,y2 = [4,5.4,-3.7,-0.6]
-    ax1.set_xlim([x1,x2])
-    ax1.set_ylim([y1,y2])
-    ratio = (x2-x1)/(y2-y1)*ax1.bbox.height/ax1.bbox.width
-    ax2.set_xlim([x1,x2])
-    ax2.set_ylim([0,13])
 
     P_cot_PS_pipi_prime = np.transpose(res_sample["P_cot_PS_pipi_prime"])
     s_prime = np.transpose(res_sample["s_pipi_prime"])
     sigma = np.transpose(res_sample["sigma_pipi_prime"])
 
+    P_cot_err = error_of_array(np.transpose(P_cot_PS_pipi_prime))
+    s_err = error_of_array(np.transpose(s_prime))
+    sig_err = error_of_array(np.transpose(sigma))
+
     inter_UTE = np.transpose(res_sample["UTE_inter_P_cot_PS"])
-    P2_arr = np.logspace(np.log10(1e-4), np.log10(3), len(inter_UTE))
+    # P2_arr = np.logspace(np.log10(1e-4), np.log10(3), len(inter_UTE))
+    P2_arr = np.linspace(-3, 3, len(inter_UTE))
     s_arr_of_P2 = []
     for P2 in P2_arr:
         s_arr_of_P2.append(4+4*P2)
     inter_UTE_plot, inter_UTE_plot_m, inter_UTE_plot_p = [[],[],[]]
     inter_sigma = np.transpose(res_sample["sigma_inter_sigma"])
     s_arr = np.logspace(np.log10(4), np.log10(15), len(inter_sigma))
-
 
     for i in range(len(inter_UTE)):
         tmp = inter_UTE[i]
@@ -264,6 +292,12 @@ def plot_ERT_plus_sigma(file, show=False, save = True, rek_lim = True, vesc_lim 
         inter_sigma_plot.append(tmp[length//2])
         inter_sigma_plot_m.append(tmp[math.floor(length*(1-num_perc)/2)])
         inter_sigmaplot_p.append(tmp[math.ceil(length*(1+num_perc)/2)])
+
+    x1,x2,y1,y2,y3,y4 = [4,4+(max(s_err[4])-4)*1.05,min(P_cot_err[3])*1.05,max(P_cot_err[4])*0.6,min(sig_err[3])*0.95,min(max(sig_err[4])*1.05,20)]
+    ax1.set_xlim([x1,x2])
+    ax1.set_ylim([y1,y2])
+    ax2.set_ylim([y3,y4])
+    ratio = (x2-x1)/(y2-y1)*ax1.bbox.height/ax1.bbox.width
 
     for i in range(len(s_prime)):
         length = len(s_prime[i])
@@ -291,12 +325,180 @@ def plot_ERT_plus_sigma(file, show=False, save = True, rek_lim = True, vesc_lim 
     ax2.set_xlabel("$s/m_\pi^{\infty\,2}$")
     ax2.set_ylabel("$\sigma m_\pi^{\infty\,2}$")
     if save:
-        plt.savefig("output/plots/comb_s_b%1.3f_m%1.3f.pdf"%(res["beta"],res["m_1"]), bbox_inches="tight")
+        plt.savefig("output/plots/comb_s"+pref+"_b%1.3f_m%1.3f.pdf"%(res["beta"],res["m_1"]), bbox_inches="tight")
     if show:
         plt.show()
     plt.clf()
 
-def plot_a_0_vs_m_f_pi(show=False, save = True):
+
+def plot_ERE_virtual(file, show=False, save = True, rek_lim = False, vesc_lim = False, pref = ""):
+    plt.rcParams['figure.figsize'] = [10, 6]
+    fontsize = 14
+    font = {'size'   : fontsize}
+    matplotlib.rc('font', **font)
+    fig, ax = plt.subplots()
+    plt.subplots_adjust(wspace=0, hspace=0.1)   
+    res,  res_sample = result.read_from_hdf(file)
+
+    P_cot_PS_pipi_prime = np.transpose(res_sample["P_cot_PS_pipi_prime"])
+    P2_pipi_prime = np.transpose(res_sample["P2_pipi_prime"])
+
+    P_cot_err = error_of_array(np.transpose(P_cot_PS_pipi_prime))
+
+    inter_UTE = np.transpose(res_sample["UTE_inter_P_cot_PS"])
+    P2_arr = np.linspace(-3, 3, len(inter_UTE))
+    inter_UTE_plot, inter_UTE_plot_m, inter_UTE_plot_p = [[],[],[]]
+
+    P2_err = error_of_array(np.transpose(P2_pipi_prime))
+
+    for i in range(len(inter_UTE)):
+        tmp = inter_UTE[i]
+        tmp.sort()
+        length = len(tmp)
+        inter_UTE_plot.append(tmp[length//2])
+        inter_UTE_plot_m.append(tmp[math.floor(length*(1-num_perc)/2)])
+        inter_UTE_plot_p.append(tmp[math.ceil(length*(1+num_perc)/2)])
+
+    x1,x2,y1,y2 = [-3,3,min(P_cot_err[3])*1.05,max(P_cot_err[4])*0.6]
+    ax.set_xlim([x1,x2])
+    ax.set_ylim([y1,y2])
+    ratio = (x2-x1)/(y2-y1)*ax.bbox.height/ax.bbox.width
+
+    for i in range(len(P2_pipi_prime)):
+        length = len(P2_pipi_prime[i])
+        sorted_indices = np.argsort(P2_pipi_prime[i])  
+        av = np.arange(math.floor(length*(1-num_perc)/2),math.ceil(length*(1+num_perc)/2),nth(length))
+        P2_arr_plot = [np.mean(P2_pipi_prime[i][sorted_indices][av[x]:av[x+1]]) for x in range(len(av)-1)]
+        P_cot_arr = [np.mean(P_cot_PS_pipi_prime[i][sorted_indices][av[x]:av[x+1]]) for x in range(len(av)-1)]
+        plot_curved_errorbars(ax,P2_arr_plot, P_cot_arr, ratio=ratio, color = "green", label = "pipi", offset=5)
+    ax.plot(P2_arr, inter_UTE_plot, label = "Fit")
+    ax.fill_between(P2_arr, inter_UTE_plot_m, inter_UTE_plot_p, alpha = 0.2)
+
+    ax.plot(np.linspace(-3,0), np.sqrt(np.linspace(3,0)), color = "black")
+    ax.plot(np.linspace(-3,0), -np.sqrt(np.linspace(3,0)), color = "black")
+
+    ax.grid()
+    ax.set_ylabel("$P \\cot\delta_0/m_\pi^\infty$")
+    if save:
+        plt.savefig("output/plots/ERE_virtual"+pref+"_b%1.3f_m%1.3f.pdf"%(res["beta"],res["m_1"]), bbox_inches="tight")
+    if show:
+        plt.show()
+    plt.clf()
+
+def plot_ERT_plus_sigma_Adler(file, show=False, save = True, rek_lim = False, vesc_lim = False, pref = ""):
+    plt.rcParams['figure.figsize'] = [10, 6]
+    fontsize = 14
+    font = {'size'   : fontsize}
+    matplotlib.rc('font', **font)
+    fig, [ax1,ax2] = plt.subplots(nrows=2, ncols=1, sharex=True)
+    plt.subplots_adjust(wspace=0, hspace=0.1)   
+    res,  res_sample = result.read_from_hdf(file)
+    num_gaussian = len(res_sample["P2_pipi_prime"])
+
+    P_cot_PS_pipi_prime = np.transpose(res_sample["P_cot_PS_pipi_prime"])
+    s_prime = np.transpose(res_sample["s_pipi_prime"])
+    sigma = np.transpose(res_sample["sigma_pipi_prime"])
+
+    P_cot_err = error_of_array(np.transpose(P_cot_PS_pipi_prime))
+    s_err = error_of_array(np.transpose(s_prime))
+    sig_err = error_of_array(np.transpose(sigma))
+
+    inter_UTE = np.transpose(res_sample["UTE_inter_P_cot_PS"])
+    inter_Adler_free = np.transpose(res_sample["Adler_free_inter_P_cot_PS"])
+    inter_Adler_fixed = np.transpose(res_sample["Adler_fixed_inter_P_cot_PS"])
+    P2_arr = np.logspace(np.log10(1e-4), np.log10(3), len(inter_UTE))
+    s_arr_of_P2 = []
+    for P2 in P2_arr:
+        s_arr_of_P2.append(4+4*P2)
+    inter_UTE_plot, inter_UTE_plot_m, inter_UTE_plot_p = [[],[],[]]
+    inter_Adler_free_plot, inter_Adler_free_plot_m, inter_Adler_free_plot_p = [[],[],[]]
+    inter_Adler_fixed_plot, inter_Adler_fixed_plot_m, inter_Adler_fixed_plot_p = [[],[],[]]
+    inter_sigma = np.transpose(res_sample["sigma_inter_sigma"])
+    s_arr = np.logspace(np.log10(4), np.log10(15), len(inter_sigma))
+
+    for i in range(len(inter_UTE)):
+        tmp = inter_UTE[i]
+        tmp.sort()
+        length = len(tmp)
+        inter_UTE_plot.append(tmp[length//2])
+        inter_UTE_plot_m.append(tmp[math.floor(length*(1-num_perc)/2)])
+        inter_UTE_plot_p.append(tmp[math.ceil(length*(1+num_perc)/2)])
+    for i in range(len(inter_Adler_free)):
+        tmp = inter_Adler_free[i]
+        tmp.sort()
+        length = len(tmp)
+        inter_Adler_free_plot.append(tmp[length//2])
+        inter_Adler_free_plot_m.append(tmp[math.floor(length*(1-num_perc)/2)])
+        inter_Adler_free_plot_p.append(tmp[math.ceil(length*(1+num_perc)/2)])
+    for i in range(len(inter_Adler_fixed)):
+        tmp = inter_Adler_fixed[i]
+        tmp.sort()
+        length = len(tmp)
+        inter_Adler_fixed_plot.append(tmp[length//2])
+        inter_Adler_fixed_plot_m.append(tmp[math.floor(length*(1-num_perc)/2)])
+        inter_Adler_fixed_plot_p.append(tmp[math.ceil(length*(1+num_perc)/2)])
+    inter_sigma_plot, inter_sigma_plot_m, inter_sigmaplot_p = [[],[],[]]
+    for i in range(len(inter_sigma)):
+        tmp = inter_sigma[i]
+        tmp.sort()
+        length = len(tmp)
+        inter_sigma_plot.append(tmp[length//2])
+        inter_sigma_plot_m.append(tmp[math.floor(length*(1-num_perc)/2)])
+        inter_sigmaplot_p.append(tmp[math.ceil(length*(1+num_perc)/2)])
+
+    a_Ad_fixed = res_sample["a_Ad_fixed"][0]
+    c_Ad_fixed = res_sample["c_Ad_fixed"][0]
+    a_Ad_free = res_sample["a_Ad_free"][0]
+    c_Ad_free = res_sample["c_Ad_free"][0]
+
+    from scattering import UTE_A0_c_fixed, UTE_A0_c_free
+
+    ax1.plot(s_arr_of_P2, UTE_A0_c_fixed(P2_arr,a_Ad_fixed,c_Ad_fixed), label = "Adler fixed")
+    ax1.plot(s_arr_of_P2, UTE_A0_c_free(P2_arr,a_Ad_free,c_Ad_free), label = "Adler free")
+
+    x1,x2,y1,y2,y3,y4 = [4,4+(max(s_err[4])-4)*1.05,min(P_cot_err[3])*1.05,max(P_cot_err[4])*0.6,min(sig_err[3])*0.95,min(max(sig_err[4])*1.05,20)]
+    ax1.set_xlim([x1,x2])
+    ax1.set_ylim([y1,y2])
+    ax2.set_ylim([y3,y4])
+    ratio = (x2-x1)/(y2-y1)*ax1.bbox.height/ax1.bbox.width
+
+    for i in range(len(s_prime)):
+        length = len(s_prime[i])
+        sorted_indices = np.argsort(s_prime[i])  
+        av = np.arange(math.floor(length*(1-num_perc)/2),math.ceil(length*(1+num_perc)/2),nth(length))
+        s_arr2 = [np.mean(s_prime[i][sorted_indices][av[x]:av[x+1]]) for x in range(len(av)-1)]
+        P_cot_arr = [np.mean(P_cot_PS_pipi_prime[i][sorted_indices][av[x]:av[x+1]]) for x in range(len(av)-1)]
+        if i == 0:
+            plot_curved_errorbars(ax1,s_arr2, P_cot_arr, ratio=ratio, color = "green", label = "pipi", offset=5)
+        else:            
+            plot_curved_errorbars(ax1,s_arr2, P_cot_arr, ratio=ratio, color = "green", label = "pipi", offset=5)
+    ax1.plot(s_arr_of_P2, inter_UTE_plot, label = "Fit")
+    ax1.fill_between(s_arr_of_P2, inter_UTE_plot_m, inter_UTE_plot_p, alpha = 0.2)
+    ax1.plot(s_arr_of_P2, inter_Adler_free_plot, label = "Adler free")
+    ax1.fill_between(s_arr_of_P2, inter_Adler_free_plot_m, inter_Adler_free_plot_p, alpha = 0.2)
+    ax1.plot(s_arr_of_P2, inter_Adler_fixed_plot, label = "Adler fixed")
+    ax1.fill_between(s_arr_of_P2, inter_Adler_fixed_plot_m, inter_Adler_fixed_plot_p, alpha = 0.2)
+    
+    s_pipi_prime_err = error_of_array(np.transpose(s_prime))
+    sigma_prime_err = error_of_array(res_sample["sigma_pipi_prime"])
+    ax2.errorbar(x=s_pipi_prime_err[0], xerr=[s_pipi_prime_err[1],s_pipi_prime_err[2]], y=sigma_prime_err[0], yerr=[sigma_prime_err[1],sigma_prime_err[2]], color = "green", ls = "", capsize=5, markersize=10, label = "pipi") # , marker = "^"
+
+    ax2.plot(s_arr, inter_sigma_plot, label = "Fit")
+    ax2.fill_between(s_arr, inter_sigma_plot_m, inter_sigmaplot_p, alpha = 0.2)
+
+    ax1.grid()
+    ax1.set_ylabel("$P \\cot\delta_0/m_\pi^\infty$")
+    ax2.grid()
+    ax2.set_xlabel("$s/m_\pi^{\infty\,2}$")
+    ax2.set_ylabel("$\sigma m_\pi^{\infty\,2}$")
+    ax1.legend()
+    if save:
+        plt.savefig("output/plots/comb_s"+pref+"_b%1.3f_m%1.3f_Adler.pdf"%(res["beta"],res["m_1"]), bbox_inches="tight")
+    if show:
+        plt.show()
+    plt.clf()
+
+def plot_a_0_vs_m_f_pi(beta_arr, m_arr, show=False, save = True, pref = ""):
     plt.figure(figsize=(8,4.8))
     def chipt(x):
         return x/32
@@ -304,18 +506,18 @@ def plot_a_0_vs_m_f_pi(show=False, save = True):
     xarr = np.linspace(0,10)
     yarr = [chipt(x**2) for x in xarr]
     plt.plot(xarr, yarr, ls = "dashed", color = "green", label = "LO EFT")
-    beta_arr = [[6.9,6.9,6.9,6.9],[7.05,7.05],[7.2,7.2]]                      # those with 3 or more datapoints
-    m_arr = [[-0.87,-0.9,-0.91,-0.92],[-0.835,-0.85],[-0.78,-0.794]]
     a0_mpi_total_arr = []
     mpifpi_total_arr = []
     out = []
+    f0 = open("output/tables/effective_range_parameters"+pref+".csv", "w")
+    f0.write("beta,mass,a0mpi,Delta_a0mpi_lower,Delta_a0mpi_upper,r0mpi,Delta_r0mpi_lower,Delta_r0mpi_upper\n")
     for i in range(len(beta_arr)):
         for j in range(len(beta_arr[i])):
             a0mpi_arr = []
             rempi_arr = []
             mpi_arr = []
             mpifpi_arr = []
-            res,  res_sample = result.read_from_hdf("scattering_b%1.3f_m%1.3f"%(beta_arr[i][j],m_arr[i][j]))
+            res,  res_sample = result.read_from_hdf("scattering"+pref+"_b%1.3f_m%1.3f"%(beta_arr[i][j],m_arr[i][j]))
             for k in range(len(res_sample["a2"])):
                 a0mpi_arr.append(float(-1/res_sample["a2"][k][0]))
                 rempi_arr.append(float(2*res_sample["b2"][k][0]))
@@ -339,12 +541,15 @@ def plot_a_0_vs_m_f_pi(show=False, save = True):
             out[len(out)-1].append(mpi_err[0])
             out[len(out)-1].append(mpifpi_err[0])
             plt.errorbar(x=[mpifpi_err[0],],xerr=[[mpifpi_err[1],],[mpifpi_err[2],]],y=[a0mpi_err[0],],yerr=[[a0mpi_err[1],],[a0mpi_err[2],]], marker = marker_beta(beta_arr[i][j]), ls = "", capsize=5, markersize=10, color = color_beta(beta_arr[i][j]))
-    with open("output/tables/Sp(4)_data.csv", "w") as f:
+            f0.write("%f,%f,%e,%e,%e,%e,%e,%e\n"%(beta_arr[i][j],m_arr[i][j],a0mpi_err[0],a0mpi_err[1],a0mpi_err[2], rempi_err[0], rempi_err[1], rempi_err[2] ))
+    f0.close()
+    with open("output/tables/Sp(4)_data"+pref+".csv", "w") as f:
         for i in range(len(out)):
             f.write("%e,%e,%e,%e,%e,%e\n"%(out[i][0],out[i][1],out[i][2],out[i][3],out[i][4],out[i][5]))
     plt.scatter((-10, -9), y = (0,0), marker = marker_beta(6.9), color = color_beta(6.9), label ="$\\beta=6.90$", s = 60)
     plt.scatter((-10, -9), y = (0,0), marker = marker_beta(7.05), color = color_beta(7.05), label ="$\\beta=7.05$", s = 60)
     plt.scatter((-10, -9), y = (0,0), marker = marker_beta(7.2), color = color_beta(7.2), label ="$\\beta=7.20$", s = 60)    
+
     a0_mpi_total_err = error_of_1Darray(a0_mpi_total_arr)
     mpifpi_total_err = error_of_1Darray(mpifpi_total_arr)
     plt.fill_between(x=(-100,100), y1=(a0_mpi_total_err[3],a0_mpi_total_err[3]), y2=(a0_mpi_total_err[4],a0_mpi_total_err[4]), color = "grey", alpha = 0.25)
@@ -359,7 +564,86 @@ def plot_a_0_vs_m_f_pi(show=False, save = True):
     plt.grid()
     plt.legend()
     if save:
-        plt.savefig("output/plots/chipt_comp.pdf", bbox_inches="tight")
+        plt.savefig("output/plots/chipt_comp"+pref+".pdf", bbox_inches="tight")
+    if show:
+        plt.show()
+    plt.clf()
+
+def plot_a_0_vs_m_f_pi_Adler(beta_arr, m_arr, show=False, save = True, pref = ""):
+    plt.figure(figsize=(8,4.8))
+    def chipt(x):
+        return x/32
+    fpi_full = np.genfromtxt("output/tables/fpi_data.csv",delimiter=",")
+    xarr = np.linspace(0,10)
+    yarr = [chipt(x**2) for x in xarr]
+    plt.plot(xarr, yarr, ls = "dashed", color = "green", label = "LO EFT")
+    a0_mpi_total_arr = []
+    mpifpi_total_arr = []
+    out = []
+    for i in range(len(beta_arr)):
+        for j in range(len(beta_arr[i])):
+            a0mpi_arr = []
+            a0_Adler_free_arr = []
+            a0_Adler_fixed_arr = []
+            rempi_arr = []
+            mpi_arr = []
+            mpifpi_arr = []
+            res,  res_sample = result.read_from_hdf("scattering"+pref+"_b%1.3f_m%1.3f"%(beta_arr[i][j],m_arr[i][j]))
+            for k in range(len(res_sample["a2"])):
+                a0mpi_arr.append(float(-1/res_sample["a2"][k][0]))
+                a0_Adler_free_arr.append(float(res_sample["a_Ad_free"][k][0]))
+                a0_Adler_fixed_arr.append(float(res_sample["a_Ad_fixed"][k][0]))
+                rempi_arr.append(float(2*res_sample["b2"][k][0]))
+                mpi_arr.append(float(res_sample["m_pi_inf"][k][0]))
+                a0_mpi_total_arr.append(float(-1/res_sample["a2"][k][0]))
+                for l in range(len(fpi_full)):
+                    if beta_arr[i][j] == fpi_full[l][0]:
+                        if m_arr[i][j] == fpi_full[l][1]:
+                            mpifpi_tmp = res_sample["m_pi_inf"][k][0]/np.random.normal(loc=fpi_full[l][2], scale=fpi_full[l][3])
+                            mpifpi_arr.append(mpifpi_tmp)
+                            mpifpi_total_arr.append(mpifpi_tmp)
+            a0mpi_err = error_of_1Darray(a0mpi_arr)
+            a0_Adler_free_err = error_of_1Darray(a0_Adler_free_arr)
+            a0_Adler_fixed_err = error_of_1Darray(a0_Adler_fixed_arr)
+            rempi_err = error_of_1Darray(rempi_arr)
+            mpi_err = error_of_1Darray(mpi_arr)
+            mpifpi_err = error_of_1Darray(mpifpi_arr)
+            out.append([])
+            out[len(out)-1].append(beta_arr[i][j])
+            out[len(out)-1].append(m_arr[i][j])
+            out[len(out)-1].append(a0mpi_err[0])
+            out[len(out)-1].append(rempi_err[0])
+            out[len(out)-1].append(mpi_err[0])
+            out[len(out)-1].append(mpifpi_err[0])
+            out[len(out)-1].append(a0_Adler_free_err[0])
+            out[len(out)-1].append(a0_Adler_fixed_err[0])
+            plt.errorbar(x=[mpifpi_err[0],],xerr=[[mpifpi_err[1],],[mpifpi_err[2],]],y=[a0mpi_err[0],],yerr=[[a0mpi_err[1],],[a0mpi_err[2],]], marker = marker_beta(beta_arr[i][j]), ls = "", capsize=5, markersize=10, color = color_beta(beta_arr[i][j]))
+            # plt.errorbar(x=[mpifpi_err[0],],xerr=[[mpifpi_err[1],],[mpifpi_err[2],]],y=[a0_Adler_free_err[0],],yerr=[[a0_Adler_free_err[1],],[a0_Adler_free_err[2],]], marker = ">", ls = "", capsize=3, markersize=6, color = "grey")
+            plt.errorbar(x=[mpifpi_err[0],],xerr=[[mpifpi_err[1],],[mpifpi_err[2],]],y=[a0_Adler_fixed_err[0],],yerr=[[a0_Adler_fixed_err[1],],[a0_Adler_fixed_err[2],]], marker = "<", ls = "", capsize=3, markersize=6, color = "green")
+    with open("output/tables/Sp(4)_data_Adler"+pref+".csv", "w") as f:
+        for i in range(len(out)):
+            f.write("%e,%e,%e,%e,%e,%e\n"%(out[i][0],out[i][1],out[i][2],out[i][3],out[i][4],out[i][5]))
+    plt.scatter((-10, -9), y = (0,0), marker = marker_beta(6.9), color = color_beta(6.9), label ="$\\beta=6.90$", s = 60)
+    plt.scatter((-10, -9), y = (0,0), marker = marker_beta(7.05), color = color_beta(7.05), label ="$\\beta=7.05$", s = 60)
+    plt.scatter((-10, -9), y = (0,0), marker = marker_beta(7.2), color = color_beta(7.2), label ="$\\beta=7.20$", s = 60)   
+    plt.scatter((-10, -9), y = (0,0), marker = ">", color = "grey", label ="Adler free", s = 36)   
+    plt.scatter((-10, -9), y = (0,0), marker = "<", color = "green", label ="Adler fixed", s = 36)   
+
+    a0_mpi_total_err = error_of_1Darray(a0_mpi_total_arr)
+    mpifpi_total_err = error_of_1Darray(mpifpi_total_arr)
+    plt.fill_between(x=(-100,100), y1=(a0_mpi_total_err[3],a0_mpi_total_err[3]), y2=(a0_mpi_total_err[4],a0_mpi_total_err[4]), color = "grey", alpha = 0.25)
+    plt.axhline(a0_mpi_total_err[0], color = "grey", alpha = 0.5)
+    print("a0_mpi_total_err: ", a0_mpi_total_err[0], a0_mpi_total_err[1], a0_mpi_total_err[2], a0_mpi_total_err[3], a0_mpi_total_err[4])
+    print("mpifpi_total_err: ", mpifpi_total_err[0], mpifpi_total_err[1], mpifpi_total_err[2], mpifpi_total_err[3], mpifpi_total_err[4])
+
+    plt.xlim([0,6])
+    plt.ylim([0,1])
+    plt.xlabel("$m_\pi^\infty / f_\\pi$")
+    plt.ylabel("$a_0m_\pi^\infty$")
+    plt.grid()
+    plt.legend()
+    if save:
+        plt.savefig("output/plots/chipt_comp"+pref+"_Adler.pdf", bbox_inches="tight")
     if show:
         plt.show()
     plt.clf()
@@ -392,17 +676,68 @@ def write_fpi_file():
         for key in fpi.keys():
             ofile.write("%f,%f,%f,%f\n"%(betas[key], m0s[key], fpi[key], fpi_err[key]))
 
+def plot_version(beta_arr, m_arr, pref):
+
+    plot_a_0_vs_m_f_pi(beta_arr, m_arr, show=False,save=True, pref = pref)
+    # plot_a_0_vs_m_f_pi_Adler(beta_arr, m_arr, show=False,save=True, pref = pref)
+    for i in range(len(beta_arr)):
+        for j in range(len(beta_arr[i])):
+            if beta_arr[i] == 7.05 and m_arr[i][j] == -0.85:
+                plot_m_inf_with_luscher("scattering"+pref+"_b%1.3f_m%1.3f"%(beta_arr[i][j],m_arr[i][j]), show=False,save=True, draw_arrows=True, pref=pref)
+            else:
+                plot_m_inf_with_luscher("scattering"+pref+"_b%1.3f_m%1.3f"%(beta_arr[i][j],m_arr[i][j]), show=False,save=True, draw_arrows=False, pref=pref)
+            plot_ERT_plus_sigma("scattering"+pref+"_b%1.3f_m%1.3f"%(beta_arr[i][j],m_arr[i][j]), show=False,save=True, pref=pref)
+            # plot_ERE_virtual("scattering"+pref+"_b%1.3f_m%1.3f"%(beta_arr[i][j],m_arr[i][j]), show=False,save=True, pref=pref)
+            # plot_ERT_plus_sigma_Adler("scattering"+pref+"_b%1.3f_m%1.3f"%(beta_arr[i][j],m_arr[i][j]), show=False,save=True, pref=pref)
 
 if __name__ == "__main__":
-    beta_arr = [6.9,6.9,6.9,6.9,7.05,7.05,7.2,7.2]
-    m_arr = [-0.87,-0.9,-0.91,-0.92,-0.835,-0.85,-0.78,-0.794] 
-    os.makedirs("output/plots/", exist_ok=True)
-
-    # create directory for plots if it doesn#t exit already
+    # create directory for plots if it doesn't exist already
     os.makedirs("output/plots", exist_ok=True)
 
     write_fpi_file()
-    plot_a_0_vs_m_f_pi(show=False,save=True)
-    for i in range(len(beta_arr)):
-        plot_m_inf_with_luscher("scattering_b%1.3f_m%1.3f"%(beta_arr[i],m_arr[i]), show=False,save=True)
-        plot_ERT_plus_sigma("scattering_b%1.3f_m%1.3f"%(beta_arr[i],m_arr[i]), show=False,save=True)
+
+    beta_arr = [[6.9,6.9,6.9,6.9],[7.05,7.05],[7.2,7.2]]                      # those with 3 or more datapoints # "full"
+    m_arr = [[-0.87,-0.9,-0.91,-0.92],[-0.835,-0.85],[-0.78,-0.794]]
+    plot_version(beta_arr, m_arr, "")
+
+    beta_arr = [[6.9,6.9,6.9,6.9],[7.05,7.05],[7.2,7.2]]                      # those from Fig 5.1
+    m_arr = [[-0.87,-0.9,-0.91,-0.92],[-0.835,-0.85],[-0.78,-0.794]]
+    plot_version(beta_arr, m_arr, "_Fig5.1")
+
+    beta_arr = [[6.9,],[7.05,7.05],[7.2,7.2]]                      # those from Fig 5.2
+    m_arr = [[-0.92,],[-0.835,-0.85],[-0.78,-0.794]]
+    plot_version(beta_arr, m_arr, "_Fig5.2")
+
+    beta_arr = [[6.9,],[7.05,7.05],[7.2,7.2]]                      # those from Fig 5.3
+    m_arr = [[-0.92,],[-0.835,-0.85],[-0.78,-0.794]]
+    plot_version(beta_arr, m_arr, "_Fig5.3")
+
+
+    beta_arr = [[6.9,]]                      # for Fig 6
+    m_arr = [[-0.9,]]
+    plot_version(beta_arr, m_arr, "_b69_m90_Lg8")
+    plot_version(beta_arr, m_arr, "_b69_m90_Lg10")
+
+    # beta_arr = [[6.9,],[7.05,7.05],[7.2,7.2]]                      # those with E_pipi > 0.95
+    # m_arr = [[-0.92,],[-0.835,-0.85],[-0.78,-0.794]]
+    # plot_version(beta_arr, m_arr, "_epipi_095")
+
+
+    # beta_arr = [[7.2,],]                      # b7.2m-0.78 L>x
+    # m_arr = [[-0.78,],]
+    # plot_version(beta_arr, m_arr, "_b72_m78_Lg8")
+    # plot_version(beta_arr, m_arr, "_b72_m78_Lg10")
+
+
+    # beta_arr = [[7.2,],]                      # b7.2m-0.794
+    # m_arr = [[-0.794,],]
+    # plot_version(beta_arr, m_arr, "_b72_m794_mpir13")
+
+
+    # write_fpi_file()
+    # plot_a_0_vs_m_f_pi(beta_arr, m_arr, show=False,save=True)
+    # for i in range(len(beta_arr)):
+    #     for j in range(len(beta_arr[i])):
+    #         plot_m_inf_with_luscher("scattering_b%1.3f_m%1.3f"%(beta_arr[i][j],m_arr[i][j]), show=False,save=True, draw_arrows=False)
+    #         plot_ERT_plus_sigma("scattering_b%1.3f_m%1.3f"%(beta_arr[i][j],m_arr[i][j]), show=False,save=True)
+    #         plot_ERT_plus_sigma_Adler("scattering_b%1.3f_m%1.3f"%(beta_arr[i][j],m_arr[i][j]), show=True,save=True)
