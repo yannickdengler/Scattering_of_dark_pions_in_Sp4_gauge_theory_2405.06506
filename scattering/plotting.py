@@ -328,7 +328,7 @@ def plot_ERT_plus_sigma(file, show=False, save = True, rek_lim = False, vesc_lim
         plt.savefig("output/plots/comb_s"+pref+"_b%1.3f_m%1.3f.pdf"%(res["beta"],res["m_1"]), bbox_inches="tight")
     if show:
         plt.show()
-    plt.clf()
+    plt.close()
 
 
 def plot_ERE_virtual(file, show=False, save = True, rek_lim = False, vesc_lim = False, pref = ""):
@@ -383,7 +383,7 @@ def plot_ERE_virtual(file, show=False, save = True, rek_lim = False, vesc_lim = 
         plt.savefig("output/plots/ERE_virtual"+pref+"_b%1.3f_m%1.3f.pdf"%(res["beta"],res["m_1"]), bbox_inches="tight")
     if show:
         plt.show()
-    plt.clf()
+    plt.close()
 
 def plot_ERT_plus_sigma_Adler(file, show=False, save = True, rek_lim = False, vesc_lim = False, pref = ""):
     plt.rcParams['figure.figsize'] = [10, 6]
@@ -496,7 +496,7 @@ def plot_ERT_plus_sigma_Adler(file, show=False, save = True, rek_lim = False, ve
         plt.savefig("output/plots/comb_s"+pref+"_b%1.3f_m%1.3f_Adler.pdf"%(res["beta"],res["m_1"]), bbox_inches="tight")
     if show:
         plt.show()
-    plt.clf()
+    plt.close()
 
 def plot_a_0_vs_m_f_pi(beta_arr, m_arr, show=False, save = True, pref = ""):
     plt.figure(figsize=(8,4.8))
@@ -567,7 +567,7 @@ def plot_a_0_vs_m_f_pi(beta_arr, m_arr, show=False, save = True, pref = ""):
         plt.savefig("output/plots/chipt_comp"+pref+".pdf", bbox_inches="tight")
     if show:
         plt.show()
-    plt.clf()
+    plt.close()
 
 def plot_a_0_vs_m_f_pi_Adler(beta_arr, m_arr, show=False, save = True, pref = ""):
     plt.figure(figsize=(8,4.8))
@@ -646,7 +646,7 @@ def plot_a_0_vs_m_f_pi_Adler(beta_arr, m_arr, show=False, save = True, pref = ""
         plt.savefig("output/plots/chipt_comp"+pref+"_Adler.pdf", bbox_inches="tight")
     if show:
         plt.show()
-    plt.clf()
+    plt.close()
 
 def write_fpi_file():
     N_L = {}
