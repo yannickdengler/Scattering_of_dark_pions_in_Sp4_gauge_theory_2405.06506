@@ -1,3 +1,4 @@
+mkdir -p output
 loglistI2="./output/isospin_logfiles_I2_list"
 loglist="./output/isospin_logfiles_list"
 
