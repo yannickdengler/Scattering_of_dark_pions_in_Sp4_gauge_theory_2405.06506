@@ -249,6 +249,7 @@ def plot_m_inf_with_luscher(file, show = True, save = True, zoom = False, draw_a
         plt.savefig("output/plots/EpiEpipi"+pref+"_%1.3f_m%1.3f.pdf"%(res["beta"],res["m_1"]), bbox_inches="tight")
     if show:
         plt.show()
+    plt.close()
 
 def plot_ERT_plus_sigma(file, show=False, save = True, rek_lim = False, vesc_lim = False, pref = ""):
     plt.rcParams['figure.figsize'] = [10, 6]
