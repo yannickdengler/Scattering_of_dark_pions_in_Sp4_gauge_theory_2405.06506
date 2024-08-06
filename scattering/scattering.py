@@ -88,8 +88,6 @@ def calculations(N_Ls, E_pis, E_pipis):
     result["c_Ad_fixed"] = [c_Ad_fixed,]
     result["UTE_inter_P_cot_PS"] = UTE_inter_P_cot_PS
     result["sigma_inter_sigma"] = sigma_inter_sigma
-    # result["Adler_free_inter_P_cot_PS"] = Adler_free_inter_P_cot_PS
-    # result["Adler_fixed_inter_P_cot_PS"] = Adler_fixed_inter_P_cot_PS
     return result
 
 def inf_mass_fit_Goldstone(N_L, m_inf, A):
@@ -449,28 +447,28 @@ if __name__ == "__main__":
             # print("Ensembles skipped: beta=",beta,", m0=",m0)
             # #################################
             ############ beta = 6.9, m = -0.90, L > x #####################
-            for x in [8,10]:
-                if beta == 6.9:
-                    if m0 == -0.90:
-                        N_Ls = []
-                        E_pis_t = []
-                        E_pi_errs_t = []
-                        E_pipis_t = []
-                        E_pipi_errs_t = []
-                        for i in range(len(N_L_arr[beta_arr.index(beta)][m_arr[beta_arr.index(beta)].index(m0)])):
-                            if N_L_arr[beta_arr.index(beta)][m_arr[beta_arr.index(beta)].index(m0)][i] > x:
-                                N_Ls.append(N_L_arr[beta_arr.index(beta)][m_arr[beta_arr.index(beta)].index(m0)][i])
-                                E_pis_t.append(E_pis[beta_arr.index(beta)][m_arr[beta_arr.index(beta)].index(m0)][i])
-                                E_pi_errs_t.append(E_pi_errs[beta_arr.index(beta)][m_arr[beta_arr.index(beta)].index(m0)][i])
-                                E_pipis_t.append(E_pipis[beta_arr.index(beta)][m_arr[beta_arr.index(beta)].index(m0)][i])
-                                E_pipi_errs_t.append(E_pipi_errs[beta_arr.index(beta)][m_arr[beta_arr.index(beta)].index(m0)][i])
-                        if len(N_Ls) > 1:
-                            print("Scattering analysis: beta=",beta,", m0=",m0,", resampling .... ")
-                            res, res_sam = result_sampled(beta,m0,N_Ls,E_pis_t,E_pi_errs_t,E_pipis_t,E_pipi_errs_t)
-                            fn_tmp = "scattering_b69_m90_Lg%i_b%1.3f_m%1.3f"%(x,float(res["beta"]),float(res["m_1"]))
-                            save_to_hdf(res, res_sam, fn_tmp)
-                            res, res_sam = read_from_hdf(fn_tmp)
-            print("Ensembles skipped: beta=",beta,", m0=",m0)
+            # for x in [8,10]:
+            #     if beta == 6.9:
+            #         if m0 == -0.90:
+            #             N_Ls = []
+            #             E_pis_t = []
+            #             E_pi_errs_t = []
+            #             E_pipis_t = []
+            #             E_pipi_errs_t = []
+            #             for i in range(len(N_L_arr[beta_arr.index(beta)][m_arr[beta_arr.index(beta)].index(m0)])):
+            #                 if N_L_arr[beta_arr.index(beta)][m_arr[beta_arr.index(beta)].index(m0)][i] > x:
+            #                     N_Ls.append(N_L_arr[beta_arr.index(beta)][m_arr[beta_arr.index(beta)].index(m0)][i])
+            #                     E_pis_t.append(E_pis[beta_arr.index(beta)][m_arr[beta_arr.index(beta)].index(m0)][i])
+            #                     E_pi_errs_t.append(E_pi_errs[beta_arr.index(beta)][m_arr[beta_arr.index(beta)].index(m0)][i])
+            #                     E_pipis_t.append(E_pipis[beta_arr.index(beta)][m_arr[beta_arr.index(beta)].index(m0)][i])
+            #                     E_pipi_errs_t.append(E_pipi_errs[beta_arr.index(beta)][m_arr[beta_arr.index(beta)].index(m0)][i])
+            #             if len(N_Ls) > 1:
+            #                 print("Scattering analysis: beta=",beta,", m0=",m0,", resampling .... ")
+            #                 res, res_sam = result_sampled(beta,m0,N_Ls,E_pis_t,E_pi_errs_t,E_pipis_t,E_pipi_errs_t)
+            #                 fn_tmp = "scattering_b69_m90_Lg%i_b%1.3f_m%1.3f"%(x,float(res["beta"]),float(res["m_1"]))
+            #                 save_to_hdf(res, res_sam, fn_tmp)
+            #                 res, res_sam = read_from_hdf(fn_tmp)
+            # print("Ensembles skipped: beta=",beta,", m0=",m0)
             #################################
             # ############ beta = 7.2, m = -0.78, L > x #####################
             # for x in [8,10]:
