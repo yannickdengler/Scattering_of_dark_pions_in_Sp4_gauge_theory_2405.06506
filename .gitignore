@@ -5,6 +5,9 @@
 *.csv
 *.png
 *.tex
+*.csv
+*.png
+*.tex
 rsync/*
 input/Lt*
 !input/pipi_fitintervals.csv
