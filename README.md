@@ -3,7 +3,7 @@ This repository contains the code used to prepare the plots and results included
 
 ## Instructions: Running the analysis
 - Install required dependencies (see below)
-- Download the raw log files from the [Zenodo data release]() and place it in anywhere in the `input` directory
+- Download the raw log files from the [Zenodo data release](10.5281/zenodo.12920978) (`isospin_logfiles`.zip), decompress the zip archive, and place it anywhere in the `input` directory
 - Run the analysis using `bash main.sh` within the top-level directory
 - The results used to prepare the manuscript [[2405.06506]](https://arxiv.org/abs/2405.06506v1) can then be found in `output/`
 
