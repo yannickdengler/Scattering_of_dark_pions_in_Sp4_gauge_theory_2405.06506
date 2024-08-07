@@ -680,7 +680,6 @@ def write_fpi_file():
 def plot_version(beta_arr, m_arr, pref):
 
     plot_a_0_vs_m_f_pi(beta_arr, m_arr, show=False,save=True, pref = pref)
-    # plot_a_0_vs_m_f_pi_Adler(beta_arr, m_arr, show=False,save=True, pref = pref)
     for i in range(len(beta_arr)):
         for j in range(len(beta_arr[i])):
             if beta_arr[i] == 7.05 and m_arr[i][j] == -0.85:
@@ -688,8 +687,12 @@ def plot_version(beta_arr, m_arr, pref):
             else:
                 plot_m_inf_with_luscher("scattering"+pref+"_b%1.3f_m%1.3f"%(beta_arr[i][j],m_arr[i][j]), show=False,save=True, draw_arrows=False, pref=pref)
             plot_ERT_plus_sigma("scattering"+pref+"_b%1.3f_m%1.3f"%(beta_arr[i][j],m_arr[i][j]), show=False,save=True, pref=pref)
-            # plot_ERE_virtual("scattering"+pref+"_b%1.3f_m%1.3f"%(beta_arr[i][j],m_arr[i][j]), show=False,save=True, pref=pref)
-            # plot_ERT_plus_sigma_Adler("scattering"+pref+"_b%1.3f_m%1.3f"%(beta_arr[i][j],m_arr[i][j]), show=False,save=True, pref=pref)
+    
+    # plot_a_0_vs_m_f_pi_Adler(beta_arr, m_arr, show=False,save=True, pref = pref)
+    # for i in range(len(beta_arr)):
+    #     for j in range(len(beta_arr[i])):
+    #         plot_ERE_virtual("scattering"+pref+"_b%1.3f_m%1.3f"%(beta_arr[i][j],m_arr[i][j]), show=False,save=True, pref=pref)
+    #         plot_ERT_plus_sigma_Adler("scattering"+pref+"_b%1.3f_m%1.3f"%(beta_arr[i][j],m_arr[i][j]), show=False,save=True, pref=pref)
 
 if __name__ == "__main__":
     # create directory for plots if it doesn't exist already
@@ -713,32 +716,6 @@ if __name__ == "__main__":
     m_arr = [[-0.92,],[-0.835,-0.85],[-0.78,-0.794]]
     plot_version(beta_arr, m_arr, "_Fig5.3")
 
-
     beta_arr = [[6.9,]]                      # for Fig 6
     m_arr = [[-0.9,]]
-    plot_version(beta_arr, m_arr, "_b69_m90_Lg8")
-    plot_version(beta_arr, m_arr, "_b69_m90_Lg10")
-
-    # beta_arr = [[6.9,],[7.05,7.05],[7.2,7.2]]                      # those with E_pipi > 0.95
-    # m_arr = [[-0.92,],[-0.835,-0.85],[-0.78,-0.794]]
-    # plot_version(beta_arr, m_arr, "_epipi_095")
-
-
-    # beta_arr = [[7.2,],]                      # b7.2m-0.78 L>x
-    # m_arr = [[-0.78,],]
-    # plot_version(beta_arr, m_arr, "_b72_m78_Lg8")
-    # plot_version(beta_arr, m_arr, "_b72_m78_Lg10")
-
-
-    # beta_arr = [[7.2,],]                      # b7.2m-0.794
-    # m_arr = [[-0.794,],]
-    # plot_version(beta_arr, m_arr, "_b72_m794_mpir13")
-
-
-    # write_fpi_file()
-    # plot_a_0_vs_m_f_pi(beta_arr, m_arr, show=False,save=True)
-    # for i in range(len(beta_arr)):
-    #     for j in range(len(beta_arr[i])):
-    #         plot_m_inf_with_luscher("scattering_b%1.3f_m%1.3f"%(beta_arr[i][j],m_arr[i][j]), show=False,save=True, draw_arrows=False)
-    #         plot_ERT_plus_sigma("scattering_b%1.3f_m%1.3f"%(beta_arr[i][j],m_arr[i][j]), show=False,save=True)
-    #         plot_ERT_plus_sigma_Adler("scattering_b%1.3f_m%1.3f"%(beta_arr[i][j],m_arr[i][j]), show=True,save=True)
+    plot_version(beta_arr, m_arr, "_Fig6")

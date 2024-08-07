@@ -4,9 +4,9 @@ import matplotlib.pyplot as plt
 pdf = False
 
 if __name__ == "__main__":
-    plt.figure(figsize=[10,8],dpi=300)
+    plt.figure(figsize=[10,6],dpi=300)
 
-    plt.rcParams["font.size"] = 22
+    plt.rcParams["font.size"] = 16
 
     mass_Sp4 = 100
     mass_chiPT = 100
@@ -50,18 +50,17 @@ if __name__ == "__main__":
     plt.errorbar(x=DM_halo_data_error[0],xerr=[abs(DM_halo_data_error[6]-DM_halo_data_error[0]),abs(DM_halo_data_error[8]-DM_halo_data_error[0])],y=DM_halo_data_error[1],yerr=[abs(DM_halo_data_error[5]-DM_halo_data_error[1]),abs(DM_halo_data_error[3]-DM_halo_data_error[1])],marker="*",markersize=15,color="firebrick",ls ="None", capsize = 3)
     plt.errorbar(x=DM_halo_data_error[10],xerr=[abs(DM_halo_data_error[16]-DM_halo_data_error[10]),abs(DM_halo_data_error[18]-DM_halo_data_error[10])],y=DM_halo_data_error[11],yerr=[abs(DM_halo_data_error[15]-DM_halo_data_error[11]),abs(DM_halo_data_error[13]-DM_halo_data_error[11])],marker="s",markersize=10,color="dodgerblue",ls ="None", capsize = 3)
     plt.errorbar(x=DM_halo_data_error[20],xerr=[abs(DM_halo_data_error[26]-DM_halo_data_error[20]),abs(DM_halo_data_error[28]-DM_halo_data_error[20])],y=DM_halo_data_error[21],yerr=[abs(DM_halo_data_error[25]-DM_halo_data_error[21]),abs(DM_halo_data_error[23]-DM_halo_data_error[21])],marker="p",markersize=10,color="forestgreen",ls ="None", capsize = 3)
-    # plt.plot(DM_halo_data_error[30],DM_halo_data_error[31],c="purple", label="ERE Fit ($m_{DM}$=%1.1f$\,$GeV)"%(16.7))                # from old version
     plt.plot(varr,LS_data,c="purple", label="ERE Fit ($m_{DM}$=%1.1f$\,$GeV)"%(16.7))
 
     for i in range(-5,5):
         plt.plot(varr, varr*10**(i), color="grey",ls = "--", alpha = 0.5)         # lines of constant cross-section
 
 
-    # if pdf:
-    #     plt.fill_between(varr, chiPT_data[0], chiPT_data[1], color = "green", alpha = 0.3, label = "LO EFT ($m_{DM}$=%i$\,$MeV)"%mass_chiPT)
-    #     plt.fill_between(varr, chiPT_data[0], chiPT_data[1], facecolor="none", edgecolor = "green", hatch="\\\\")
-    # else:
-    #     plt.fill_between(varr, chiPT_data[0], chiPT_data[1], color = "green", hatch="\\\\", alpha = 0.3, label = "LO EFT ($m_{DM}$=%i$\,$MeV)"%mass_chiPT)
+    if pdf:
+        plt.fill_between(varr, chiPT_data[0], chiPT_data[1], color = "green", alpha = 0.3, label = "LO EFT ($m_{DM}$=%i$\,$MeV)"%mass_chiPT)
+        plt.fill_between(varr, chiPT_data[0], chiPT_data[1], facecolor="none", edgecolor = "green", hatch="\\\\")
+    else:
+        plt.fill_between(varr, chiPT_data[0], chiPT_data[1], color = "green", hatch="\\\\", alpha = 0.3, label = "LO EFT ($m_{DM}$=%i$\,$MeV)"%mass_chiPT)
 
 
     plt.xlim([2e1,2500])
@@ -70,24 +69,20 @@ if __name__ == "__main__":
     plt.yscale("log")
     plt.xlabel("$\\left<v\\right>$ in km/s")
     plt.ylabel("$\\left< \sigma v \\right>/m_{DM}$ in $cm^2$/g km/s")
-    # handles, labels = plt.gca().get_legend_handles_labels()
-    # order = [1,2,0,3]
+    handles, labels = plt.gca().get_legend_handles_labels()
+    order = [1,2,0,3]
 
 
-    # legend = plt.legend([handles[idx] for idx in order],[labels[idx] for idx in order],loc='lower right')
-    # legend.get_frame().set_alpha(None)
+    legend = plt.legend([handles[idx] for idx in order],[labels[idx] for idx in order],loc='lower right')
+    legend.get_frame().set_alpha(None)
 
     plt.legend(loc="lower right")
 
     plt.tight_layout()
     plt.grid()
-    # plt.savefig("output/plots/sigma_v_only_exp.pdf",bbox_inches = "tight")
-    # plt.savefig("output/plots/sigma_v_only_exp.png",bbox_inches = "tight")
-    plt.savefig("output/plots/sigma_v_no_chi.pdf",bbox_inches = "tight")
-    # plt.savefig("output/plots/sigma_v_no_chi.png",bbox_inches = "tight")
-    # if pdf:
-    #     plt.savefig("output/plots/sigma_v.pdf",bbox_inches = "tight")
-    # else:
-    #     plt.savefig("output/plots/sigma_v.png",bbox_inches = "tight")
+    if pdf:
+        plt.savefig("output/plots/sigma_v.pdf",bbox_inches = "tight")
+    else:
+        plt.savefig("output/plots/sigma_v.png",bbox_inches = "tight")
     # plt.show()
     plt.close()
