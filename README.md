@@ -61,4 +61,4 @@ The file "input/sigma_v_data_errors.csv" contains the data from FIG. 1 of [1]. I
 
 ## References
 
-[1] - Manoj Kaplinghat, Sean Tulin, and Hai-Bo Yu. Dark Matter Halos as Particle Colliders: Unified Solution to Small-Scale Structure Puzzles from Dwarfs to Clusters. Phys. Rev. Lett., 116(4):041302, 2016. doi:10.1103/PhysRevLett.116.041302.
+[1] - Manoj Kaplinghat, Sean Tulin, and Hai-Bo Yu. Dark Matter Halos as Particle Colliders: Unified Solution to Small-Scale Structure Puzzles from Dwarfs to Clusters. [Phys. Rev. Lett., 116(4):041302, 2016. doi:10.1103/PhysRevLett.116.041302.](http://doi.org/10.1103/PhysRevLett.116.041302)
