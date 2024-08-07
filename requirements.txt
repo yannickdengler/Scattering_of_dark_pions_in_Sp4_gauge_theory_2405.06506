@@ -1,6 +1,8 @@
 corrfitter==8.2
-h5py==3.10.0
-numpy==1.26.1
+gvar==13.1
+h5py==3.11.0
+lsqfit==13.2.2
+numpy==1.26.4
 scipy==1.13.1
-matplotlib==3.5.2
-tqdm==4.57.0
+matplotlib==3.9.0
+tqdm==4.66.4

@@ -5,8 +5,12 @@
 *.csv
 *.png
 *.tex
+*.csv
+*.png
+*.tex
 rsync/*
-input/Lt*
+input/
+output/
 !input/pipi_fitintervals.csv
 !input/sigma_v_data_errors.csv
-scattering/__pycache__/
+scattering/__pycache__/ 

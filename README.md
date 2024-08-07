@@ -14,8 +14,8 @@ The sections that are "commented out" should especially be treated with care.
 
 ## Requirements
 - Mathematica 14
-- Python 3.8 (see `requirements.txt` for the required packages)
-- julia 1.9
+- Python 3.10 (see `requirements.txt` for the required packages)
+- julia 1.10
 
 
 ### Installing python requirements using Conda
