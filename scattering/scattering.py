@@ -272,6 +272,7 @@ def result_sampled(beta,m0,N_L,E_pi,E_pi_err,E_pipi,E_pipi_err, num_gaussian=200
     return res, res_sample
 
 if __name__ == "__main__":
+    np.random.seed(13)
     beta_arr = []
     m_arr = []
 
