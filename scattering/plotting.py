@@ -8,6 +8,7 @@
 
 import matplotlib.pyplot as plt
 import numpy as np
+np.random.seed(13)
 import scattering as result
 import math
 import os
@@ -695,7 +696,6 @@ def plot_version(beta_arr, m_arr, pref):
     #         plot_ERT_plus_sigma_Adler("scattering"+pref+"_b%1.3f_m%1.3f"%(beta_arr[i][j],m_arr[i][j]), show=False,save=True, pref=pref)
 
 if __name__ == "__main__":
-    np.random.seed(13)
     # create directory for plots if it doesn't exist already
     os.makedirs("output/plots", exist_ok=True)
 
